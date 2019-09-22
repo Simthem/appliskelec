@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link  rel="stylesheet" href="css/bootstrap.css">
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <script src="https://kit.fontawesome.com/f14bbc71a6.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <title>Appli Skelec</title>
+    </head>
+    <body>
+        <header class="header">
+            <!-- Menu Button -->
+            <div class="navbar-expand-md double-nav scrolling-navbar navbar-dark bg-dark">
+                <!--Menu -->
+                <nav class="menu left-menu">
+                    <div class="menu-content">
+                        <ul class="pl-0">
+                            <li class="list-group-item bg-dark menu-link"><a href="#">Liste des chantiers</a></li>
+                            <li class="list-group-item bg-dark menu-link"><a href="list_profil.html">Ajout/suppression de salariés</a></li>
+                            <li class="list-group-item bg-dark menu-link"><a href="#">Paramètres</a></li>
+                            <li class="list-group-item bg-dark menu-link"><a href="signin.html">Déconnexion</a></li>
+                        </ul>
+                    </div>
+                </nav>
+                <div class="icons-navbar">
+                    <div class="menu-btn-bars text-white"><button class="menu-btn fas fa-bars text-white w-100 fa-3x p-0"></button></div>
+                    <a href="index.html" class="text-white m-auto"><h2>S.K.elec</h2></a>
+                    <a href="#" class="text-white p-3"><i class="menu-btn-plus fas fa-plus-circle text-white fa-3x rounded-circle"></i></a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <div id="container">
+            <div class="content">
+                <div class="w-50 m-auto p-3">
+                    <h4 class="text-center">Date du jour</h4>
+                </div>
+                <form>
+                    <select name="Listing ID" size="1" class="">
+                        <option class="listing_title">Listing IDs</option>
+                        <option>Choix 1</option>
+                        <option>Choix 2</option>
+                        <option>Choix 3</option>
+                        <option>Choix 4</option>
+                    </select>
+                </form>
+                <form class="pt-1">
+                    <div class="row m-auto text-align-center">
+                        <div class="ml-0 mr-0">
+                            <label for="input_time">Temps d'intervention</label>
+                            <div class='col'>
+                                <input type='text' class="form-control" placeholder="hh:mm" />
+                            </div>
+                    <!--<input placeholder="Selected time" type="text" id="input_starttime" class="form-control timepicker">-->
+                        </div>
+                    </div>
+                </form>
+                <form class="d-flex flex-column border-top pt-1 pb-3">
+                    <h4 class="col-sm mt-2">Extra(s)</h4>
+                    <div class="border-top border-bottom pt-1 pb-2">
+                        <div class="form">
+                            <input type="checkbox" class="form-check-input ml-3" id="">
+                            <label class="ml-5" for="">Panier repas</label>
+                        </div>
+                        <div class="row m-auto text-align-center">
+                            <input type="checkbox" class="form-check-input ml-3 mt-2" id="">
+                            <label class="ml-5 mt-1" for="">Trajet supérieur à :</label>
+                            <div class="col">
+                                <input type="text" class="form-control" placeholder="minutes/heures">
+                            </div>
+                        </div>
+                        <div class="form">
+                            <input type="checkbox" class="form-check-input ml-3" id="">
+                            <label class="ml-5" for="">exemple</label>
+                        </div>
+                        <div class="form">
+                                <input type="checkbox" class="form-check-input ml-3" id="">
+                                <label class="ml-5" for="">exemple</label>
+                        </div>
+                        <div class="form">
+                            <input type="checkbox" class="form-check-input ml-3" id="">
+                            <label class="ml-5" for="">exemple</label>
+                        </div>
+                    </div>
+                    <div class="m-auto">
+                        <button type="submit" value="Soumettre" class="btn send border-0 z-depth-1a mt-4 mb-4">Soumettre</button>
+                        <button type="submit" value="Clotûrer le chantier" class="btn finish border z-depth-1a mt-4 mb-3">Cloturer le chantier</button>
+                    </div>
+                </form>
+                
+                <footer>
+                </footer>
+            </div>
+        </div>
+        
+        <script src="js/script.js"></script>
+        <script src="js/bootstrap.js"></script>
+    </body>
+</html>
