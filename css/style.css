@@ -292,7 +292,7 @@ button:focus
     {
         width: 200px;
         margin-top: 4%;
-        margin-left: 482px;
+        margin-left: 33%;
         visibility: hidden;
         height: 567px;
         border-bottom-left-radius: 11px;
@@ -305,6 +305,7 @@ button:focus
     {
         width: 33%;
         margin: auto;
+        margin-top: 0;
         padding-top: 4%;
     }
 
