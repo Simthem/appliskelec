@@ -2267,7 +2267,7 @@ th {
   max-width: 100%;
   margin-bottom: 20px;
 }
-.table > thead > tr > th,
+/*.table > thead > tr > th,*/
 .table > tbody > tr > th,
 .table > tfoot > tr > th,
 .table > thead > tr > td,
@@ -2277,6 +2277,7 @@ th {
   line-height: 1.42857143;
   vertical-align: top;
   border-top: 1px solid #ddd;
+  height: 42px;
 }
 .table > thead > tr > th {
   vertical-align: bottom;

@@ -3,7 +3,6 @@
 html,
 body
 {
-    /*width: 100%;*/
     height: max-content;
     border-radius: 2%;
     font-size: 12px;
@@ -47,7 +46,7 @@ body
 
 .menu-btn-bars
 {
-    width: 50px;
+    width: 48px;
 }
 
 form,
@@ -261,9 +260,7 @@ button:focus
 }
 
 
-
-
-@media only screen and (min-width: 1200px) {
+@media only screen and (min-width: 1080px) {
 
     html
     {
