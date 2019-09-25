@@ -13,6 +13,7 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
         <title>Appli Skelec</title>
     </head>
+
     <body>
         <header class="header">
             <!-- Menu Button -->
@@ -31,7 +32,7 @@
                 <div class="icons-navbar">
                     <div class="menu-btn-bars text-white"><button class="menu-btn fas fa-bars text-white w-100 fa-3x p-0"></button></div>
                     <a href="index.html" class="text-white m-auto"><h2 class="m-0">S.K.elec</h2></a>
-                    <a href="#" class="text-white pl-3"><i class="menu-btn-plus fas fa-search text-white fa-3x rounded-circle"></i></a>
+                    <a href="troubleshooting_list.html" class="text-white pl-3"><i class="menu-btn-plus fas fa-search text-white fa-3x rounded-circle"></i></a>
                 </div>
             </div>
         </header>
@@ -39,42 +40,49 @@
         <!-- Content -->
         <div id="container">
             <div class="content">
-                <h3 class="text-center mt-4">Liste des chantiers</h3>
-                <table class="table table-striped border-bottom mt-4 text-center">
+                <h3 class="text-center mt-4">Détails du chantier</h3>
+                <h5 class="text-center">"ID du chantier"</h5>
+                <h5 class="text-center mt-2">"Libellé du Chantier"</h5>
+                <table class="table table-striped mt-3 ml-auto mb-5 mr-auto w-75 text-center">
                     <thead>
                         <tr>
-                            <th scope="col" class="border-right align-middle">ID's</th>
-                            <th scope="col" class="border-right align-middle">Libellés</th>
-                            <th scope="col" class="align-middle">Type</th>
+                            <th scope="col" class="align-middle w-50">Date de création</th>
+                            <th scope="col" class="align-middle w-50">Temps d'intervention réalisé</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="align-middle border-right p-1">20190624_CHATEAUBAZOIS</td>
-                            <td class="align-middle border-right p-1">Châteaubazois</td>
-                            <td class="align-middle border-right p-1">elec: inté/exté</td>
-                            <td class="align-middle p-1"><a href="troubleshooting_details.html" class="w-25"><i class="fas fa-tools align-middle"></i></a></td>
-                        </tr>
-                        <tr>
-                            <td class="align-middle border-right p-1">20190000_exemple</td>
-                            <td class="align-middle border-right p-1">exemple</td>
-                            <td class="align-middle border-right p-1">exemple</td>
-                            <td class="align-middle p-1"><a href="troubleshooting_details.html" class="w-25"><i class="fas fa-tools align-middle"></i></a></td>
-                        </tr>
-                        <tr>
-                            <td class="align-middle border-right p-1">ex</td>
-                            <td class="align-middle border-right p-1">exemple</td>
-                            <td class="align-middle border-right p-1">elec: inté/exté</td>
-                            <td class="align-middle p-1"><a href="troubleshooting_details.html" class="w-25"><i class="fas fa-tools align-middle"></i></a></td>
+                            <td class="align-middle border bg-white p-1">"date de début"</td>
+                            <td class="align-middle border bg-white p-1">"nombre d'heures"</td>
                         </tr>
                     </tbody>
                 </table>
-                <form>
-                    <div class="w-75 m-auto">
-                        <button type="submit" value="valid" class="btn send border-0 z-depth-1a mt-4 mb-3"><a href="add_troubleshooting.html" class="text-dark pl-5 pr-5">Ajouter un chantier</a></button>
-                        <button type="submit" value="delete" class="btn finish border z-depth-1a mt-4 mb-3">Supprimer un chantier</button>
-                    </div>
-                </form>
+                
+                <table class="table table-striped border ml-auto mb-3 mr-auto w-75 text-center">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="border-right align-middle w-50">Salarié(s) sur le chantier</th>
+                            <th scope="col" class="border-right align-middle w-50">Nombre d'heures correspondant</th>
+                            <th scope="col" class="align-middle">Détails</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="align-middle border p-1">"nom du salarié"</td>
+                            <td class="align-middle border p-1">"nombre d'heures"</td>
+                            <td class="align-middle border bg-white p-1"><a href="list_profil.html" class="w-25"><i class="fas fa-tools align-middle"></i></a></td>
+                        </tr>
+                        <tr>
+                            <td class="align-middle border p-1">"nom du salarié"</td>
+                            <td class="align-middle border p-1">"nombre d'heures"</td>
+                            <td class="align-middle border p-1"><a href="list_profil.html" class="w-25"><i class="fas fa-tools align-middle"></i></a></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="m-auto w-50">
+                    <button type="submit" value="valid" class="btn send border-0 z-depth-1a mt-3 mb-4"><a href="#" class="text-dark pl-5 pr-5">Modifier</a></button>
+                    <button type="submit" value="return" class="btn finish border-0 z-depth-1a mt-1 mb-4"><a href="troubleshooting_list.html" class="text-dark pl-5 pr-5">Précédent</a></button>
+                </div>
             </div>
         </div>
     </body>
