@@ -3,7 +3,7 @@
 html,
 body
 {
-    height: max-content;
+    height: 100%;
     border-radius: 2%;
     font-size: 12px;
 }
@@ -29,6 +29,7 @@ body
 .content
 {
     width: 100%;
+    height: 100%;
 }
 
 .icons-navbar
@@ -52,7 +53,7 @@ body
 form,
 h2
 {
-    width: max-content;
+    /*width: max-content;*/
     margin: auto;
     padding-top: 5%;
     padding-bottom: 5%;
@@ -75,6 +76,11 @@ h2
     width:100%;
 }
 
+textarea
+{
+    min-height: 90px;
+}
+
 .time-form
 {
     width: 80%;
@@ -83,6 +89,12 @@ h2
 
 
 /* Specifics */
+
+.signin-card
+{
+    padding-top: 10%;
+    padding-bottom: 5%;
+}
 
 .menu-btn,
 .menu-btn-plus
@@ -113,7 +125,7 @@ button:focus
 {
     display: block;
     color: #b3b3b1;
-    padding: 15px 30px;
+    padding: 25px 30px;
     text-decoration: none;
 }
 
@@ -124,7 +136,7 @@ button:focus
 
 .menu ul:first-child 
 {
-    margin-top: 10px;
+    margin-top: 30px;
 }
 
 .menu.left-menu 
@@ -135,6 +147,11 @@ button:focus
 .menu-content
 {
     visibility: hidden;
+}
+
+li a
+{
+    height: 70px;
 }
 
 /* Menu Movement */
@@ -238,14 +255,17 @@ button:focus
 {
     margin: auto;
     width: 80%;
+    height:100%;
 }
 
 
 @media only screen and (max-width: 2500px){
+    
     #container
     {
         width: 75%;
         height: 100%;
+        background-color: #dfe3ee;
     }
 
     .icons-navbar
@@ -266,7 +286,7 @@ button:focus
     {
         width: 33%;
         margin: auto;
-        padding-top: 4%;
+        padding-top: 3%;
     }
 
     .header
@@ -274,11 +294,18 @@ button:focus
         width: 100%;
     }
 
+    #container
+    {
+        height: 600px;
+        border-bottom-right-radius: 2%;
+        border-bottom-left-radius: 2%;
+    }
+
     .content
     {
         width: 100%;
-        height: 506.15px;
-        border: #dee2e6 1px solid;
+        height: 600px;
+        /*border: #dee2e6 1px solid;*/
         border-bottom-right-radius: 2%;
         border-bottom-left-radius: 2%;
     }
@@ -288,10 +315,10 @@ button:focus
     .menu
     {
         width: 200px;
-        margin-top: 4%;
+        margin-top: 3%;
         margin-left: 33%;
         visibility: hidden;
-        height: 567px;
+        height: 660px;
         border-bottom-left-radius: 11px;
     }
 
@@ -303,7 +330,7 @@ button:focus
         width: 33%;
         margin: auto;
         margin-top: 0;
-        padding-top: 4%;
+        padding-top: 3%;
     }
 
     .left-open #container

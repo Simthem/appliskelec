@@ -4,12 +4,15 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="apple-mobile-web-app-capable" content="yes">
         <link  rel="stylesheet" href="css/bootstrap.css">
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <script src="https://kit.fontawesome.com/f14bbc71a6.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
         <title>Appli Skelec</title>
     </head>
@@ -22,17 +25,17 @@
                 <nav class="menu left-menu">
                     <div class="menu-content">
                         <ul class="pl-0">
-                            <li class="list-group-item bg-dark menu-link"><a href="troubleshooting_list.html">Liste des chantiers</a></li>
-                            <li class="list-group-item bg-dark menu-link"><a href="list_profil.html">Ajout/suppression de salariés</a></li>
-                            <li class="list-group-item bg-dark menu-link"><a href="#">Paramètres</a></li>
-                            <li class="list-group-item bg-dark menu-link"><a href="signin.html">Déconnexion</a></li>
+                            <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="troubleshooting_list.html" class="text-warning">Chantiers</a></li>
+                            <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="list_profil.html" class="text-warning">Salariés</a></li>
+                            <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="#" class="text-warning">Paramètres</a></li>
+                            <li class="bg-dark border-top border-bottom border-warning rounded-0 p-0 menu-link"><a href="signin.html" class="text-warning">Déconnexion</a></li>
                         </ul>
                     </div>
                 </nav>
                 <div class="icons-navbar">
-                    <div class="menu-btn-bars text-white"><button class="menu-btn fas fa-bars text-white w-100 fa-3x p-0"></button></div>
-                    <a href="index.html" class="text-white m-auto"><h2 class="m-0">S.K.elec</h2></a>
-                    <a href="troubleshooting_list.html" class="text-white pl-3"><i class="menu-btn-plus fas fa-search text-white fa-3x rounded-circle"></i></a>
+                    <div class="menu-btn-bars text-white"><button class="menu-btn fas fa-bars text-warning w-100 fa-3x p-0"></button></div>
+                    <a href="index.html" class="text-warning m-auto"><h2 class="m-0">S.K.elec</h2></a>
+                    <a href="troubleshooting_list.html" class="text-white pl-3"><i class="menu-btn-plus fas fa-search text-warning fa-3x rounded-circle"></i></a>
                 </div>
             </div>
         </header>
@@ -40,14 +43,14 @@
         <!-- Content -->
         <div id="container">
             <div class="content">
-                <h3 class="text-center mt-4">Détails du chantier</h3>
+                <h3 class="text-center mt-0 mb-3 pt-5">Détails du chantier</h3>
                 <h5 class="text-center">"ID du chantier"</h5>
                 <h5 class="text-center mt-2">"Libellé du Chantier"</h5>
-                <table class="table table-striped mt-3 ml-auto mb-5 mr-auto w-75 text-center">
+                <table class="table table-striped mt-5 ml-auto mb-5 mr-auto w-75 text-center">
                     <thead>
                         <tr>
-                            <th scope="col" class="align-middle w-50">Date de création</th>
-                            <th scope="col" class="align-middle w-50">Temps d'intervention réalisé</th>
+                            <th scope="col" class="align-middle text-center w-50">Date de création</th>
+                            <th scope="col" class="align-middle text-center w-50">Temps d'intervention réalisé</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -79,14 +82,15 @@
                         </tr>
                     </tbody>
                 </table>
-                <div class="m-auto w-50">
-                    <button type="submit" value="valid" class="btn send border-0 z-depth-1a mt-3 mb-4"><a href="#" class="text-dark pl-5 pr-5">Modifier</a></button>
-                    <button type="submit" value="return" class="btn finish border-0 z-depth-1a mt-1 mb-4"><a href="troubleshooting_list.html" class="text-dark pl-5 pr-5">Précédent</a></button>
+                <div class="ml-auto mr-auto mt-5 w-75">
+                    <a href="#" type="submit" value="valid" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">Modifier</a>
+                    <a href="troubleshooting_list.html" type="submit" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4">Précédent</a>
                 </div>
             </div>
         </div>
     </body>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="js/script.js"></script>
     <script src="js/bootstrap.js"></script>
 </html>

@@ -4,12 +4,16 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="apple-mobile-web-app-capable" content="yes">
         <link  rel="stylesheet" href="css/bootstrap.css">
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css?family=Lato:300,400,400italic,700,700italic" rel="stylesheet">
         <script src="https://kit.fontawesome.com/f14bbc71a6.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
         <title>Appli Skelec</title>
     </head>
@@ -21,17 +25,17 @@
                 <nav class="menu left-menu">
                     <div class="menu-content">
                         <ul class="pl-0">
-                            <li class="list-group-item bg-dark menu-link"><a href="troubleshooting_list.html">Liste des chantiers</a></li>
-                            <li class="list-group-item bg-dark menu-link"><a href="list_profil.html">Ajout/suppression de salariés</a></li>
-                            <li class="list-group-item bg-dark menu-link"><a href="#">Paramètres</a></li>
-                            <li class="list-group-item bg-dark menu-link"><a href="signin.html">Déconnexion</a></li>
+                            <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="troubleshooting_list.html" class="text-warning">Chantiers</a></li>
+                            <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="list_profil.html" class="text-warning">Salariés</a></li>
+                            <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="#" class="text-warning">Paramètres</a></li>
+                            <li class="bg-dark border-top border-bottom border-warning rounded-0 p-0 menu-link"><a href="signin.html" class="text-warning">Déconnexion</a></li>
                         </ul>
                     </div>
                 </nav>
                 <div class="icons-navbar">
-                    <div class="menu-btn-bars text-white"><button class="menu-btn fas fa-bars text-white w-100 fa-3x p-0"></button></div>
-                    <a href="index.html" class="text-white m-auto"><h2 class="m-0">S.K.elec</h2></a>
-                    <a href="add_troubleshooting.html" class="text-white pl-3"><i class="menu-btn-plus fas fa-plus-circle text-white fa-3x rounded-circle"></i></a>
+                    <div class="menu-btn-bars text-white"><button class="menu-btn fas fa-bars text-warning w-100 fa-3x p-0"></button></div>
+                    <a href="index.html" class="text-warning m-auto"><h2 class="m-0">S.K.elec</h2></a>
+                    <a href="add_troubleshooting.html" class="text-white pl-3"><i class="menu-btn-plus fas fa-plus-circle text-warning fa-3x rounded-circle"></i></a>
                 </div>
             </div>
         </header>
@@ -42,7 +46,7 @@
                 <div class="w-50 m-auto p-3">
                     <h4 class="text-center">Date du jour</h4>
                 </div>
-                <form>
+                <form class="text-center">
                     <select name="Listing ID" size="1">
                         <option class="listing_title">Listing IDs</option>
                         <option>Choix 1</option>
@@ -51,50 +55,39 @@
                         <option>Choix 4</option>
                     </select>
                 </form>
-                <form class="pt-1">
+                <form class="pt-1 w-25">
                     <div class="m-auto text-center">
                         <div class="ml-0 mr-0">
                             <label for="input_time m-auto">Heures réalisées</label>
                             <div class='col'>
-                                <input type='text' class="form-control" placeholder="hh:mm" />
+                                <input type='text' class="form-control text-center p-1" placeholder="hh:mm" />
                             </div>
-                    <!--<input placeholder="Selected time" type="text" id="input_starttime" class="form-control timepicker">-->
                         </div>
                     </div>
                 </form>
                 <form class="d-flex flex-column border-top pt-3 pb-3 w-75">
                     <div class="border-bottom pt-1 pb-3">
                         <div class="form mb-2">
-                            <input type="checkbox" class="form-check-input ml-3 mt-1" id="">
+                            <input type="checkbox" class="form-check-input ml-3 mt-1">
                             <label class="mt-auto ml-5 mb-auto" for="">Panier repas</label>
                         </div>
-                        <div class="row m-auto">
-                            <input type="checkbox" class="form-check-input ml-3 mt-3">
-                            <label class="mt-auto ml-5 mb-auto align-middle" for="">Dont :</label>
-                            <div class="col d-inline-flex pt-1 pr-0 pb-2">
-                                <input type="text" class=" col-6 form-control pl-1 pr-1 mt-auto mb-auto" placeholder="minutes/heures">
-                                <label class="mt-auto ml-2 mb-auto align-middle">heures de nuit</label>
+                        <div class="d-inline-flex h-25">
+                            <div class="mt-auto mb-auto pt-1">
+                                <input type="checkbox" class="form-check-input ml-3 mb-0 mt-2">
+                                <label class="mb-0 ml-5 text-center" for="">Dont :</label>
+                            </div>
+                            <div class="col d-inline-flex pr-0 pl-2 mt-auto mb-auto">
+                                <input type="text" class="col-7 form-control p-1 mt-auto mb-auto text-center h-75" placeholder="minutes/heures">
+                                <label class="mt-auto ml-2 mb-auto">heures de nuit</label>
                             </div>
                         </div>
-                        <!--<div class="form">
-                            <input type="checkbox" class="form-check-input ml-3" id="">
-                            <label class="ml-5" for="">exemple</label>
-                        </div>
-                        <div class="form">
-                                <input type="checkbox" class="form-check-input ml-3" id="">
-                                <label class="ml-5" for="">exemple</label>
-                        </div>
-                        <div class="form">
-                            <input type="checkbox" class="form-check-input ml-3" id="">
-                            <label class="ml-5" for="">exemple</label>
-                        </div>-->
-                        <div class="form mt-2 mb-2">
-                            <textarea class="form-control" placeholder="Informations?"></textarea>
+                        <div class="form mt-2 mb-3 pt-2 pb-3">
+                            <textarea class="form-control" placeholder="Informations ?"></textarea>
                         </div>
                     </div>
                     <div class="mt-4 mr-auto ml-auto">
-                        <button type="submit" value="Soumettre" class="btn send border-0 z-depth-1a mt-4 mb-3">Soumettre</button>
-                        <button type="submit" value="Clotûrer le chantier" class="btn finish border z-depth-1a mt-3 mb-1">Cloturer le chantier</button>
+                        <a href="#" type="submit" value="Soumettre" class="btn send border-0 bg-white z-depth-1a mt-4 mb-3 text-dark">Soumettre</a>
+                        <a href="#" type="submit" value="Clotûrer le chantier" class="btn finish border-0 bg-white z-depth-1a mt-3 mb-1 text-dark">Clôturer le chantier</a>
                     </div>
                 </form>
                 
@@ -102,7 +95,11 @@
                 </footer>
             </div>
         </div>
+
+        <footer>
+        </footer>
         
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script src="js/script.js"></script>
         <script src="js/bootstrap.js"></script>
     </body>
