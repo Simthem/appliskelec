@@ -5,8 +5,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta name="apple-mobile-web-app-capable" content="yes">
-        <link  rel="stylesheet" href="css/bootstrap.css">
-        <link rel="stylesheet" href="css/style.css">
+        <link  rel="stylesheet" href="assets/css/bootstrap.css">
+        <link rel="stylesheet" href="assets/css/style.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <link href="https://fonts.googleapis.com/css?family=Lato:300,400,400italic,700,700italic" rel="stylesheet">
@@ -44,7 +44,7 @@
         <div id="container">
             <div class="content">
                 <div class="w-50 m-auto p-3">
-                    <h4 class="text-center">Date du jour</h4>
+                    <h4 class="text-center"><?php echo date('d/m/Y'); ?></h4>
                 </div>
                 <form class="text-center">
                     <select name="Listing ID" size="1">
