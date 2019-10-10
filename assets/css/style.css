@@ -96,6 +96,14 @@ textarea
     padding-bottom: 5%;
 }
 
+.nav-pills>li.active>a,
+.nav-pills>li.active>a:focus,
+.nav-pills>li.active>a:hover
+{
+    color: white;
+    background-color: black !important;
+}
+
 .menu-btn,
 .menu-btn-plus
 {

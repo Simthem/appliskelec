@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+<?php
+session_start();
+?>
 
 <html class="signin-card">
     <head>
@@ -16,57 +18,63 @@
     </head>
 
     <body class="card h-75">
-        <header class=" bg-dark">
-            <div class="icons-navbar text-center text-white">
-                <h2 class="m-0">S.K.elec</h2>
+      <header class=" bg-dark">
+          <div class="icons-navbar text-center text-white">
+              <h2 class="m-0">S.K.elec</h2>
+          </div>
+      </header>
+
+      <section class="form-elegant">
+        <div class="card-body">
+          <ul class="nav nav-pills">
+            <li class="active h-50"><a href="#tab1" data-toggle="tab" class="h-75">Sign In</a></li>
+            <li class="h-50"><a href="#tab2" data-toggle="tab" class="h-75">Sign Up</a></li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane active" id="tab1">
+              <form class="w-100 h-75 pt-1 mt-0 mr-2 mb-0 ml-2" action="./api/user/login.php" method="POST">
+                  <div class="md-form pt-3 pb-3">
+                      <label for="user">Your email</label>
+                      <input type="text" id="username" name="username" class="form-control">
+                  </div>
+
+                  <div class="md-form pt-3">
+                      <label for="password">Your password</label>
+                      <input type="password" id="password" name="password" class="form-control" data-type="password">
+                      <p class="font-small blue-text d-flex justify-content-end">Forgot <a href="#" class="blue-text ml-1"> Password?</a></p>
+                  </div>
+
+                  <div class="text-center mt-5 mb-4">
+                    <input type="submit" href="index.php" value="Sign In" class="btn send border-0 bg-white z-depth-1a pl-5 pr-5 text-dark">
+                  </div>
+              </form>
             </div>
-        </header>
+            <div class="tab-pane" id="tab2">
+              <form id="signup" class="w-100 h-75 pt-1 mt-0 mr-2 mb-0 ml-2" action="./api/user/signup.php" method="POST">
+                <div class="md-form pt-0 pb-3">
+                  <label for="username1">Username</label>
+                  <input id="username1" name="username1" type="text" class="form-control" required>
+                </div>
+                <div class="md-form pt-0">
+                  <label for="pass1">Password</label>
+                  <input id="pass1" name="pass1" type="password" class="form-control" data-type="password" required>
+                </div>
+                <div class="md-form pt-0">
+                  <label for="pass2">Confirm Password</label>
+                  <input id="pass2" name="pass2" type="password" class="form-control" data-type="password" required>
+                </div>
+                <div class="text-center mt-3 mb-4">
+                  <input type="submit" class="btn send border-0 bg-white z-depth-1a pl-5 pr-5 text-dark" value="Sign Up">
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        
 
-        <section class="form-elegant">
-            <div class="card-body">
-                <form class="w-100 h-75 mt-3 mr-2 mb-0 ml-2" action="./api/user/login.php" method="GET">
-                    <div class="md-form pt-3 pb-3">
-                        <label for="user">Your email</label>
-                        <input type="text" id="username" name="username" class="form-control">
-                    </div>
-
-                    <div class="md-form pt-3">
-                        <label for="password">Your password</label>
-                        <input type="password" id="password" name="password" class="form-control" data-type="password">
-                        <p class="font-small blue-text d-flex justify-content-end">Forgot <a href="#" class="blue-text ml-1">
-                            Password?</a></p>
-                    </div>
-
-                    <div class="text-center mt-5 mb-4">
-                        <input type="submit" href="index.php" value="signin" class="btn send border-0 bg-white z-depth-1a pl-5 pr-5 text-dark">
-                    </div>
-                </form>
-                <form id="signup" class="sign-up-htm" action="./api/user/signup.php" method="POST">
-                    <div class="group">
-                      <label for="user" class="label text-dark">Username</label>
-                      <input id="username1" name="username" type="text" class="input">
-                    </div>
-                    <div class="group">
-                      <label for="pass" class="label text-dark">Password</label>
-                      <input id="pass" name="password" type="password" class="input" data-type="password">
-                    </div>
-                    <div class="group">
-                      <label for="pass" class="label text-dark">Confirm Password</label>
-                      <input id="pass1" type="password" class="input" data-type="password">
-                    </div>
-                    <div class="group">
-                      <input type="submit" class="button" value="Sign Up" onsubmit="return validate()">
-                    </div>
-                    <div class="hr"></div>
-                    <div class="foot-lnk">
-                      <label for="tab-1">Already Member?</a>
-                    </div>
-                  </form>
-            
-
-            <footer>
-            </footer>
-        </section>
+        <footer>
+        </footer>
+      </section>
     </body>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>

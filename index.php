@@ -1,4 +1,11 @@
-<!DOCTYPE html>
+<?php
+session_start();
+/*if(!($_SESSION['username'])) {  
+  
+    header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
+}*/
+  
+?>  
 
 <html>
     <head>
@@ -28,7 +35,7 @@
                             <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="troubleshooting_list.html" class="text-warning">Chantiers</a></li>
                             <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="list_profil.html" class="text-warning">Salariés</a></li>
                             <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="#" class="text-warning">Paramètres</a></li>
-                            <li class="bg-dark border-top border-bottom border-warning rounded-0 p-0 menu-link"><a href="signin.html" class="text-warning">Déconnexion</a></li>
+                            <li class="bg-dark border-top border-bottom border-warning rounded-0 p-0 menu-link"><a href="logout.php" class="text-warning">Déconnexion</a></li>
                         </ul>
                     </div>
                 </nav>
