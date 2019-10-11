@@ -41,16 +41,10 @@ if(empty($_POST['username1'])) {
     echo "Passwords should be the same";
     header("refresh:2; url=../../signin.php");
     exit;
-} else {//if($pass1 == $pass2) {
+} else {
     echo "Success !! Just log in now ! :)";
     $user->signup();
     header("refresh:2; url=../../signin.php");
     exit;
-}/* else {
-    $user_arr=array(
-        "status" => false,
-        "message" => "Username already exists!"
-    );
-    exit;
-}*/
+}
 ?>

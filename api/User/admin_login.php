@@ -3,7 +3,7 @@ session_start();
 // include database and object files
 include_once '../config/database.php';
 include_once '../objects/user.php';
-
+ 
 // get database connection
 $database = new Database();
 $db = $database->getConnection();
@@ -23,14 +23,6 @@ if($admin) {
         header("Location:../../index.php");
         exit();
     }
-}
-if($stmt->rowCount() > 0){
-    $_SESSION['username']= $_POST['username'];//here session is used and value of 'username' store in $_SESSION.
-    $_SESSION['password']= $_POST['password'];
-    echo $_SESSION['username'];
-    echo $_SESSION['password'];
-    header("Location:../../index.php");
-    exit();
 }
 else{
     echo "Username and/or Password incorrect.\\nTry again.";

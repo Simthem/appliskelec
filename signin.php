@@ -1,6 +1,13 @@
 <?php
 session_start();
+
+include_once '../config/database.php';
+//if($_POST['username'] and $_POST['password']) {
+//  $_SESSION = $_POST['username'];
+//}
 ?>
+
+<!DOCTYPE html>
 
 <html class="signin-card">
     <head>

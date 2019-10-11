@@ -104,6 +104,12 @@ textarea
     background-color: black !important;
 }
 
+.container-list
+    {
+        max-width: 98%;
+        overflow-y: auto;
+    }
+
 .menu-btn,
 .menu-btn-plus
 {

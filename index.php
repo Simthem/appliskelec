@@ -1,11 +1,15 @@
 <?php
 session_start();
-/*if(!($_SESSION['username'])) {  
+
+include_once '../config/database.php';
+
+if(!($_SESSION['username'])) {  
   
     header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
-}*/
-  
-?>  
+}
+?>
+
+<!DOCTYPE html>
 
 <html>
     <head>
@@ -33,15 +37,15 @@ session_start();
                     <div class="menu-content">
                         <ul class="pl-0">
                             <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="troubleshooting_list.html" class="text-warning">Chantiers</a></li>
-                            <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="list_profil.html" class="text-warning">Salariés</a></li>
+                            <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="list_profil.php" class="text-warning">Salariés</a></li>
                             <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="#" class="text-warning">Paramètres</a></li>
-                            <li class="bg-dark border-top border-bottom border-warning rounded-0 p-0 menu-link"><a href="logout.php" class="text-warning">Déconnexion</a></li>
+                            <li class="bg-dark border-top border-bottom border-warning rounded-0 p-0 menu-link"><a href="api/User/logout.php" class="text-warning">Déconnexion</a></li>
                         </ul>
                     </div>
                 </nav>
                 <div class="icons-navbar">
                     <div class="menu-btn-bars text-white"><button class="menu-btn fas fa-bars text-warning w-100 fa-3x p-0"></button></div>
-                    <a href="index.html" class="text-warning m-auto"><h2 class="m-0">S.K.elec</h2></a>
+                    <a href="index.php" class="text-warning m-auto"><h2 class="m-0">S.K.elec</h2></a>
                     <a href="add_troubleshooting.html" class="text-white pl-3"><i class="menu-btn-plus fas fa-plus-circle text-warning fa-3x rounded-circle"></i></a>
                 </div>
             </div>
@@ -52,6 +56,8 @@ session_start();
             <div class="content">
                 <div class="w-50 m-auto p-3">
                     <h4 class="text-center"><?php echo date('d/m/Y'); ?></h4>
+                    <div class="text-center"><?php echo $_SESSION['username']; ?></div>
+                    <div class="text-center"><?php if($_SESSION['username'] == "admin") { echo "Administrateur de S.K.elec_app ;)";}?></div>
                 </div>
                 <form class="text-center">
                     <select name="Listing ID" size="1">
