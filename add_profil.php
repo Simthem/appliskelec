@@ -1,3 +1,13 @@
+<?php
+session_start();
+include './api/config/db_connexion.php';
+
+if(!($_SESSION['username'])) {  
+  
+    header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
+}
+?>
+
 <!DOCTYPE html>
 
 <html>
@@ -44,30 +54,38 @@
         <div id="container">
             <div class="content">
                 <h3 class="text-center mt-0 mb-3 pt-5">Création d'un compte</h3>
-                <form class="w-100 pt-3 pl-4 pb-0 pr-4">
+                <form class="w-100 pt-3 pl-4 pb-0 pr-4" action="./api/user/signup.php" method="POST">
+                    <div class="md-form mt-1">
+                        <label for="username1">Username</label>
+                        <input id="username1" name="username1" type="text" class="form-control" required>
+                    </div>
                     <div class="md-form mt-1">
                         <label for="first-name">First name</label>
-                        <input type="text" id="first_name" class="form-control">
+                        <input type="text" id="first_name" name="first_name" class="form-control" required>
                     </div>
                     <div class="md-form mt-4">
                         <label for="last_name">Last name</label>
-                        <input type="text" id="last-name" class="form-control">
+                        <input type="text" id="last-name" name="last_name" class="form-control">
                     </div>
                     <div class="md-form mt-4">
-                        <label for="form-email">Email</label>
-                        <input type="text" id="e-mail" class="form-control">
+                        <label for="e_mail">Email</label>
+                        <input type="e-mail" id="e_mail" name="e_mail" class="form-control">
                     </div>
                     <div class="md-form mt-4">
-                        <label for="form-pass2">Password</label>
-                        <input type="password" id="form-pass2" class="form-control">
+                        <label for="phone">Phone</label>
+                        <input type="phone" id="phone" name="phone" class="form-control">
                     </div>
                     <div class="md-form mt-4">
-                        <label for="form-pass2">Confirm password</label>
-                        <input type="password" id="form-pass2" class="form-control">
+                        <label for="pass1">Password</label>
+                        <input type="password" id="pass1" name="pass1" class="form-control" required>
+                    </div>
+                    <div class="md-form mt-4">
+                        <label for="pass2">Confirm password</label>
+                        <input type="password" id="pass2" name="pass2" class="form-control" required>
                     </div>
                     <div class="pt-5 w-75 m-auto">
-                        <a href="list_profil.html" type="submit" value="create" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">Créer</a>
-                        <a href="list_profil.html" type="submit" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4 text-dark">Précédent</a>
+                        <input type="submit" value="Créer" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">
+                        <a href="list_profil.php" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4 text-dark">Précédent</a>
                     </div>
                 </form>
             </div>

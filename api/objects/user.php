@@ -25,17 +25,25 @@ class User{
         $query = "INSERT INTO
                     " . $this->table_name . "
                 SET
-                    username=:username, password=:password, created=:created";
+                    first_name=:first_name, last_name=:last_name, e_mail=:e_mail, phone=:phone, username=:username, password=:password, created=:created";
     
         // prepare query
         $stmt = $this->conn->prepare($query);
     
         // sanitize
+        $this->phone=htmlspecialchars(strip_tags($this->phone));
+        $this->e_mail=htmlspecialchars(strip_tags($this->e_mail));
+        $this->last_name=htmlspecialchars(strip_tags($this->last_name));
+        $this->first_name=htmlspecialchars(strip_tags($this->first_name));
         $this->username=htmlspecialchars(strip_tags($this->username));
         $this->password=htmlspecialchars(strip_tags($this->password));
         $this->created=htmlspecialchars(strip_tags($this->created));
     
         // bind values
+        $stmt->bindParam(":phone", $this->phone);
+        $stmt->bindParam(":e_mail", $this->e_mail);
+        $stmt->bindParam(":last_name", $this->last_name);
+        $stmt->bindParam(":first_name", $this->first_name);
         $stmt->bindParam(":username", $this->username);
         $stmt->bindParam(":password", $this->password);
         $stmt->bindParam(":created", $this->created);

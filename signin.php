@@ -1,10 +1,10 @@
 <?php
 session_start();
 
-include_once '../config/database.php';
-//if($_POST['username'] and $_POST['password']) {
-//  $_SESSION = $_POST['username'];
-//}
+include './api/config/database.php';
+if($_POST['username'] and $_POST['password']) {
+  $_SESSION = $_POST['username'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -42,12 +42,12 @@ include_once '../config/database.php';
               <form class="w-100 h-75 pt-1 mt-0 mr-2 mb-0 ml-2" action="./api/user/login.php" method="POST">
                   <div class="md-form pt-3 pb-3">
                       <label for="user">Your email</label>
-                      <input type="text" id="username" name="username" class="form-control">
+                      <input type="text" id="username" name="username" class="form-control" required>
                   </div>
 
                   <div class="md-form pt-3">
                       <label for="password">Your password</label>
-                      <input type="password" id="password" name="password" class="form-control" data-type="password">
+                      <input type="password" id="password" name="password" class="form-control" data-type="password" required>
                       <p class="font-small blue-text d-flex justify-content-end">Forgot <a href="#" class="blue-text ml-1"> Password?</a></p>
                   </div>
 

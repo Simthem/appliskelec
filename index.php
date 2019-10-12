@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-include_once '../config/database.php';
+include 'api/config/db_connexion.php';
 
 if(!($_SESSION['username'])) {  
   

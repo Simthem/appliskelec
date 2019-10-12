@@ -1,6 +1,6 @@
 <?php
 session_start();
-//include 'api/config/database.php';
+
 include 'api/config/db_connexion.php';
 
 if(!($_SESSION['username'])) {  
@@ -69,7 +69,7 @@ if(!($_SESSION['username'])) {
                                         echo '<th scope="col" class="text-center" id="first_name">Prénom</th>';
                                         echo '<th scope="col" class="text-center" id="e_mail">E-mail</th>';
                                         echo '<th scope="col" class="text-center" id="phone">Téléphone</th>';
-                                        echo '<th scope="col" class="text-center" id="hours">Heures totales</th>';
+                                        echo '<th scope="col" class="text-center" id="hours">H/totales</th>';
                                     echo '</tr>';
                                 echo '</thead>';
                                 echo '<tbody>';
@@ -79,7 +79,7 @@ if(!($_SESSION['username'])) {
                                             echo '<td class="align-middle" style="word-wrap: break-word; max-width: 85px;">' . $row['e_mail'] . '</td>';
                                             echo '<td class="align-middle">' . $row['phone'] . '</td>';
                                             echo '<td class="align-middle">' . $row[''] . '</td>';
-                                            echo '<td class="p-0 align-middle"><a href="modif_profil.html"><i class="fas fa-tools"></i></a></td>';
+                                            echo '<td class="p-0 align-middle"><a href="modif_profil.php"><i class="fas fa-tools"></i></a></td>';
                                         echo '</tr>';
                                     }
                                 echo '</tbody>';
@@ -96,8 +96,8 @@ if(!($_SESSION['username'])) {
                 </div>
                 <form>
                     <div class="pt-5 w-75 m-auto">
-                        <a href="add_profil.html" type="submit" value="valid" class="btn send border-0 bg-white z-depth-1a mt-4 mb-3 text-dark">Ajouter un compte</a>
-                        <a href="#" type="submit" value="delete" class="btn finish border-0 bg-white z-depth-1a mt-4 mb-3 text-dark">Supprimer un compte</a>
+                        <a href="add_profil.php" class="btn send border-0 bg-white z-depth-1a mt-4 mb-3 text-dark">Ajouter un compte</a>
+                        <a href="#" value="delete" class="btn finish border-0 bg-white z-depth-1a mt-4 mb-3 text-dark">Supprimer un compte</a>
                     </div>
                 </form>
             </div>
