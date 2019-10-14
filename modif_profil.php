@@ -102,7 +102,7 @@ if(!($_SESSION['username'])) {
                     echo '</div>';
                     echo '<div class="md-form mt-4">';
                         echo '<label for="e_mail">E_mail</label>';
-                        echo '<input type="text" id="e-mail" name="e_mail" class="form-control" placeholder="' . $_SESSION['e_mail'] . '">';
+                        echo '<input type="e-mail" id="e-mail" name="e_mail" class="form-control" placeholder="' . $_SESSION['e_mail'] . '">';
                     echo '</div>';
                     echo '<div class="md-form mt-4">';
                         echo '<label for="phone">Téléphone</label>';
@@ -118,7 +118,7 @@ if(!($_SESSION['username'])) {
                     echo '</div>';
                     echo '<div class="md-form mt-4">';
                         echo '<label for="pass2">Confirm Password</label>';
-                        echo '<input type="text" id="pass2" name="pass2" class="form-control">';
+                        echo '<input type="password" id="pass2" name="pass2" class="form-control">';
                     echo '</div>';
                             /*} else {
                                 echo "phase 2 ratée";

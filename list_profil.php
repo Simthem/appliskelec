@@ -75,10 +75,10 @@ if(!($_SESSION['username'])) {
                                 echo '<tbody>';
                                     while($row = $result->fetch_array()){
                                         echo '<tr>';
-                                            echo '<td class="align-middle">' . $row['username'] . '</td>';
-                                            echo '<td class="align-middle" style="word-wrap: break-word; max-width: 85px;">' . $row['e_mail'] . '</td>';
-                                            echo '<td class="align-middle">' . $row['phone'] . '</td>';
-                                            echo '<td class="align-middle">' . $row[''] . '</td>';
+                                            echo '<td class="align-middle p-4">' . $row['username'] . '</td>';
+                                            echo '<td class="align-middle p-4" style="word-wrap: break-word; max-width: 85px;">' . $row['e_mail'] . '</td>';
+                                            echo '<td class="align-middle p-4">' . $row['phone'] . '</td>';
+                                            echo '<td class="align-middle p-4">' . $row[''] . '</td>';
                                             echo '<td class="p-0 align-middle"><a href="modif_profil.php"><i class="fas fa-tools"></i></a></td>';
                                         echo '</tr>';
                                     }

@@ -59,7 +59,7 @@ if(!($_SESSION['username'])) {
                         <label for="username1">Username</label>
                         <input id="username1" name="username1" type="text" class="form-control" required>
                     </div>
-                    <div class="md-form mt-1">
+                    <div class="md-form mt-4">
                         <label for="first-name">First name</label>
                         <input type="text" id="first_name" name="first_name" class="form-control" required>
                     </div>
