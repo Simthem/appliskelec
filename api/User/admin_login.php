@@ -23,8 +23,7 @@ if($admin) {
         header("Location:../../index.php");
         exit();
     }
-}
-else{
+} else{
     echo "Username and/or Password incorrect.\\nTry again.";
     header("refresh:2; url=../../signin.php");
     exit();

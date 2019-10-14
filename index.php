@@ -57,6 +57,7 @@ if(!($_SESSION['username'])) {
                 <div class="w-50 m-auto p-3">
                     <h4 class="text-center"><?php echo date('d/m/Y'); ?></h4>
                     <div class="text-center"><?php echo $_SESSION['username']; ?></div>
+                    <div class="text-center"><?php echo $_SESSION['id']; ?></div>
                     <div class="text-center"><?php if($_SESSION['username'] == "admin") { echo "Administrateur de S.K.elec_app ;)";}?></div>
                 </div>
                 <form class="text-center">
