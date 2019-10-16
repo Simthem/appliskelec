@@ -64,7 +64,7 @@ if(!($_SESSION['username'])) {
                                     echo '<th scope="col" class="text-center align-middle p-2 w-25" id="num_chantier">ID\'s</th>';
                                     //echo '<th scope="col" class="text-center align-middle p-4" id="e_mail">E-mail</th>';
                                     echo '<th scope="col" class="text-center align-middle p-2 w-25" id="name">Libellés</th>';
-                                    echo '<th scope="col" class="text-center align-middle p-2 w-25" id="contact_adress">Adresse</th>';
+                                    echo '<th scope="col" class="text-center align-middle p-2 w-25" id="contact_address">Adresse</th>';
                                     echo '<th scope="col" class="text-center align-middle p-0 w-25" id="">Détails</th>';
                                 echo '</tr>';
                             echo '</thead>';
@@ -79,11 +79,20 @@ if(!($_SESSION['username'])) {
                                 echo '<tbody>';
                                     while($row = $result->fetch_array()){
                                         echo '<tr>';
-                                            echo '<td class="align-middle p-4 w-25">' . $row['num_chantier'] . '</td>';
-                                            //echo '<td class="align-middle p-4" style="word-wrap: break-word; max-width: 85px;">' . $row['e_mail'] . '</td>';
-                                            echo '<td class="align-middle p-4 w-25">' . $row['name'] . '</td>';
-                                            echo '<td class="align-middle p-4 w-25">' . $row['contact_adress'] . '</td>';
-                                            echo '<td class="p-0 align-middle w-25"><a href="troubleshooting_details.html"><i class="fas fa-tools"></i></a></td>';
+                                            if($row['num_chantier'] != 0) {
+                                                echo '<td class="align-middle p-4 w-25">' . $row['num_chantier'] . '</td>';
+                                                //echo '<td class="align-middle p-4" style="word-wrap: break-word; max-width: 85px;">' . $row['e_mail'] . '</td>';
+                                                echo '<td class="align-middle p-4 w-25">' . $row['name'] . '</td>';
+                                                echo '<td class="align-middle p-4 w-25">' . $row['contact_address'] . '</td>';
+                                                echo '<td class="p-0 align-middle w-25"><a href="troubleshooting_details.html"><i class="fas fa-tools"></i></a></td>';
+                                            } else {
+                                                echo '<td class="align-middle p-4 w-25 bg-success text-white">Dép.</td>';
+                                                //echo '<td class="align-middle p-4" style="word-wrap: break-word; max-width: 85px;">' . $row['e_mail'] . '</td>';
+                                                echo '<td class="align-middle p-4 w-25 bg-success text-white">' . $row['name'] . '</td>';
+                                                echo '<td class="align-middle p-4 w-25 bg-success text-white">' . $row['contact_address'] . '</td>';
+                                                echo '<td class="p-0 align-middle w-25 bg-success"><a href="troubleshooting_details.html"><i class="fas fa-tools text-white"></i></a></td>';
+                                            }
+                                            
                                         echo '</tr>';
                                     }
                                 echo '</tbody>';

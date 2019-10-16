@@ -1,3 +1,14 @@
+<?php
+session_start();
+include './api/config/db_connexion.php';
+//require './api/troubleshooting/add_site.php';
+
+if(!($_SESSION['username'])) {  
+  
+    header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
+}
+?>
+
 <!DOCTYPE html>
 
 <html>
@@ -44,26 +55,34 @@
         <div id="container">
             <div class="content">
                 <h3 class="text-center mt-0 mb-3 pt-5">Ajout d'un chantier</h3>
-                <form class="w-100 pt-5 pl-4 pb-0 pr-4">
+                <form class="w-100 pt-3 pl-4 pb-0 pr-4" action="./api/troubleshooting/add_site.php" method="POST">
                     <div class="md-form mt-1">
-                        <label for="first-name">ID de chantier</label>
-                        <input type="text" id="first_name" class="form-control">
+                        <label for="num_chantier">ID de chantier</label>
+                        <input type="text" id="num_chantier" name="num_chantier" class="form-control">
                     </div>
-                    <div class="md-form mt-5">
-                        <label for="last_name">Libellé de chantier</label>
-                        <input type="text" id="last-name" class="form-control">
+                    <div class="md-form mt-4">
+                        <label for="name">Libellé de chantier</label>
+                        <input type="text" id="name" name="name" class="form-control" required>
                     </div>
-                    <div class="md-form mt-5">
-                        <label for="contact_chantier">Contact</label>
-                        <input type="text" id="contact_chantier" name="contact_chantier" class="form-control">
+                    <div class="md-form mt-4">
+                        <label for="contact_name">Nom du client</label>
+                        <input type="text" id="contact_name" name="contact_name" class="form-control" required>
                     </div>
-                    <div class="md-form mt-5 mb-5">
-                        <label for="adress_chantier">Adresse</label>
-                        <input type="text" id="adress_chantier" name="adress_chantier" class="form-control">
+                    <div class="md-form mt-4">
+                        <label for="contact_phone">Téléphone</label>
+                        <input type="text" id="contact_phone" name="contact_phone" class="form-control">
+                    </div>
+                    <div class="md-form mt-4">
+                        <label for="contact_address">Adresse</label>
+                        <input type="text" id="contact_address" name="contact_address" class="form-control">
+                    </div>
+                    <div class="md-form mt-4">
+                        <label for="commit">Commentaires</label>
+                        <textarea type="text" id="commit" name="commit" class="form-control"></textarea>
                     </div>
                     <div class="pt-5 w-75 m-auto">
-                        <a href="index.php" type="submit" value="valid" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">Valider</a>
-                        <a href="troubleshooting_list.php" type="submit" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4 text-dark">Précédent</a>
+                        <input type="submit" value="Valider" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">
+                        <a href="troubleshooting_list.php" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4 text-dark">Précédent</a>
                     </div>
                 </form>
             </div>

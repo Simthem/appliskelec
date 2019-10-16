@@ -1,26 +1,29 @@
 <?php
-class User{
+class Troubles{
  
     // database connection and table name
     private $conn;
-    private $table_name = "users";
+    private $table_name = "chantiers";
  
     // object properties
     public $id;
-    public $username;
-    public $password;
+    public $num_chantier;
     public $created;
-    public $first_name;
-    public $last_name;
-    public $e_mail;
-    public $phone;
- 
+    public $name;
+    public $contact_name;
+    public $contact_phone;
+    public $contact_address;
+    public $type;
+    public $commit;
+    public $state;
+
+
     // constructor with $db as database connection
     public function __construct($db){
         $this->conn = $db;
     }
     // signup user
-    function signup(){
+    function create(){
     
         if($this->isAlreadyExist()){
             return false;
@@ -29,28 +32,32 @@ class User{
         $query = "INSERT INTO
                     " . $this->table_name . "
                 SET
-                    first_name=:first_name, last_name=:last_name, e_mail=:e_mail, phone=:phone, username=:username, password=:password, created=:created";
+                    num_chantier=:num_chantier, created=:created, name=:name, contact_name=:contact_name, contact_phone=:contact_phone, contact_address=:contact_address, type=:type, commit=:commit, state=:state";
     
         // prepare query
         $stmt = $this->conn->prepare($query);
     
         // sanitize
-        $this->phone=htmlspecialchars(strip_tags($this->phone));
-        $this->e_mail=htmlspecialchars(strip_tags($this->e_mail));
-        $this->last_name=htmlspecialchars(strip_tags($this->last_name));
-        $this->first_name=htmlspecialchars(strip_tags($this->first_name));
-        $this->username=htmlspecialchars(strip_tags($this->username));
-        $this->password=htmlspecialchars(strip_tags($this->password));
+        $this->num_chantier=htmlspecialchars(strip_tags($this->num_chantier));
         $this->created=htmlspecialchars(strip_tags($this->created));
+        $this->name=htmlspecialchars(strip_tags($this->name));
+        $this->contact_name=htmlspecialchars(strip_tags($this->contact_name));
+        $this->contact_phone=htmlspecialchars(strip_tags($this->contact_phone));
+        $this->contact_address=htmlspecialchars(strip_tags($this->contact_address));
+        $this->type=htmlspecialchars(strip_tags($this->type));
+        $this->commit=htmlspecialchars(strip_tags($this->commit));
+        $this->state=htmlspecialchars(strip_tags($this->state));
     
         // bind values
-        $stmt->bindParam(":phone", $this->phone);
-        $stmt->bindParam(":e_mail", $this->e_mail);
-        $stmt->bindParam(":last_name", $this->last_name);
-        $stmt->bindParam(":first_name", $this->first_name);
-        $stmt->bindParam(":username", $this->username);
-        $stmt->bindParam(":password", $this->password);
+        $stmt->bindParam(":num_chantier", $this->num_chantier);
         $stmt->bindParam(":created", $this->created);
+        $stmt->bindParam(":name", $this->name);
+        $stmt->bindParam(":contact_name", $this->contact_name);
+        $stmt->bindParam(":contact_phone", $this->contact_phone);
+        $stmt->bindParam(":contact_address", $this->contact_address);
+        $stmt->bindParam(":type", $this->type);
+        $stmt->bindParam(":commit", $this->commit);
+        $stmt->bindParam(":state", $this->state);
     
         // execute query
         if($stmt->execute()){
@@ -61,7 +68,7 @@ class User{
         return false;
         
     }
-    // login user
+    /*// login user
     function login(){
         // select all query
         $query = "SELECT
@@ -75,21 +82,20 @@ class User{
         // execute query
         $stmt->execute();
         return $stmt;
-    }
+    }*/
     function isAlreadyExist(){
         $query = "SELECT *
             FROM
                 " . $this->table_name . " 
             WHERE
-                username='".$this->username."'";
+                num_chantier ='".$this->num_chantier."'";
         // prepare query statement
         $stmt = $this->conn->prepare($query);
         // execute query
         $stmt->execute();
-        if($stmt->rowCount() > 0){
+        if($stmt->rowCount() > 0 and $this->num_chantier != 0){
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
