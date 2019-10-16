@@ -2,7 +2,6 @@
 session_start();
 
 include 'api/config/db_connexion.php';
-require_once 'api/user/edit_profil.php';
 
 if(!($_SESSION['username'])) {  
   
@@ -39,14 +38,14 @@ if(!($_SESSION['username'])) {
                             <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="troubleshooting_list.php" class="text-warning">Chantiers</a></li>
                             <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="list_profil.php" class="text-warning">Salariés</a></li>
                             <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="#" class="text-warning">Paramètres</a></li>
-                            <li class="bg-dark border-top border-bottom border-warning rounded-0 p-0 menu-link"><a href="api/User/logout.php" class="text-warning">Déconnexion</a></li>
+                            <li class="bg-dark border-top border-bottom border-warning rounded-0 p-0 menu-link"><a href="signin.php" class="text-warning">Déconnexion</a></li>
                         </ul>
                     </div>
                 </nav>
                 <div class="icons-navbar">
                     <div class="menu-btn-bars text-white"><button class="menu-btn fas fa-bars text-warning w-100 fa-3x p-0"></button></div>
                     <a href="index.php" class="text-warning m-auto"><h2 class="m-0">S.K.elec</h2></a>
-                    <a href="modif_profil.php" class="text-white pl-3"><i class="menu-btn-plus fas fa-user text-warning fa-3x rounded-circle"></i></a>
+                    <a href="#" class="text-white pl-3"><i class="menu-btn-plus fas fa-search text-warning fa-3x rounded-circle"></i></a>
                 </div>
             </div>
         </header>
@@ -54,18 +53,18 @@ if(!($_SESSION['username'])) {
         <!-- Content -->
         <div id="container">
             <div class="content">
-                <h3 class="text-center mt-0 pb-3 pt-5">Liste des salariés</h3>
+                <h3 class="text-center mt-0 pt-5 pb-3">Liste des chantiers</h3>
                 <table class="table table-striped mt-0 ml-0 mb-0 text-center" style="height: 50px;">
                     <?php
-                    $sql = "SELECT * FROM users";
+                    $sql = "SELECT * FROM chantiers";
                     if($result = mysqli_query($db, $sql)){
                         if(mysqli_num_rows($result) > 0){
                             echo '<thead>';
                                 echo '<tr>';
-                                    echo '<th scope="col" class="text-center align-middle p-2 w-25" id="first_name">Prénom</th>';
+                                    echo '<th scope="col" class="text-center align-middle p-2 w-25" id="num_chantier">ID\'s</th>';
                                     //echo '<th scope="col" class="text-center align-middle p-4" id="e_mail">E-mail</th>';
-                                    echo '<th scope="col" class="text-center align-middle p-2 w-25" id="phone">Téléphone</th>';
-                                    echo '<th scope="col" class="text-center align-middle p-2 w-25" id="hours">H/totales</th>';
+                                    echo '<th scope="col" class="text-center align-middle p-2 w-25" id="name">Libellés</th>';
+                                    echo '<th scope="col" class="text-center align-middle p-2 w-25" id="contact_adress">Adresse</th>';
                                     echo '<th scope="col" class="text-center align-middle p-0 w-25" id="">Détails</th>';
                                 echo '</tr>';
                             echo '</thead>';
@@ -79,13 +78,12 @@ if(!($_SESSION['username'])) {
                         }
                                 echo '<tbody>';
                                     while($row = $result->fetch_array()){
-                                        $time = strtotime($row['total_hours']);
                                         echo '<tr>';
-                                            echo '<td class="align-middle p-4 w-25">' . $row['username'] . '</td>';
+                                            echo '<td class="align-middle p-4 w-25">' . $row['num_chantier'] . '</td>';
                                             //echo '<td class="align-middle p-4" style="word-wrap: break-word; max-width: 85px;">' . $row['e_mail'] . '</td>';
-                                            echo '<td class="align-middle p-4 w-25">' . $row['phone'] . '</td>';
-                                            echo '<td class="align-middle p-4 w-25">' . date('H:i', $time) . '</td>';
-                                            echo '<td class="p-0 align-middle w-25"><a href="modif_profil.php"><i class="fas fa-tools"></i></a></td>';
+                                            echo '<td class="align-middle p-4 w-25">' . $row['name'] . '</td>';
+                                            echo '<td class="align-middle p-4 w-25">' . $row['contact_adress'] . '</td>';
+                                            echo '<td class="p-0 align-middle w-25"><a href="troubleshooting_details.html"><i class="fas fa-tools"></i></a></td>';
                                         echo '</tr>';
                                     }
                                 echo '</tbody>';
@@ -100,10 +98,37 @@ if(!($_SESSION['username'])) {
                         ?>
                     </table>
                 </div>
+                    <!--<tbody>
+                        <tr>
+                            <td class="align-middle">19001</td>
+                            <td class="align-middle">Portail Simon</td>
+                            <td class="align-middle">elec: inté/exté</td>
+                            <td class="align-middle"><a href="troubleshooting_details.php" class="w-25"><i class="fas fa-tools align-middle"></i></a></td>
+                        </tr>
+                        <tr>
+                            <td class="align-middle">19002</td>
+                            <td class="align-middle">SNCF</td>
+                            <td class="align-middle">éclairage parking</td>
+                            <td class="align-middle"><a href="troubleshooting_details.php" class="w-25"><i class="fas fa-tools align-middle"></i></a></td>
+                        </tr>
+                        <tr>
+                            <td class="align-middle">19003</td>
+                            <td class="align-middle">Salle de bain Andriot</td>
+                            <td class="align-middle">elec: inté/exté</td>
+                            <td class="align-middle"><a href="troubleshooting_details.php" class="w-25"><i class="fas fa-tools align-middle"></i></a></td>
+                        </tr>
+                        <tr>
+                            <td class="align-middle">19004</td>
+                            <td class="align-middle">Pharmacie Kowalik</td>
+                            <td class="align-middle">elec: inté/exté</td>
+                            <td class="align-middle"><a href="troubleshooting_details.php" class="w-25"><i class="fas fa-tools align-middle"></i></a></td>
+                        </tr>
+                    </tbody>
+                </table>-->
                 <form>
                     <div class="pt-2 w-75 m-auto">
-                        <a href="add_profil.php" class="btn send border-0 bg-white z-depth-1a mt-4 mb-3 text-dark">Ajouter un compte</a>
-                        <a href="#" value="delete" class="btn finish border-0 bg-white z-depth-1a mt-4 mb-3 text-dark">Supprimer un compte</a>
+                        <a href="add_troubleshooting.php" class="btn send border-0 bg-white z-depth-1a mt-4 mb-3 text-dark">Ajouter un chantier</a>
+                        <a href="#" class="btn finish border-0 bg-white z-depth-1a mt-4 mb-3">Supprimer un chantier</a>
                     </div>
                 </form>
             </div>
