@@ -1,15 +1,13 @@
 <?php
 session_start();
-//include_once '../objects/user.php';
-//include_once 'api/config/database.php';
 include_once 'api/config/db_connexion.php';
-//include_once 'api/user/edit_profil.php';
-//require_once 'api/user/edit_profil.php';
+require_once 'api/user/edit_profil.php';
 
 if(!($_SESSION['username'])) {  
   
     header("Location: signin.php");//redirect to login page to secure the welcome page without login access.
 }
+header("Cache-Control: must-revalidate");
 ?>
 
 <!DOCTYPE html>
@@ -39,7 +37,7 @@ if(!($_SESSION['username'])) {
                 <nav class="menu left-menu">
                     <div class="menu-content">
                         <ul class="pl-0">
-                                <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="troubleshooting_list.html" class="text-warning">Chantiers</a></li>
+                                <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="troubleshooting_list.php" class="text-warning">Chantiers</a></li>
                                 <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="list_profil.php" class="text-warning">Salariés</a></li>
                                 <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="#" class="text-warning">Paramètres</a></li>
                                 <li class="bg-dark border-top border-bottom border-warning rounded-0 p-0 menu-link"><a href="signin.php" class="text-warning">Déconnexion</a></li>
@@ -58,15 +56,9 @@ if(!($_SESSION['username'])) {
         <div id="container">
             <div class="content">
                 <h3 class="text-center mt-0 mb-3 pt-5">Modification du compte</h3>
-                <form class="w-100 pt-2 pl-4 pb-0 pr-4" action="./api/user/edit_profil.php" method="GET">
+                <form class="w-100 pt-2 pl-4 pb-0 pr-4" action="" method="POST">
                     <?php
                     $stmt = $bdd->prepare("SELECT * FROM users WHERE username = '". $_SESSION['username'] ."'");
-                    /*$stmt->execute($id); 
-                    $user = $stmt->fetch();
-                    if($user) {
-                        $_SESSION['id'] = $user['id'];
-                    }
-                    $stmt = $bdd->prepare("SELECT * FROM users WHERE id= '". $_SESSION['id'] ."'");*/
                     $stmt->execute();
                     $user = $stmt->fetch();
                     if($user) {
@@ -82,15 +74,9 @@ if(!($_SESSION['username'])) {
                         echo "ERROR: Could not get 'id' of current user [first_method]";
                     }
 
-                    /*$sql = "SELECT * FROM users WHERE id = '". $_SESSION['id'] ."'";
-                    $result = mysqli_query($bdd, $sql);
-                    $result = fetch_array($sql);
-                    //if(mysqli_num_rows($result)) {
-                      //  echo $result;
-                        if($row = mysql_fetch_array($result)) {*/
                     echo '<div class="md-form mt-1">';
                         echo '<label for="fusername">Username</label>';
-                        echo '<input type="text" id="username" name="username" class="form-control" placeholder="' . $_SESSION['username'] . '">';
+                        echo '<input type="text" id="username" name="username" class="form-control" placeholder="' . $_SESSION['username'] . '" disabled="disabled">';
                     echo '</div>';
                     echo '<div class="md-form mt-4">';
                         echo '<label for="first-name">First name</label>';
@@ -120,44 +106,7 @@ if(!($_SESSION['username'])) {
                         echo '<label for="pass2">Confirm Password</label>';
                         echo '<input type="password" id="pass2" name="pass2" class="form-control">';
                     echo '</div>';
-                            /*} else {
-                                echo "phase 2 ratée";
-                            }
-                        } else {
-                            echo "phase 2 ratée";
-                        }
-                    } else {
-                        echo "phase 1 ratée";
-                    }*/
                     ?>
-                    <!--<div class="md-form mt-1">
-                        <label for="username1">Username</label>
-                        <input type="text" id="username1" name="username1" class="form-control" placeholder="<?php //echo $_SESSION['username']; ?>">
-                    </div>
-                    <div class="md-form mt-4">
-                        <label for="first-name">First name</label>
-                        <input type="text" id="first_name" name="first_name" class="form-control" placeholder="<?php //echo $row['first_name']; ?>">
-                    </div>
-                    <div class="md-form mt-4">
-                        <label for="last_name">Last name</label>
-                        <input type="text" id="last_name" name="last_name" class="form-control" placeholder="<?php //echo $row['last_name']; ?>">
-                    </div>
-                    <div class="md-form mt-4">
-                        <label for="e_mail">Email</label>
-                        <input type="e-mail" id="e_mail" name="e_mail" class="form-control" placeholder="<?php //echo $row['e_mail']; ?>">
-                    </div>
-                    <div class="md-form mt-4">
-                        <label for="phone">Phone</label>
-                        <input type="phone" id="phone" name="phone" class="form-control" placeholder="<?php //echo $row['phone']; ?>">
-                    </div>
-                    <div class="md-form mt-4">
-                        <label for="pass1">Password</label>
-                        <input type="password" id="pass1" name="pass1" class="form-control" placeholder="<?php //echo $row['password']; ?>">
-                    </div>
-                    <div class="md-form mt-4">
-                        <label for="pass2">Confirm password</label>
-                        <input type="password" id="pass2" name="pass2" class="form-control">
-                    </div>-->
                     <div class="pt-5 w-75 m-auto">
                         <input type="submit" value="Valider" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">
                         <a href="list_profil.php" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4 text-dark">Précédent</a>

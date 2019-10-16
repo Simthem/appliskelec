@@ -25,7 +25,7 @@
                 <nav class="menu left-menu">
                     <div class="menu-content">
                         <ul class="pl-0">
-                            <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="troubleshooting_list.html" class="text-warning">Chantiers</a></li>
+                            <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="troubleshooting_list.php" class="text-warning">Chantiers</a></li>
                             <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="list_profil.php" class="text-warning">Salariés</a></li>
                             <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="#" class="text-warning">Paramètres</a></li>
                             <li class="bg-dark border-top border-bottom border-warning rounded-0 p-0 menu-link"><a href="signin.php" class="text-warning">Déconnexion</a></li>
@@ -35,7 +35,7 @@
                 <div class="icons-navbar">
                     <div class="menu-btn-bars text-white"><button class="menu-btn fas fa-bars text-warning w-100 fa-3x p-0"></button></div>
                     <a href="index.php" class="text-warning m-auto"><h2 class="m-0">S.K.elec</h2></a>
-                    <a href="troubleshooting_list.html" class="text-white pl-3"><i class="menu-btn-plus fas fa-search text-warning fa-3x rounded-circle"></i></a>
+                    <a href="troubleshooting_list.php" class="text-white pl-3"><i class="menu-btn-plus fas fa-search text-warning fa-3x rounded-circle"></i></a>
                 </div>
             </div>
         </header>
@@ -44,26 +44,26 @@
         <div id="container">
             <div class="content">
                 <h3 class="text-center mt-0 mb-3 pt-5">Ajout d'un chantier</h3>
-                <form class="w-100 pt-3 pl-4 pb-0 pr-4">
+                <form class="w-100 pt-5 pl-4 pb-0 pr-4">
                     <div class="md-form mt-1">
                         <label for="first-name">ID de chantier</label>
                         <input type="text" id="first_name" class="form-control">
                     </div>
-                    <div class="md-form mt-4">
+                    <div class="md-form mt-5">
                         <label for="last_name">Libellé de chantier</label>
                         <input type="text" id="last-name" class="form-control">
                     </div>
-                    <div class="md-form mt-4">
-                        <label for="form-email2">Type</label>
-                        <input type="text" id="form-email2" class="form-control">
+                    <div class="md-form mt-5">
+                        <label for="contact_chantier">Contact</label>
+                        <input type="text" id="contact_chantier" name="contact_chantier" class="form-control">
                     </div>
-                    <div class="md-form mt-4">
-                        <label for="form-pass2">Salariés sur le projet</label>
-                        <input type="password" id="form-pass2" class="form-control">
+                    <div class="md-form mt-5 mb-5">
+                        <label for="adress_chantier">Adresse</label>
+                        <input type="text" id="adress_chantier" name="adress_chantier" class="form-control">
                     </div>
                     <div class="pt-5 w-75 m-auto">
-                        <a href="index.html" type="submit" value="valid" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">Valider</a>
-                        <a href="troubleshooting_list.html" type="submit" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4 text-dark">Précédent</a>
+                        <a href="index.php" type="submit" value="valid" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">Valider</a>
+                        <a href="troubleshooting_list.php" type="submit" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4 text-dark">Précédent</a>
                     </div>
                 </form>
             </div>
