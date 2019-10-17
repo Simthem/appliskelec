@@ -8,9 +8,9 @@ include_once '../config/database.php';
 include_once '../objects/troubleshooting.php';
  
 $database = new Database();
-$db = $database->getConnection();
+$bdd = $database->getConnection();
  
-$troubles = new Troubles($db);
+$troubles = new Troubles($bdd);
  
 // set user property values
 $troubles->num_chantier = $_POST['num_chantier'];
@@ -24,19 +24,25 @@ $troubles->commit = $_POST['commit'];
 $troubles->state = "Ouvert";
 
 // create the user
-$reponse = $db->query('SELECT * FROM chantiers WHERE num_chantier = "' . $_POST['num_chantier'] . '" ');
+$reponse = $bdd->query('SELECT * FROM chantiers WHERE num_chantier = "' . $_POST['num_chantier'] . '" ');
 $num_chantier = $reponse->fetch();
 if($num_chantier) {
-    if ($_POST['num_chantier'] == $num_chantier['num_chantier'] and $_POST['num_chantier'] != 0) {
-        echo "Chantiers ID already exists";
-        header("refresh:2; url=../../add_troubleshooting.php");
+    if ($_POST['num_chantier'] == $num_chantier['num_chantier'] and ($_POST['num_chantier'] != 0 or $_POST['num_chantier'] != NULL)) {
+        echo "Chantiers ID already exists !";
+        header("refresh:3; url=../../add_troubleshooting.php");
         exit();
-    } elseif($_POST['num_chantier'] == 0) {
+    } else {
         $troubles->type = "Dépannage";
     }
-} else {
+} elseif ($_POST['num_chantier'] < 19001) {
+    echo "Chantiers ID should be greater .. !";
+    header("refresh:3; url=../../add_troubleshooting.php");
+    exit();
+} 
+else {
     $troubles->type = "Chantier";
 }
+//print_r($troubles);
 if(empty($_POST['name'])) {
     echo "Chantiers name is required";
     header("refresh:2; url=../../add_troubleshooting.php");
@@ -48,7 +54,6 @@ if(empty($_POST['name'])) {
 } else {
     echo "Success !! :)";
     $troubles->create();
-    print_r($troubles);
     header("refresh:2; url=../../troubleshooting_list.php");
     exit();
 }

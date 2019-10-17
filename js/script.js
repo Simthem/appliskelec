@@ -1,3 +1,14 @@
+function checkForm(){
+    if(document.getElementById('name').value == ""){
+        alert('Vous devez indiquer un libellé obligatoirement !');
+        return false;
+    } else if (document.getElementById('contact_name').value == "") {
+        alert('Vous devez indiquer un nom de contact obligatoirement !')
+    } else {
+    document.getElementById('add_trouble').submit();
+    }
+}
+
 !function(a){
     function b(){
         g.hasClass(k)?h.toggleClass(l):h.toggleClass(m),q&&g.one("transitionend",function(){

@@ -18,9 +18,9 @@ class Troubles{
     public $state;
 
 
-    // constructor with $db as database connection
-    public function __construct($db){
-        $this->conn = $db;
+    // constructor with $bdd as database connection
+    public function __construct($bdd){
+        $this->conn = $bdd;
     }
     // signup user
     function create(){
@@ -36,9 +36,13 @@ class Troubles{
     
         // prepare query
         $stmt = $this->conn->prepare($query);
-    
+
         // sanitize
-        $this->num_chantier=htmlspecialchars(strip_tags($this->num_chantier));
+        if(empty($this->num_chantier)) {
+            $this->num_chantier=NULL;
+        } else {
+            $this->num_chantier=htmlspecialchars(strip_tags($this->num_chantier));
+        }
         $this->created=htmlspecialchars(strip_tags($this->created));
         $this->name=htmlspecialchars(strip_tags($this->name));
         $this->contact_name=htmlspecialchars(strip_tags($this->contact_name));
@@ -93,7 +97,7 @@ class Troubles{
         $stmt = $this->conn->prepare($query);
         // execute query
         $stmt->execute();
-        if($stmt->rowCount() > 0 and $this->num_chantier != 0){
+        if($stmt->rowCount() > 0 and $this->num_chantier != 0 and $this->num_chantier != NULL){
             return true;
         } else {
             return false;

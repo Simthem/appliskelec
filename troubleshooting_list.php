@@ -79,7 +79,7 @@ if(!($_SESSION['username'])) {
                                 echo '<tbody>';
                                     while($row = $result->fetch_array()){
                                         echo '<tr>';
-                                            if($row['num_chantier'] != 0) {
+                                            if($row['num_chantier'] != 0 or !empty($row['num_chantier'])) {
                                                 echo '<td class="align-middle p-4 w-25">' . $row['num_chantier'] . '</td>';
                                                 //echo '<td class="align-middle p-4" style="word-wrap: break-word; max-width: 85px;">' . $row['e_mail'] . '</td>';
                                                 echo '<td class="align-middle p-4 w-25">' . $row['name'] . '</td>';
