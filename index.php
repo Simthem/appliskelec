@@ -60,46 +60,62 @@ if(!($_SESSION['username'])) {
                     <div class="text-center"><?php echo $_SESSION['id']; ?></div>
                     <div class="text-center"><?php if($_SESSION['username'] == "admin") { echo "Administrateur de S.K.elec_app ;)";}?></div>
                 </div>
-                <form class="text-center">
-                    <select name="Listing ID" size="1">
-                        <option class="listing_title">Listing IDs</option>
-                        <option>Choix 1</option>
-                        <option>Choix 2</option>
-                        <option>Choix 3</option>
-                        <option>Choix 4</option>
-                    </select>
-                </form>
-                <form class="pt-1 w-25">
-                    <div class="m-auto text-center">
-                        <div class="ml-0 mr-0">
-                            <label for="input_time m-auto">Heures réalisées</label>
-                            <div class='col'>
-                                <input type='text' class="form-control text-center p-1" placeholder="hh:mm" />
+                <form action="" method="POST">
+                    <div class="text-center">
+                        <select name="Listing ID" size="1">
+                            <?php
+                                $sql = "SELECT * FROM chantiers";
+                                if($result = mysqli_query($db, $sql)){
+                                    if(mysqli_num_rows($result) > 0){
+                                        if($db === false){
+                                            die("ERROR: Could not connect. " . mysqli_connect_error());
+                                        }
+                                        while($row = $result->fetch_array()){
+                                                if($row['num_chantier'] != 0) {
+                                                    echo '<option>' . $row['num_chantier'] . '</option>';
+                                                } else {
+                                                    echo '<option>' . $row['name'] . '</option>';
+                                                }
+                                        }
+                                        mysqli_free_result($result);
+                                    } else{
+                                        echo "No records matching your query were found.";
+                                    }
+                                } else{
+                                    echo "ERROR: Could not able to execute $sql. " . mysqli_error($db);
+                                }
+                                mysqli_close($db);
+                            ?>
+                        </select>
+                    </div>
+                    <div class="pt-5 w-50 m-auto text-center">
+                        <label for="input_time m-auto">Heures réalisées</label>
+                        <div class="col w-50 m-auto pb-4">
+                            <input type="text" name="hours_chantier" class="form-control text-center p-1" placeholder="hh:mm" />
+                        </div>
+                    </div>
+                    <div class="m-auto d-flex flex-column border-top pt-4 pb-3 w-75">
+                        <div class="border-bottom pt-1 pb-3">
+                            <div class="form mb-2">
+                                <input type="checkbox" class="form-check-input align-middle">
+                                <label class="mt-1 ml-5 mb-auto" for="">Panier repas</label>
+                            </div>
+                            <div class="d-inline-flex h-25">
+                                <div class="mt-auto mb-auto pt-1">
+                                    <input type="checkbox" class="form-check-input align-middle">
+                                    <label class="mb-0 mt-1 ml-5 text-center" for="">Dont :</label>
+                                </div>
+                                <div class="col d-inline-flex pr-0 pl-2 mt-auto mb-auto">
+                                    <input type="text" class="col-7 form-control p-1 mt-auto mb-auto text-center h-75" placeholder="minutes/heures">
+                                    <label class="mt-1 ml-3 mb-auto">heures de nuit</label>
+                                </div>
+                            </div>
+                            <div class="form mt-2 mb-3 pt-2 pb-3">
+                                <textarea class="form-control" placeholder="Informations ?"></textarea>
                             </div>
                         </div>
                     </div>
-                </form>
-                <form class="d-flex flex-column border-top pt-3 pb-3 w-75">
-                    <div class="border-bottom pt-1 pb-3">
-                        <div class="form mb-2">
-                            <input type="checkbox" class="form-check-input ml-3 mt-1">
-                            <label class="mt-auto ml-5 mb-auto" for="">Panier repas</label>
-                        </div>
-                        <div class="d-inline-flex h-25">
-                            <div class="mt-auto mb-auto pt-1">
-                                <input type="checkbox" class="form-check-input ml-3 mb-0 mt-2">
-                                <label class="mb-0 ml-5 text-center" for="">Dont :</label>
-                            </div>
-                            <div class="col d-inline-flex pr-0 pl-2 mt-auto mb-auto">
-                                <input type="text" class="col-7 form-control p-1 mt-auto mb-auto text-center h-75" placeholder="minutes/heures">
-                                <label class="mt-auto ml-2 mb-auto">heures de nuit</label>
-                            </div>
-                        </div>
-                        <div class="form mt-2 mb-3 pt-2 pb-3">
-                            <textarea class="form-control" placeholder="Informations ?"></textarea>
-                        </div>
-                    </div>
-                    <div class="mt-4 mr-auto ml-auto">
+                    <div class="mt-4 w-75 mr-auto ml-auto">
                         <a href="#" type="submit" value="Soumettre" class="btn send border-0 bg-white z-depth-1a mt-4 mb-3 text-dark">Soumettre</a>
                         <a href="#" type="submit" value="Clotûrer le chantier" class="btn finish border-0 bg-white z-depth-1a mt-3 mb-1 text-dark">Clôturer le chantier</a>
                     </div>

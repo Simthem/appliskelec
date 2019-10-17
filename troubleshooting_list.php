@@ -56,26 +56,26 @@ if(!($_SESSION['username'])) {
                 <h3 class="text-center mt-0 pt-5 pb-3">Liste des chantiers</h3>
                 <table class="table table-striped mt-0 ml-0 mb-0 text-center" style="height: 50px;">
                     <?php
-                    $sql = "SELECT * FROM chantiers";
-                    if($result = mysqli_query($db, $sql)){
-                        if(mysqli_num_rows($result) > 0){
-                            echo '<thead>';
-                                echo '<tr>';
-                                    echo '<th scope="col" class="text-center align-middle p-2 w-25" id="num_chantier">ID\'s</th>';
-                                    //echo '<th scope="col" class="text-center align-middle p-4" id="e_mail">E-mail</th>';
-                                    echo '<th scope="col" class="text-center align-middle p-2 w-25" id="name">Libellés</th>';
-                                    echo '<th scope="col" class="text-center align-middle p-2 w-25" id="contact_address">Adresse</th>';
-                                    echo '<th scope="col" class="text-center align-middle p-0 w-25" id="">Détails</th>';
-                                echo '</tr>';
-                            echo '</thead>';
+                        $sql = "SELECT * FROM chantiers";
+                        if($result = mysqli_query($db, $sql)){
+                            if(mysqli_num_rows($result) > 0){
+                                echo '<thead>';
+                                    echo '<tr>';
+                                        echo '<th scope="col" class="text-center align-middle p-2 w-25" id="num_chantier">ID\'s</th>';
+                                        //echo '<th scope="col" class="text-center align-middle p-4" id="e_mail">E-mail</th>';
+                                        echo '<th scope="col" class="text-center align-middle p-2 w-25" id="name">Libellés</th>';
+                                        echo '<th scope="col" class="text-center align-middle p-2 w-25" id="contact_address">Adresse</th>';
+                                        echo '<th scope="col" class="text-center align-middle p-0 w-25" id="">Détails</th>';
+                                    echo '</tr>';
+                                echo '</thead>';
                     ?>
                 </table>
                 <div class="container-list m-auto">
                     <table class="table table-striped pr-4 pl-4 mt-3 ml-auto mr-auto text-center" action="" method="POST">
                         <?php
-                        if($db === false){
-                            die("ERROR: Could not connect. " . mysqli_connect_error());
-                        }
+                                if($db === false){
+                                    die("ERROR: Could not connect. " . mysqli_connect_error());
+                                }
                                 echo '<tbody>';
                                     while($row = $result->fetch_array()){
                                         echo '<tr>';
@@ -107,33 +107,6 @@ if(!($_SESSION['username'])) {
                         ?>
                     </table>
                 </div>
-                    <!--<tbody>
-                        <tr>
-                            <td class="align-middle">19001</td>
-                            <td class="align-middle">Portail Simon</td>
-                            <td class="align-middle">elec: inté/exté</td>
-                            <td class="align-middle"><a href="troubleshooting_details.php" class="w-25"><i class="fas fa-tools align-middle"></i></a></td>
-                        </tr>
-                        <tr>
-                            <td class="align-middle">19002</td>
-                            <td class="align-middle">SNCF</td>
-                            <td class="align-middle">éclairage parking</td>
-                            <td class="align-middle"><a href="troubleshooting_details.php" class="w-25"><i class="fas fa-tools align-middle"></i></a></td>
-                        </tr>
-                        <tr>
-                            <td class="align-middle">19003</td>
-                            <td class="align-middle">Salle de bain Andriot</td>
-                            <td class="align-middle">elec: inté/exté</td>
-                            <td class="align-middle"><a href="troubleshooting_details.php" class="w-25"><i class="fas fa-tools align-middle"></i></a></td>
-                        </tr>
-                        <tr>
-                            <td class="align-middle">19004</td>
-                            <td class="align-middle">Pharmacie Kowalik</td>
-                            <td class="align-middle">elec: inté/exté</td>
-                            <td class="align-middle"><a href="troubleshooting_details.php" class="w-25"><i class="fas fa-tools align-middle"></i></a></td>
-                        </tr>
-                    </tbody>
-                </table>-->
                 <form>
                     <div class="pt-2 w-75 m-auto">
                         <a href="add_troubleshooting.php" class="btn send border-0 bg-white z-depth-1a mt-4 mb-3 text-dark">Ajouter un chantier</a>
