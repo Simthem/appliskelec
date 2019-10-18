@@ -7,6 +7,16 @@ if(!($_SESSION['username'])) {
   
     header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
 }
+
+$stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");
+$stmt->execute();
+$user = $stmt->fetch();
+if($user) {
+    $_SESSION['id'] = $user['id'];
+}
+else {
+    echo "ERROR: Could not get 'id' of current user [first_method]";
+}
 ?>
 
 <!DOCTYPE html>
@@ -60,9 +70,9 @@ if(!($_SESSION['username'])) {
                     <div class="text-center"><?php echo $_SESSION['id']; ?></div>
                     <div class="text-center"><?php if($_SESSION['username'] == "admin") { echo "Administrateur de S.K.elec_app ;)";}?></div>
                 </div>
-                <form action="" method="POST">
+                <form action="./api/index_global/create_intervention.php" method="POST">
                     <div class="text-center">
-                        <select name="Listing ID" size="1">
+                        <select name="chantier_id" size="1">
                             <?php
                                 $sql = "SELECT * FROM chantiers";
                                 if($result = mysqli_query($db, $sql)){
@@ -91,13 +101,13 @@ if(!($_SESSION['username'])) {
                     <div class="pt-5 w-50 m-auto text-center">
                         <label for="input_time m-auto">Heures réalisées</label>
                         <div class="col w-50 m-auto pb-4">
-                            <input type="text" name="hours_chantier" class="form-control text-center p-1" placeholder="hh:mm" />
+                            <input type="text" id="ntervention_hours" name="intervention_hours" class="form-control text-center p-1" placeholder="hh:mm" />
                         </div>
                     </div>
                     <div class="m-auto d-flex flex-column border-top pt-4 pb-3 w-75">
                         <div class="border-bottom pt-1 pb-3">
                             <div class="form mb-2">
-                                <input type="checkbox" class="form-check-input align-middle">
+                                <input type="checkbox" id="panier_repas" name="panier_repas" class="form-check-input align-middle">
                                 <label class="mt-1 ml-5 mb-auto" for="">Panier repas</label>
                             </div>
                             <div class="d-inline-flex h-25">
@@ -106,17 +116,18 @@ if(!($_SESSION['username'])) {
                                     <label class="mb-0 mt-1 ml-5 text-center" for="">Dont :</label>
                                 </div>
                                 <div class="col d-inline-flex pr-0 pl-2 mt-auto mb-auto">
-                                    <input type="text" class="col-7 form-control p-1 mt-auto mb-auto text-center h-75" placeholder="minutes/heures">
+                                    <input type="text" id="night_hours" name="night_hours" class="col-7 form-control p-1 mt-auto mb-auto text-center h-75" placeholder="minutes/heures">
                                     <label class="mt-1 ml-3 mb-auto">heures de nuit</label>
                                 </div>
                             </div>
                             <div class="form mt-2 mb-3 pt-2 pb-3">
-                                <textarea class="form-control" placeholder="Informations ?"></textarea>
+                                <textarea class="form-control" id="commit" name="commit" placeholder="Informations ?"></textarea>
                             </div>
                         </div>
                     </div>
                     <div class="mt-4 w-75 mr-auto ml-auto">
-                        <a href="#" type="submit" value="Soumettre" class="btn send border-0 bg-white z-depth-1a mt-4 mb-3 text-dark">Soumettre</a>
+                        <input type="submit" value="Soumettre" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">
+                        <!--<a href="#" type="submit" value="Soumettre" class="btn send border-0 bg-white z-depth-1a mt-4 mb-3 text-dark">Soumettre</a>-->
                         <a href="#" type="submit" value="Clotûrer le chantier" class="btn finish border-0 bg-white z-depth-1a mt-3 mb-1 text-dark">Clôturer le chantier</a>
                     </div>
                 </form>

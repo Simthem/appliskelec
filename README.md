@@ -1,4 +1,4 @@
-# apliskelec
+# appliskelec
 
 <p> The overall requirements are:
  - Management of employee work sites with ease of visualizing the hours worked by each and listing of different data (ID’s of worksites, descriptions of troubleshooting, working days with total hours, names of employees, dates, etc.)

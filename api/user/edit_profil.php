@@ -17,10 +17,6 @@ if($bdd === false){
 if(isset($_SESSION['username'])) {
     if(isset($_POST['username']) AND !empty($_POST['username']) AND $_POST['username'] != $_SESSION['username']) {
         echo "Vous n'avez pas les droits pour changer votre username";
-        /*$newusername = htmlspecialchars($_POST['username']);
-        $insertusername = $bdd->prepare("UPDATE users SET username = '". $newusername ."' WHERE id = '". $_SESSION['id'] ."'");
-        $username = $_POST['username'];
-        $insertusername->execute(array($newusername, $_SESSION['username']));*/
         header("refresh:2; url= ../../modif_profil.php");
         exit();
     } else {
@@ -56,7 +52,6 @@ if(isset($_SESSION['username'])) {
                 $insertpassword->execute(array($pass1, $_SESSION['password']));
                 header('Location: ../../index.php');
             } else {
-                //$msg = "Vos deux mdp ne correspondent pas !";
                 echo "Vos deux mdp ne correspondent pas !";
                 header("refresh:5; url= ../../modif_profil.php");
             }

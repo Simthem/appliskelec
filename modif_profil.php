@@ -7,7 +7,7 @@ if(!($_SESSION['username'])) {
   
     header("Location: signin.php");//redirect to login page to secure the welcome page without login access.
 }
-header("Cache-Control: must-revalidate");
+//header("Cache-Control: must-revalidate");
 ?>
 
 <!DOCTYPE html>
