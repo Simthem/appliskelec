@@ -1,3 +1,14 @@
+<?php
+session_start();
+
+include 'api/config/db_connexion.php';
+
+if(!($_SESSION['username'])) {  
+  
+    header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
+}
+?>
+
 <!DOCTYPE html>
 
 <html>

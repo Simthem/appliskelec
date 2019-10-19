@@ -9,7 +9,7 @@ include_once '../objects/intervention.php';
 $database = new Database();
 $bdd = $database->getConnection();
  
-$intervention = new intervention($bdd);
+$intervention = new Intervention($bdd);
 
 // set user property values
 $intervention->user_id = $_SESSION['id'];
