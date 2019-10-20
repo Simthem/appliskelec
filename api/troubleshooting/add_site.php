@@ -2,13 +2,13 @@
 session_start();
 
 // get database connection
-include_once '../config/database.php';
+include_once '../config/db_connexion.php';
  
 // instantiate user object
 include_once '../objects/troubleshooting.php';
  
-$database = new Database();
-$bdd = $database->getConnection();
+//$database = new Database();
+//$bdd = $database->getConnection();
  
 $troubles = new Troubles($bdd);
  
@@ -54,6 +54,7 @@ if(empty($_POST['name'])) {
 } else {
     echo "Success !! :)";
     $troubles->create();
+    print_r($troubles);
     header("refresh:2; url=../../troubleshooting_list.php");
     exit();
 }

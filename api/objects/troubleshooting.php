@@ -1,6 +1,6 @@
 <?php
 class Troubles{
- 
+    
     // database connection and table name
     private $conn;
     private $table_name = "chantiers";
@@ -32,7 +32,7 @@ class Troubles{
         $query = "INSERT INTO
                     " . $this->table_name . "
                 SET
-                    num_chantier=:num_chantier, created=:created, name=:name, contact_name=:contact_name, contact_phone=:contact_phone, contact_address=:contact_address, type=:type, commit=:commit, state=:state";
+                    num_chantier=:num_chantier, created=:created, name=:name, contact_name=:contact_name, contact_phone=:contact_phone, contact_address=:contact_address, commit=:commit, type=:type; state=:state";
     
         // prepare query
         $stmt = $this->conn->prepare($query);
@@ -77,15 +77,15 @@ class Troubles{
             FROM
                 " . $this->table_name . " 
             WHERE
-                num_chantier ='".$this->num_chantier."'";
+                num_chantier ='" . $this->num_chantier . "'";
         // prepare query statement
         $stmt = $this->conn->prepare($query);
         // execute query
         $stmt->execute();
-        if($stmt->rowCount() > 0 and $this->num_chantier != 0 and $this->num_chantier != NULL){
-            return true;
-        } else {
+        if($stmt->rowCount() == 0 or $this->num_chantier == 0 or $this->num_chantier != NULL){
             return false;
+        } else {
+            return true;
         }
     }
 }

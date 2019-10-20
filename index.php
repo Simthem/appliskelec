@@ -1,7 +1,9 @@
 <?php
 session_start();
 
+
 include 'api/config/db_connexion.php';
+//include 'api/user/login.php';
 
 if(!($_SESSION['username'])) {  
   
@@ -17,6 +19,8 @@ if($user) {
 else {
     echo "ERROR: Could not get 'id' of current user [first_method]";
 }
+
+print_r($_SESSION);
 ?>
 
 <!DOCTYPE html>
