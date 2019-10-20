@@ -60,41 +60,42 @@ if(!($_SESSION['username'])) {
                     $stmt = $bdd->prepare("SELECT * FROM users WHERE id = '". $_GET['id'] ."'");
                     $stmt->execute();
                     $user = $stmt->fetch();
+                    print_r($user);
                     if($user) {
-                        $_SESSION['id'] = $current_id;
-                        $_SESSION['first_name'] = $_GET['first_name'];
-                        $_SESSION['last_name'] = $_GET['last_name'];
-                        $_SESSION['e_mail'] = $_GET['e_mail'];
-                        $_SESSION['phone'] = $_GET['phone'];
-                        $_SESSION['total_hours'] = $_GET['totals_hours'];
-                        //print_r($_SESSION);
+                        $_SESSION['id'] = $user['id'];
+                        $_SESSION['first_name'] = $user['first_name'];
+                        $_SESSION['last_name'] = $user['last_name'];
+                        $_SESSION['e_mail'] = $user['e_mail'];
+                        $_SESSION['phone'] = $user['phone'];
+                        $_SESSION['total_hours'] = $user['total_hours'];
+                        print_r($_SESSION);
                     } else {
                         echo "ERROR: Could not get 'id' of current user [first_method]";
                     }
-
+                    echo '<input type="text" value="' . $user['id'] . '" id="id" name="id" style="display: none;"">';
                     echo '<div class="md-form mt-1">';
                         echo '<label for="fusername">Username</label>';
-                        echo '<input type="text" id="username" name="username" class="form-control" placeholder="' . $user['username'] . '" disabled="disabled">';
+                        echo '<input type="text" value="' . $user['username'] . '" id="username" name="username" class="form-control" placeholder="' . $user['username'] . '"">';
                     echo '</div>';
                     echo '<div class="md-form mt-4">';
                         echo '<label for="first-name">First name</label>';
-                        echo '<input type="text" id="first_name" name="first_name" class="form-control" placeholder="' . $user['first_name'] . '">';
+                        echo '<input type="text" value="' . $user['first_name'] . '" id="first_name" name="first_name" class="form-control" placeholder="' . $user['first_name'] . '">';
                     echo '</div>';
                     echo '<div class="md-form mt-4">';
                         echo '<label for="last_name">Last name</label>';
-                        echo '<input type="text" id="last_name" name="last_name" class="form-control" placeholder="' . $user['Last_name'] . '">';
+                        echo '<input type="text" value="' . $user['last_name'] . '" id="last_name" name="last_name" class="form-control" placeholder="' . $user['last_name'] . '">';
                     echo '</div>';
                     echo '<div class="md-form mt-4">';
                         echo '<label for="e_mail">E_mail</label>';
-                        echo '<input type="e-mail" id="e-mail" name="e_mail" class="form-control" placeholder="' . $user['e_mail'] . '">';
+                        echo '<input type="e-mail" value="' . $user['e_mail'] . '" id="e-mail" name="e_mail" class="form-control" placeholder="' . $user['e_mail'] . '">';
                     echo '</div>';
                     echo '<div class="md-form mt-4">';
                         echo '<label for="phone">Téléphone</label>';
-                        echo '<input type="text" id="phone" name="phone" class="form-control" placeholder="' . $user['phone'] . '">';
+                        echo '<input type="text" value="' . $user['phone'] . '" id="phone" name="phone" class="form-control" placeholder="' . $user['phone'] . '">';
                     echo '</div>';
                     echo '<div class="md-form mt-4">';
                         echo '<label for="total_hours">H/totales</label>';
-                        echo '<input type="text" id="hours" name="total_hours" class="form-control" placeholder="' . $user['total_hours'] . '">';
+                        echo '<input type="text" value="' . $user['total_hours'] . '" id="total_hours" name="total_hours" class="form-control" placeholder="' . $user['total_hours'] . '">';
                     echo '</div>';
                     echo '<div class="md-form mt-4">';
                         echo '<label for="pass1">Password</label>';

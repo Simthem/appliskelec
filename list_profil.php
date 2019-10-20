@@ -85,7 +85,7 @@ if(!($_SESSION['username'])) {
                                             //echo '<td class="align-middle p-4" style="word-wrap: break-word; max-width: 85px;">' . $row['e_mail'] . '</td>';
                                             echo '<td class="align-middle p-4 w-25">' . $row['phone'] . '</td>';
                                             echo '<td class="align-middle p-4 w-25">' . date('H:i', $time) . '</td>';
-                                            echo '<td class="align-middle p-4 w-25">' . $row['id'] . '</td>';
+                                            //echo '<td class="align-middle p-4 w-25">' . $row['id'] . '</td>';
                                             $id_user_row = $row['id'];
                                             echo "<td class='p-0 align-middle w-25'><a href='modif_profil.php?id=". $id_user_row ."'><i class='fas fa-tools'></i></a></td>";
                                         echo '</tr>';
