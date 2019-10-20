@@ -1,8 +1,8 @@
 <?php
 session_start();
 
-include 'api/config/db_connexion.php';
-require_once 'api/user/edit_profil.php';
+include_once 'api/config/db_connexion.php';
+//require_once 'api/user/edit_profil.php';
 
 if(!($_SESSION['username'])) {  
   
@@ -72,7 +72,7 @@ if(!($_SESSION['username'])) {
                     ?>
                 </table>
                 <div class="container-list m-auto">
-                    <table class="table table-striped pr-4 pl-4 mt-3 ml-auto mr-auto text-center" action="" method="POST">
+                    <table class="table table-striped pr-4 pl-4 mt-3 ml-auto mr-auto text-center" action="api/user/edit_profil.php" method="GET">
                         <?php
                         if($db === false){
                             die("ERROR: Could not connect. " . mysqli_connect_error());

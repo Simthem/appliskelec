@@ -1,7 +1,7 @@
 <?php
 session_start();
 include_once 'api/config/db_connexion.php';
-require_once 'api/user/edit_profil.php';
+//require_once 'api/user/edit_profil.php';
 
 if(!($_SESSION['username'])) {  
   
@@ -55,18 +55,18 @@ if(!($_SESSION['username'])) {
         <div id="container">
             <div class="content">
                 <h3 class="text-center mt-0 mb-3 pt-5">Modification du compte</h3>
-                <form class="w-100 pt-2 pl-4 pb-0 pr-4" action="" method="POST">
+                <form class="w-100 pt-2 pl-4 pb-0 pr-4" action="api/user/edit_profil.php" method="POST">
                     <?php
                     $stmt = $bdd->prepare("SELECT * FROM users WHERE id = '". $_GET['id'] ."'");
                     $stmt->execute();
                     $user = $stmt->fetch();
                     if($user) {
-                        /*$_SESSION['id'] = $current_id;
+                        $_SESSION['id'] = $current_id;
                         $_SESSION['first_name'] = $_GET['first_name'];
                         $_SESSION['last_name'] = $_GET['last_name'];
                         $_SESSION['e_mail'] = $_GET['e_mail'];
                         $_SESSION['phone'] = $_GET['phone'];
-                        $_SESSION['total_hours'] = $_GET['totals_hours'];*/
+                        $_SESSION['total_hours'] = $_GET['totals_hours'];
                         //print_r($_SESSION);
                     } else {
                         echo "ERROR: Could not get 'id' of current user [first_method]";
