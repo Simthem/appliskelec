@@ -18,9 +18,9 @@ class Troubles{
     public $state;
 
 
-    // constructor with $bdd as database connection
-    public function __construct($bdd){
-        $this->conn = $bdd;
+    // constructor with $db as database connection
+    public function __construct($db){
+        $this->conn = $db;
     }
     // signup user
     function create(){
@@ -68,7 +68,7 @@ class Troubles{
             $this->id = $this->conn->lastInsertId();
             return true;
         }
-    
+        echo "et merde ..";
         return false;
         
     }
@@ -82,7 +82,7 @@ class Troubles{
         $stmt = $this->conn->prepare($query);
         // execute query
         $stmt->execute();
-        if($stmt->rowCount() == 0 or $this->num_chantier == 0 or $this->num_chantier != NULL){
+        if($stmt->rowCount() == 0 or $this->num_chantier != NULL){
             return false;
         } else {
             return true;

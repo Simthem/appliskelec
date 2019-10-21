@@ -80,7 +80,7 @@ if(!($_SESSION['username'])) {
                         <label for="commit">Commentaires</label>
                         <textarea type="text" id="commit" name="commit" class="form-control"></textarea>
                     </div>
-                    <input type="text" id="state" name="state" style="display: none;">
+                    <input type="number" id="state" name="state" value="1" style="display: none;">
                     <div class="pt-5 w-75 m-auto">
                         <input type="submit" value="Valider" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark" onClick="checkForm()">
                         <a href="troubleshooting_list.php" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4 text-dark">Précédent</a>
