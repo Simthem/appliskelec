@@ -56,6 +56,13 @@ if($_SESSION) {
             echo "five";
             header('refresh:5; url=../../list_profil.php');
         }
+        if(/*isset($_POST['phone']) AND*/ !empty($_POST['total_hours']) AND $_POST['total_hours'] != $user['total_hours']) {
+            $newtotal = htmlspecialchars($_POST['total_hours']);
+            $inserttotal = $bdd->prepare("UPDATE users SET total_hours = '". $newtotal ."' WHERE id = '". $_SESSION['id'] ."'");
+            $inserttotal->execute(array($newtotal, $_SESSION['total_hours']));
+            echo "five";
+            header('refresh:5; url=../../list_profil.php');
+        }
         if(/*isset($_POST['pass1']) AND*/ !empty($_POST['pass1']) AND /*isset($_POST['pass2']) AND */!empty($_POST['pass2'])) {
             $pass1 = md5($_POST['pass1']);
             $pass2 = md5($_POST['pass2']);

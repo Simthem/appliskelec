@@ -87,7 +87,7 @@ if(!($_SESSION['username'])) {
                     echo '</div>';
                     echo '<div class="md-form mt-4">';
                         echo '<label for="e_mail">E_mail</label>';
-                        echo '<input type="e-mail" value="' . $user['e_mail'] . '" id="e-mail" name="e_mail" class="form-control" placeholder="' . $user['e_mail'] . '">';
+                        echo '<input type="email" value="' . $user['e_mail'] . '" id="e-mail" name="e_mail" class="form-control" placeholder="' . $user['e_mail'] . '">';
                     echo '</div>';
                     echo '<div class="md-form mt-4">';
                         echo '<label for="phone">Téléphone</label>';
@@ -95,7 +95,7 @@ if(!($_SESSION['username'])) {
                     echo '</div>';
                     echo '<div class="md-form mt-4">';
                         echo '<label for="total_hours">H/totales</label>';
-                        echo '<input type="text" value="' . $user['total_hours'] . '" id="total_hours" name="total_hours" class="form-control" placeholder="' . $user['total_hours'] . '">';
+                        echo '<input type="time" value="' . $user['total_hours'] . '" id="total_hours" name="total_hours" class="form-control" placeholder="' . $user['total_hours'] . '">';
                     echo '</div>';
                     echo '<div class="md-form mt-4">';
                         echo '<label for="pass1">Password</label>';
