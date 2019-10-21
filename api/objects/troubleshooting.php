@@ -23,7 +23,7 @@ class Troubles{
         $this->conn = $db;
     }
     // signup user
-    function create(){
+    function create_troubles(){
     
         if($this->isAlreadyExist()){
             return false;
@@ -38,10 +38,10 @@ class Troubles{
         $stmt = $this->conn->prepare($query);
 
         // sanitize
-        if(empty($this->num_chantier)) {
-            $this->num_chantier=NULL;
-        } else {
+        if(isset($this->num_chantier) and !empty($this->num_chantier)) {
             $this->num_chantier=htmlspecialchars(strip_tags($this->num_chantier));
+        } else {
+            $this->num_chantier=NULL;
         }
         $this->created=htmlspecialchars(strip_tags($this->created));
         $this->name=htmlspecialchars(strip_tags($this->name));
@@ -68,7 +68,6 @@ class Troubles{
             $this->id = $this->conn->lastInsertId();
             return true;
         }
-        echo "et merde ..";
         return false;
         
     }
@@ -82,7 +81,7 @@ class Troubles{
         $stmt = $this->conn->prepare($query);
         // execute query
         $stmt->execute();
-        if($stmt->rowCount() == 0 or $this->num_chantier != NULL){
+        if($stmt->rowCount() == 0 or $this->num_chantier == "0"){
             return false;
         } else {
             return true;

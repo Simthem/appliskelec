@@ -19,8 +19,6 @@ if($user) {
 else {
     echo "ERROR: Could not get 'id' of current user [first_method]";
 }
-
-print_r($_SESSION);
 ?>
 
 <!DOCTYPE html>

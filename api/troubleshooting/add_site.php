@@ -26,11 +26,27 @@ $troubles->created = date('Y-m-d H:i:s');
 // create the troubles
 $reponse = $db->query('SELECT num_chantier FROM chantiers WHERE num_chantier = "' . $_POST['num_chantier'] . '" ');
 $num_chantier = $reponse->fetch();
+
 if($num_chantier) {
-        $troubles->type = "chantier";
-} else {
-    $troubles->type = "dépannage";
+    if ($_POST['num_chantier'] == $num_chantier['num_chantier'] and ($_POST['num_chantier'] != 0 or $_POST['num_chantier'] != NULL)) {
+        echo "Chantiers ID already exists !";
+        header("refresh:3; url=../../add_troubleshooting.php");
+        exit();
+    } else {
+        echo "dépannage";
+        $troubles->num_chantier = "0";
+        $troubles->type = "Dépannage";
+    }
+} elseif ($_POST['num_chantier'] < 19001) {
+    echo "Chantiers ID should be greater .. !";
+    header("refresh:3; url=../../add_troubleshooting.php");
+    exit();
+} 
+else {
+    echo "chantier";
+    $troubles->type = "Chantier";
 }
+
 if(empty($_POST['name'])) {
     echo "Name is required";
     header("refresh:2; url=../../add_troubleshooting.php");
@@ -41,10 +57,8 @@ if(empty($_POST['name'])) {
     exit();
 } else {
     echo "Success !! :)";
-    print_r($troubles);
-    $troubles->create();
-    print_r($troubles);
-    //header("refresh:2; url=../../troubleshooting_list.php");
+    $troubles->create_troubles();
+    header("refresh:2; url=../../troubleshooting_list.php");
     exit();
 }
 ?>
