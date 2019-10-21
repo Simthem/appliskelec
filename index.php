@@ -69,7 +69,6 @@ else {
                 <div class="w-50 m-auto p-3">
                     <h4 class="text-center"><?php echo date('d/m/Y'); ?></h4>
                     <div class="text-center"><?php echo $_SESSION['username']; ?></div>
-                    <div class="text-center"><?php echo $_SESSION['id']; ?></div>
                     <div class="text-center"><?php if($_SESSION['username'] == "admin") { echo "Administrateur de S.K.elec_app ;)";}?></div>
                 </div>
                 <form action="./api/index_global/create_intervention.php" method="POST">
@@ -115,11 +114,11 @@ else {
                                     <label class="mb-0 mt-1 ml-5 text-center" for="">Dont :</label>
                                 </div>
                                 <div class="col d-inline-flex pr-0 pl-2 mt-auto mb-auto">
-                                    <input type="time" id="night_hours" name="night_hours" class="col-7 form-control p-1 mt-auto mb-auto text-center h-75" placeholder="minutes/heures">
+                                    <input type="time" id="night_hours" name="night_hours" class="col-7 form-control p-1 mt-auto mb-auto text-center" placeholder="minutes/heures">
                                     <label class="mt-1 ml-3 mb-auto">heures de nuit</label>
                                 </div>
                             </div>
-                            <div class="form mt-2 mb-3 pt-2 pb-3">
+                            <div class="form mt-2 mb-2 pt-2 pb-2">
                                 <textarea class="form-control" id="commit" name="commit" placeholder="Informations ?"></textarea>
                             </div>
                         </div>
