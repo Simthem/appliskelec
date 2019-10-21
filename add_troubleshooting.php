@@ -58,7 +58,7 @@ if(!($_SESSION['username'])) {
                 <form id="add_trouble" class="w-100 pt-3 pl-4 pb-0 pr-4" action="./api/troubleshooting/add_site.php" method="POST">
                     <div class="md-form mt-1">
                         <label for="num_chantier">ID de chantier</label>
-                        <input type="text" id="num_chantier" name="num_chantier" class="form-control">
+                        <input type="number" id="num_chantier" name="num_chantier" class="form-control">
                     </div>
                     <div class="md-form mt-4">
                         <label for="name">Libellé de chantier</label>
@@ -80,6 +80,7 @@ if(!($_SESSION['username'])) {
                         <label for="commit">Commentaires</label>
                         <textarea type="text" id="commit" name="commit" class="form-control"></textarea>
                     </div>
+                    <input type="number" id="state" name="state" value="1" style="display: none;">
                     <div class="pt-5 w-75 m-auto">
                         <input type="submit" value="Valider" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark" onClick="checkForm()">
                         <a href="troubleshooting_list.php" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4 text-dark">Précédent</a>

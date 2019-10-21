@@ -1,8 +1,8 @@
 <?php
 session_start();
 
-include 'api/config/db_connexion.php';
-require_once 'api/user/edit_profil.php';
+include_once 'api/config/db_connexion.php';
+//require_once 'api/user/edit_profil.php';
 
 if(!($_SESSION['username'])) {  
   
@@ -72,7 +72,7 @@ if(!($_SESSION['username'])) {
                     ?>
                 </table>
                 <div class="container-list m-auto">
-                    <table class="table table-striped pr-4 pl-4 mt-3 ml-auto mr-auto text-center" action="" method="POST">
+                    <table class="table table-striped pr-4 pl-4 mt-3 ml-auto mr-auto text-center" action="api/user/edit_profil.php" method="GET">
                         <?php
                         if($db === false){
                             die("ERROR: Could not connect. " . mysqli_connect_error());
@@ -85,7 +85,9 @@ if(!($_SESSION['username'])) {
                                             //echo '<td class="align-middle p-4" style="word-wrap: break-word; max-width: 85px;">' . $row['e_mail'] . '</td>';
                                             echo '<td class="align-middle p-4 w-25">' . $row['phone'] . '</td>';
                                             echo '<td class="align-middle p-4 w-25">' . date('H:i', $time) . '</td>';
-                                            echo '<td class="p-0 align-middle w-25"><a href="modif_profil.php"><i class="fas fa-tools"></i></a></td>';
+                                            //echo '<td class="align-middle p-4 w-25">' . $row['id'] . '</td>';
+                                            $id_user_row = $row['id'];
+                                            echo "<td class='p-0 align-middle w-25'><a href='modif_profil.php?id=". $id_user_row ."'><i class='fas fa-tools'></i></a></td>";
                                         echo '</tr>';
                                     }
                                 echo '</tbody>';
