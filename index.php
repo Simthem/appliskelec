@@ -73,6 +73,7 @@ else {
                     <div class="text-center"><?php if($_SESSION['username'] == "admin") { echo "Administrateur de S.K.elec_app ;)";}?></div>
                 </div>
                 <form action="./api/index_global/create_intervention.php" method="POST">
+                    <?php echo "<input type='number' id='user_id' name='user_id' value='" . $_SESSION['id'] . "' style='display: none'>" ?>
                     <div class="text-center">
                         <select name="chantier_id" size="1">
                             <?php
@@ -83,11 +84,7 @@ else {
                                             die("ERROR: Could not connect. " . mysqli_connect_error());
                                         }
                                         while($row = $result->fetch_array()){
-                                                if($row['num_chantier'] != 0) {
-                                                    echo '<option>' . $row['num_chantier'] . '</option>';
-                                                } else {
-                                                    echo '<option>' . $row['name'] . '</option>';
-                                                }
+                                            echo "<option value='" . $row['id'] . "'>" . $row['name'] . '</option>';
                                         }
                                         mysqli_free_result($result);
                                     } else{
@@ -103,13 +100,13 @@ else {
                     <div class="pt-5 w-50 m-auto text-center">
                         <label for="input_time m-auto">Heures réalisées</label>
                         <div class="col w-50 m-auto pb-4">
-                            <input type="text" id="ntervention_hours" name="intervention_hours" class="form-control text-center p-1" placeholder="hh:mm" />
+                            <input type="time" id="ntervention_hours" name="intervention_hours" class="form-control text-center p-1" placeholder="hh:mm" />
                         </div>
                     </div>
                     <div class="m-auto d-flex flex-column border-top pt-4 pb-3 w-75">
                         <div class="border-bottom pt-1 pb-3">
                             <div class="form mb-2">
-                                <input type="checkbox" id="panier_repas" name="panier_repas" class="form-check-input align-middle">
+                                <input type="checkbox" id="panier_repas" name="panier_repas" value="1" class="form-check-input align-middle">
                                 <label class="mt-1 ml-5 mb-auto" for="">Panier repas</label>
                             </div>
                             <div class="d-inline-flex h-25">
@@ -118,7 +115,7 @@ else {
                                     <label class="mb-0 mt-1 ml-5 text-center" for="">Dont :</label>
                                 </div>
                                 <div class="col d-inline-flex pr-0 pl-2 mt-auto mb-auto">
-                                    <input type="text" id="night_hours" name="night_hours" class="col-7 form-control p-1 mt-auto mb-auto text-center h-75" placeholder="minutes/heures">
+                                    <input type="time" id="night_hours" name="night_hours" class="col-7 form-control p-1 mt-auto mb-auto text-center h-75" placeholder="minutes/heures">
                                     <label class="mt-1 ml-3 mb-auto">heures de nuit</label>
                                 </div>
                             </div>
@@ -129,7 +126,6 @@ else {
                     </div>
                     <div class="mt-4 w-75 mr-auto ml-auto">
                         <input type="submit" value="Soumettre" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">
-                        <!--<a href="#" type="submit" value="Soumettre" class="btn send border-0 bg-white z-depth-1a mt-4 mb-3 text-dark">Soumettre</a>-->
                         <a href="#" type="submit" value="Clotûrer le chantier" class="btn finish border-0 bg-white z-depth-1a mt-3 mb-1 text-dark">Clôturer le chantier</a>
                     </div>
                 </form>
