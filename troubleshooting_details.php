@@ -95,7 +95,7 @@ $sql = "SELECT
                                     $created = date_create($row['date_chantier']);
                                 }
 
-                                if (!empty($row['user_id']) and !empty($row['chantier_id']) and !empty($row['name_chantier']) and $flag == 0) {
+                                if (empty($row['user_id']) and empty($row['chantier_id']) and empty($row['name_chantier']) and $flag == 0) {
                                     echo '<h3 class="text-center mt-0 mb-3 pt-5">Détails du chantier</h3>';
                                     echo "<h5 class='text-center mt-2'>" . $row['name_chantier'] . "</h5>";
                                     echo '<table class="table table-striped mt-5 ml-auto mb-5 mr-auto w-75 text-center">';
@@ -114,7 +114,7 @@ $sql = "SELECT
                                                 $minutes = (int)($total - ($hours * 10000)) / 100;
                                                 echo $hours;
                                                 echo ":";
-                                                if ($minutes != 0) {
+                                                if ($minutes > 10) {
                                                     echo $minutes;
                                                 } elseif ($minutes < 10 and $minutes > 0) {
                                                     echo "0";
@@ -158,13 +158,13 @@ $sql = "SELECT
                                                 die("ERROR: Could not connect. " . mysqli_connect_error());
                                             }
 
-                                            if (!empty($row['username'])){
+                                            if (!empty($row['username']) and !empty($row['name_chantier'])){
                                                 echo "<tr>";
                                                     echo "<td class='align-middle p-1 w-25'>" . $row['username'] . "</td>";
                                                     echo "<td class='align-middle p-1 w-25'>";
                                                         $total = $row['totalheure'];
                                                         $hours = (int)($total / 10000);
-                                                        $minutes = (int)($total - ($hours * 10000)) /100;
+                                                        $minutes = (int)($total - ($hours * 10000)) / 100;
                                                         echo $hours;
                                                         echo ":";
                                                         if ($minutes > 10) {
