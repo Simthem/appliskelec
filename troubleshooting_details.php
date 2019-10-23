@@ -7,6 +7,30 @@ if(!($_SESSION['username'])) {
   
     header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
 }
+
+$sql = "SELECT 
+            c.id AS chantier_id,
+            c.created as date_chantier,
+            #concat(year(g.created),
+            #month(g.created),
+            #week(g.created)),
+            c.name AS name_chantier,
+            username,
+            u.id AS user_id,
+            #if (SUM(intervention_hours) > 80000, SUM(intervention_hours) - 80000, NULL) as \'> 80000\',
+            #if (SUM(intervention_hours)-40000 > 0,if( SUM(intervention_hours) -40000>30000,30000,SUM(intervention_hours) - 40000), NULL) as \'> 40000\',
+            SUM(intervention_hours) AS totalheure
+            #SUM(night_hours) AS maj50
+        FROM
+            chantiers AS c
+            JOIN
+            global_reference AS g ON c.id = chantier_id
+            JOIN
+            users AS u ON g.user_id = u.id
+        WHERE
+            chantier_id = '" . $_GET['chantier_id'] . "'
+            #g.created BETWEEN \'2019-10-01\' AND \'2019-11-30\'
+        GROUP BY c.id , u.id , c.created , username , c.name with ROLLUP";#, concat(year(g.created) , month(g.created), week(g.created));
 ?>
 
 <!DOCTYPE html>
@@ -55,32 +79,13 @@ if(!($_SESSION['username'])) {
         <div id="container">
             <div class="content">
                 <?php
-                    $sql = "SELECT 
-                        c.id AS chantier_id,
-                        c.created as date_chantier,
-                        #concat(year(g.created),
-                        #month(g.created),
-                        #week(g.created)),
-                        #c.name AS name_chantier,
-                        username,
-                        u.id AS user_id,
-                        #if (SUM(intervention_hours) > 80000, SUM(intervention_hours) - 80000, NULL) as \'> 80000\',
-                        #if (SUM(intervention_hours)-40000 > 0,if( SUM(intervention_hours) -40000>30000,30000,SUM(intervention_hours) - 40000), NULL) as \'> 40000\',
-                        SUM(intervention_hours) AS totalheure
-                        #SUM(night_hours) AS maj50
-                    FROM
-                        chantiers AS c
-                        JOIN
-                        global_reference AS g ON c.id = chantier_id
-                        JOIN
-                        users AS u ON g.user_id = u.id
-                    WHERE
-                        chantier_id = '" . $_GET['chantier_id'] . "'
-                        #g.created BETWEEN \'2019-10-01\' AND \'2019-11-30\'
-                    GROUP BY c.id , u.id , c.created , username with ROLLUP";#, concat(year(g.created) , month(g.created), week(g.created));
+                    
                     
                     if($result = mysqli_query($db, $sql)) {
                         if (mysqli_num_rows($result) > 0) {
+
+                            $flag = 0;
+
                             while ($row = $result->fetch_array()) {
                                 if( $db === false){
                                     die("ERROR: Could not connect. " . mysqli_connect_error());
@@ -90,77 +95,60 @@ if(!($_SESSION['username'])) {
                                     $created = date_create($row['date_chantier']);
                                 }
 
-                                if ($row['user_id'] == NULL and $row['chantier_id'] == NULL) {
+                                if (!empty($row['user_id']) and !empty($row['chantier_id']) and !empty($row['name_chantier']) and $flag == 0) {
                                     echo '<h3 class="text-center mt-0 mb-3 pt-5">Détails du chantier</h3>';
-                                    echo "<h5 class='text-center'></h5>";
-                                    echo "<h5 class='text-center mt-2'>Libellé du Chantier</h5>";
+                                    echo "<h5 class='text-center mt-2'>" . $row['name_chantier'] . "</h5>";
                                     echo '<table class="table table-striped mt-5 ml-auto mb-5 mr-auto w-75 text-center">';
-                                        echo "<thead>
-                                                <tr>
-                                                    <th scope='col' class='align-middle text-center w-50'>Date de création</th>
-                                                    <th scope='col' class='align-middle text-center w-50'>Temps d'intervention réalisé</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td class='align-middle bg-white p-1'>" . date_format($created, 'd-M-Y') . "</td>
-                                                    <td class='align-middle bg-white p-1'>";
-                                                    $total = $row['totalheure'];
-                                                    $hours = (int)($total / 10000);
-                                                    $minutes = (int)($total - ($hours * 10000)) / 100;
-                                                    echo $hours;
-                                                    echo ":";
-                                                    if ($minutes != 0) {
-                                                        echo $minutes;
-                                                    } else {
-                                                        echo "00";
-                                                    }
-                                                    echo "</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>";
+                                    echo "<thead>
+                                            <tr>
+                                                <th scope='col' class='align-middle text-center w-50'>Date de création</th>
+                                                <th scope='col' class='align-middle text-center w-50'>Temps d'intervention réalisé</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class='align-middle bg-white p-1'>" . date_format($created, 'd-M-Y') . "</td>
+                                                <td class='align-middle bg-white p-1'>";
+                                                $total = $row['totalheure'];
+                                                $hours = (int)($total / 10000);
+                                                $minutes = (int)($total - ($hours * 10000)) / 100;
+                                                echo $hours;
+                                                echo ":";
+                                                if ($minutes != 0) {
+                                                    echo $minutes;
+                                                } elseif ($minutes < 10 and $minutes > 0) {
+                                                    echo "0";
+                                                    echo $minutes;
+                                                } else {
+                                                    echo "00";
+                                                }
+                                                echo "</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>";
+
+                                    $flag = 1;
+
                                 ;}
                             }
+                            echo "<table class='table table-striped border ml-auto mb-3 mr-auto w-75 text-center'>";
+                                echo "<thead>
+                                    <tr>
+                                        <th scope='col' class='text-center border-right align-middle w-25'>Salarié(s) sur le chantier</th>
+                                        <th scope='col' class='text-center border-right align-middle w-25'>Nombre d'heures correspondant</th>
+                                        <th scope='col' class='text-center align-middle' style='width: 15%;'>Détails</th>
+                                    </tr>
+                                </thead>
+                            </table>";
+                        } else {
+                            echo "Chantier programmé pour des horaires à venir.";
                         }
                     }
                 
-                    echo "<table class='table table-striped border ml-auto mb-3 mr-auto w-75 text-center'>";
-                        echo "<thead>
-                            <tr>
-                                <th scope='col' class='text-center border-right align-middle w-25'>Salarié(s) sur le chantier</th>
-                                <th scope='col' class='text-center border-right align-middle w-25'>Nombre d'heures correspondant</th>
-                                <th scope='col' class='text-center align-middle' style='width: 15%;'>Détails</th>
-                            </tr>
-                        </thead>
-                    </table>";
                 ?>
-                <div class="container-list m-auto h-25">
+                <div class="container-list-details m-auto">
                     <table class="table table-striped border ml-auto mb-3 mr-auto w-75 text-center">
                         <?php             
-                            $sql = "SELECT 
-                            c.id AS chantier_id,
-                            c.created as date_chantier,
-                            #concat(year(g.created),
-                            #month(g.created),
-                            #week(g.created)),
-                            #c.name AS name_chantier,
-                            username,
-                            u.id AS user_id,
-                            #if (SUM(intervention_hours) > 80000, SUM(intervention_hours) - 80000, NULL) as \'> 80000\',
-                            #if (SUM(intervention_hours)-40000 > 0,if( SUM(intervention_hours) -40000>30000,30000,SUM(intervention_hours) - 40000), NULL) as \'> 40000\',
-                            SUM(intervention_hours) AS totalheure
-                            #SUM(night_hours) AS maj50
-                            FROM
-                                chantiers AS c
-                                JOIN
-                                global_reference AS g ON c.id = chantier_id
-                                JOIN
-                                users AS u ON g.user_id = u.id
-                            WHERE
-                                chantier_id = '" . $_GET['chantier_id'] . "'
-                                #g.created BETWEEN \'2019-10-01\' AND \'2019-11-30\'
-                            GROUP BY c.id , u.id , c.created , username with ROLLUP";#, concat(year(g.created) , month(g.created), week(g.created));
-                            
                             if($result = mysqli_query($db, $sql)) {
                                 if (mysqli_num_rows($result) > 0) {
                                     echo "<tbody>";
@@ -176,10 +164,13 @@ if(!($_SESSION['username'])) {
                                                     echo "<td class='align-middle p-1 w-25'>";
                                                         $total = $row['totalheure'];
                                                         $hours = (int)($total / 10000);
-                                                        $minutes = (int)($total - ($hours * 10000)) / 100;
+                                                        $minutes = (int)($total - ($hours * 10000)) /100;
                                                         echo $hours;
                                                         echo ":";
-                                                        if ($minutes != 0) {
+                                                        if ($minutes > 10) {
+                                                            echo $minutes;
+                                                        } elseif ($minutes < 10 and $minutes > 0) {
+                                                            echo "0";
                                                             echo $minutes;
                                                         } else {
                                                             echo "00";
@@ -197,7 +188,7 @@ if(!($_SESSION['username'])) {
                 </div>
                 <div class="ml-auto mr-auto mt-5 w-75">
                     <a href="#" type="submit" value="valid" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">Modifier</a>
-                    <a href="troubleshooting_list.html" type="submit" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4">Précédent</a>
+                    <a href="troubleshooting_list.php" type="submit" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4">Précédent</a>
                 </div>
             </div>
         </div>
