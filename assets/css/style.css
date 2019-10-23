@@ -115,10 +115,10 @@ textarea
 }
 
 .container-list
-    {
-        max-width: 100%;
-        overflow-y: auto;
-    }
+{
+    max-width: 100%;
+    overflow-y: auto;
+}
 
 .menu-btn,
 .menu-btn-plus
@@ -304,6 +304,13 @@ li a
     .icons-navbar
     {
         height: 60px;
+    }
+
+    .container-list-details
+    {
+        max-width: 100%;
+        height: 150px;
+        overflow-y: auto;
     }
 
     .container-list

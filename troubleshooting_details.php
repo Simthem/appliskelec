@@ -7,6 +7,30 @@ if(!($_SESSION['username'])) {
   
     header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
 }
+
+$sql = "SELECT 
+            c.id AS chantier_id,
+            c.created as date_chantier,
+            #concat(year(g.created),
+            #month(g.created),
+            #week(g.created)),
+            c.name AS name_chantier,
+            username,
+            u.id AS user_id,
+            #if (SUM(intervention_hours) > 80000, SUM(intervention_hours) - 80000, NULL) as \'> 80000\',
+            #if (SUM(intervention_hours)-40000 > 0,if( SUM(intervention_hours) -40000>30000,30000,SUM(intervention_hours) - 40000), NULL) as \'> 40000\',
+            SUM(intervention_hours) AS totalheure
+            #SUM(night_hours) AS maj50
+        FROM
+            chantiers AS c
+            JOIN
+            global_reference AS g ON c.id = chantier_id
+            JOIN
+            users AS u ON g.user_id = u.id
+        WHERE
+            chantier_id = '" . $_GET['chantier_id'] . "'
+            #g.created BETWEEN \'2019-10-01\' AND \'2019-11-30\'
+        GROUP BY c.id , u.id , c.created , username , c.name with ROLLUP";#, concat(year(g.created) , month(g.created), week(g.created));
 ?>
 
 <!DOCTYPE html>
@@ -36,7 +60,7 @@ if(!($_SESSION['username'])) {
                 <nav class="menu left-menu">
                     <div class="menu-content">
                         <ul class="pl-0">
-                            <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="troubleshooting_list.html" class="text-warning">Chantiers</a></li>
+                            <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="troubleshooting_list.php" class="text-warning">Chantiers</a></li>
                             <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="list_profil.php" class="text-warning">Salariés</a></li>
                             <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="#" class="text-warning">Paramètres</a></li>
                             <li class="bg-dark border-top border-bottom border-warning rounded-0 p-0 menu-link"><a href="signin.php" class="text-warning">Déconnexion</a></li>
@@ -46,7 +70,7 @@ if(!($_SESSION['username'])) {
                 <div class="icons-navbar">
                     <div class="menu-btn-bars text-white"><button class="menu-btn fas fa-bars text-warning w-100 fa-3x p-0"></button></div>
                     <a href="index.php" class="text-warning m-auto"><h2 class="m-0">S.K.elec</h2></a>
-                    <a href="troubleshooting_list.html" class="text-white pl-3"><i class="menu-btn-plus fas fa-search text-warning fa-3x rounded-circle"></i></a>
+                    <a href="troubleshooting_list.php" class="text-white pl-3"><i class="menu-btn-plus fas fa-search text-warning fa-3x rounded-circle"></i></a>
                 </div>
             </div>
         </header>
@@ -54,48 +78,117 @@ if(!($_SESSION['username'])) {
         <!-- Content -->
         <div id="container">
             <div class="content">
-                <h3 class="text-center mt-0 mb-3 pt-5">Détails du chantier</h3>
-                <h5 class="text-center">"ID du chantier"</h5>
-                <h5 class="text-center mt-2">"Libellé du Chantier"</h5>
-                <table class="table table-striped mt-5 ml-auto mb-5 mr-auto w-75 text-center">
-                    <thead>
-                        <tr>
-                            <th scope="col" class="align-middle text-center w-50">Date de création</th>
-                            <th scope="col" class="align-middle text-center w-50">Temps d'intervention réalisé</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="align-middle border bg-white p-1">"date de début"</td>
-                            <td class="align-middle border bg-white p-1">"nombre d'heures"</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <?php
+                    
+                    
+                    if($result = mysqli_query($db, $sql)) {
+                        if (mysqli_num_rows($result) > 0) {
+
+                            $flag = 0;
+
+                            while ($row = $result->fetch_array()) {
+                                if( $db === false){
+                                    die("ERROR: Could not connect. " . mysqli_connect_error());
+                                }
+
+                                if (!empty($row['date_chantier'])) {
+                                    $created = date_create($row['date_chantier']);
+                                }
+
+                                if (!empty($row['user_id']) and !empty($row['chantier_id']) and !empty($row['name_chantier']) and $flag == 0) {
+                                    echo '<h3 class="text-center mt-0 mb-3 pt-5">Détails du chantier</h3>';
+                                    echo "<h5 class='text-center mt-2'>" . $row['name_chantier'] . "</h5>";
+                                    echo '<table class="table table-striped mt-5 ml-auto mb-5 mr-auto w-75 text-center">';
+                                    echo "<thead>
+                                            <tr>
+                                                <th scope='col' class='align-middle text-center w-50'>Date de création</th>
+                                                <th scope='col' class='align-middle text-center w-50'>Temps d'intervention réalisé</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class='align-middle bg-white p-1'>" . date_format($created, 'd-M-Y') . "</td>
+                                                <td class='align-middle bg-white p-1'>";
+                                                $total = $row['totalheure'];
+                                                $hours = (int)($total / 10000);
+                                                $minutes = (int)($total - ($hours * 10000)) / 100;
+                                                echo $hours;
+                                                echo ":";
+                                                if ($minutes != 0) {
+                                                    echo $minutes;
+                                                } elseif ($minutes < 10 and $minutes > 0) {
+                                                    echo "0";
+                                                    echo $minutes;
+                                                } else {
+                                                    echo "00";
+                                                }
+                                                echo "</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>";
+
+                                    $flag = 1;
+
+                                ;}
+                            }
+                            echo "<table class='table table-striped border ml-auto mb-3 mr-auto w-75 text-center'>";
+                                echo "<thead>
+                                    <tr>
+                                        <th scope='col' class='text-center border-right align-middle w-25'>Salarié(s) sur le chantier</th>
+                                        <th scope='col' class='text-center border-right align-middle w-25'>Nombre d'heures correspondant</th>
+                                        <th scope='col' class='text-center align-middle' style='width: 15%;'>Détails</th>
+                                    </tr>
+                                </thead>
+                            </table>";
+                        } else {
+                            echo "Chantier programmé pour des horaires à venir.";
+                        }
+                    }
                 
-                <table class="table table-striped border ml-auto mb-3 mr-auto w-75 text-center">
-                    <thead>
-                        <tr>
-                            <th scope="col" class="border-right align-middle w-50">Salarié(s) sur le chantier</th>
-                            <th scope="col" class="border-right align-middle w-50">Nombre d'heures correspondant</th>
-                            <th scope="col" class="align-middle">Détails</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="align-middle border p-1">"nom du salarié"</td>
-                            <td class="align-middle border p-1">"nombre d'heures"</td>
-                            <td class="align-middle border bg-white p-1"><a href="list_profil.html" class="w-25"><i class="fas fa-tools align-middle"></i></a></td>
-                        </tr>
-                        <tr>
-                            <td class="align-middle border p-1">"nom du salarié"</td>
-                            <td class="align-middle border p-1">"nombre d'heures"</td>
-                            <td class="align-middle border p-1"><a href="list_profil.html" class="w-25"><i class="fas fa-tools align-middle"></i></a></td>
-                        </tr>
-                    </tbody>
-                </table>
+                ?>
+                <div class="container-list-details m-auto">
+                    <table class="table table-striped border ml-auto mb-3 mr-auto w-75 text-center">
+                        <?php             
+                            if($result = mysqli_query($db, $sql)) {
+                                if (mysqli_num_rows($result) > 0) {
+                                    echo "<tbody>";
+                                        while ($row = $result->fetch_array()) {
+
+                                            if( $db === false){
+                                                die("ERROR: Could not connect. " . mysqli_connect_error());
+                                            }
+
+                                            if (!empty($row['username'])){
+                                                echo "<tr>";
+                                                    echo "<td class='align-middle p-1 w-25'>" . $row['username'] . "</td>";
+                                                    echo "<td class='align-middle p-1 w-25'>";
+                                                        $total = $row['totalheure'];
+                                                        $hours = (int)($total / 10000);
+                                                        $minutes = (int)($total - ($hours * 10000)) /100;
+                                                        echo $hours;
+                                                        echo ":";
+                                                        if ($minutes > 10) {
+                                                            echo $minutes;
+                                                        } elseif ($minutes < 10 and $minutes > 0) {
+                                                            echo "0";
+                                                            echo $minutes;
+                                                        } else {
+                                                            echo "00";
+                                                        }
+                                                    echo "</td>";
+                                                    echo "<td class='align-middle p-1' style='width: 15%;'><a href='list_profil.php'><i class='fas fa-tools align-middle'></i></a></td>";
+                                                echo "</tr>";
+                                            }
+                                        }
+                                    echo "</tbody>";
+                                ;}
+                            }
+                        ?>
+                    </table>
+                </div>
                 <div class="ml-auto mr-auto mt-5 w-75">
                     <a href="#" type="submit" value="valid" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">Modifier</a>
-                    <a href="troubleshooting_list.html" type="submit" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4">Précédent</a>
+                    <a href="troubleshooting_list.php" type="submit" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4">Précédent</a>
                 </div>
             </div>
         </div>

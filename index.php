@@ -13,10 +13,14 @@ if(!($_SESSION['username'])) {
 $stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");
 $stmt->execute();
 $user = $stmt->fetch();
+$stmt_admin = $bdd->prepare("SELECT id FROM `admin` WHERE admin_name = '". $_SESSION['admin_name'] ."'");
+$stmt_admin->execute();
+$admin = $stmt_admin->fetch();
 if($user) {
     $_SESSION['id'] = $user['id'];
-}
-else {
+} elseif ($admin) {
+    $_SESSION['id'] = $admin['id'];
+} else {
     echo "ERROR: Could not get 'id' of current user [first_method]";
 }
 ?>
