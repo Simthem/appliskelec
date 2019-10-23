@@ -22,7 +22,7 @@ if(isset($_POST['panier_repas'])) {
 }
 $intervention->night_hours = $_POST['night_hours'];
 $intervention->commit = $_POST['commit'];
-$intervention->created = date('Y-m-d H:i:s');
+$intervention->created = date('Y-m-d');
 
 if(empty($_POST['chantier_id'])) {
     echo "chantier_id required";
@@ -32,7 +32,7 @@ if(empty($_POST['chantier_id'])) {
     echo "intervention_hours is required";
     header("refresh:2; url=../../index.php");
     exit();
-} elseif($_POST['night_hours'] > 8) {
+} elseif($_POST['night_hours'] > 9) {
     echo "night_hours is wrong!";
     header("refresh:2; url=../../index.php");
     exit();

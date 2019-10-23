@@ -21,10 +21,10 @@ $troubles->contact_address = $_POST['contact_address'];
 $troubles->commit = $_POST['commit'];
 $troubles->type = NULL;
 $troubles->state = $_POST['state'];
-$troubles->created = date('Y-m-d H:i:s');
+$troubles->created = date('Y-m-d');
 
 // create the troubles
-$reponse = $db->query('SELECT num_chantier FROM chantiers WHERE num_chantier = "' . $_POST['num_chantier'] . '" ');
+$reponse = $db->query('SELECT num_chantier FROM chantiers WHERE num_chantier = ' . $_POST['num_chantier']);
 $num_chantier = $reponse->fetch();
 
 if($num_chantier) {
