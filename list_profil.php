@@ -62,8 +62,8 @@ if($user) {
                     <a href="index.php" class="text-warning m-auto"><h2 class="m-0">S.K.elec</h2></a>
                     <div action='api/user/edit_profil.php' method='GET'>
                         <?php
-                        echo $_SESSION['id'];
-                        
+                            //echo $_SESSION['id'];
+                            
                             if ($_SESSION['id'] == $admin['id']) {
                                 $admin_sql = "SELECT * FROM `admin`";
                                 if($admin_result = mysqli_query($db, $admin_sql)){
@@ -154,12 +154,22 @@ if($user) {
                         ?>
                     </table>
                 </div>
-                <form>
-                    <div class="pt-2 w-75 m-auto">
-                        <a href="add_profil.php" class="btn send border-0 bg-white z-depth-1a mt-4 mb-3 text-dark">Ajouter un compte</a>
-                        <a href="#" value="delete" class="btn finish border-0 bg-white z-depth-1a mt-4 mb-3 text-dark">Supprimer un compte</a>
-                    </div>
-                </form>
+                <?php
+                    if ($_SESSION['id'] == $admin['id']) {
+                        echo "<form>";
+                            echo "<div class='pt-2 w-75 m-auto'>";
+                                echo "<a href='add_profil.php' class='btn send border-0 bg-white z-depth-1a mt-4 mb-3 text-dark'>Ajouter un compte</a>";
+                                echo "<a href='#' value='delete' class='btn finish border-0 bg-white z-depth-1a mt-4 mb-3 text-dark'>Supprimer un compte</a>";
+                            echo "</div>";
+                        echo "</form>";
+                    } else {
+                        echo "<div class='pt-5 pb-5'>";
+                            echo "<div class='pt-2 w-75 m-auto'>";
+                                echo "<a href='index.php' value='delete' class='btn finish border-0 bg-white z-depth-1a mt-4 mb-3 text-dark'>Précédent</a>";
+                            echo "</div>";
+                        echo "</div>";
+                    }
+                ?>
             </div>
         </div>
     </body>
