@@ -8,6 +8,20 @@ if(!($_SESSION['username'])) {
   
     header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
 }
+
+$stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");
+$stmt->execute();
+$user = $stmt->fetch();
+$stmt_admin = $bdd->prepare("SELECT id FROM `admin` WHERE admin_name = '". $_SESSION['admin_name'] ."'");
+$stmt_admin->execute();
+$admin = $stmt_admin->fetch();
+if($user) {
+    $_SESSION['id'] = $user['id'];
+} elseif ($admin) {
+    $_SESSION['id'] = $admin['id'];
+} else {
+    echo "ERROR: Could not get 'id' of current user [first_method]";
+}
 ?>
 
 <!DOCTYPE html>
@@ -46,7 +60,45 @@ if(!($_SESSION['username'])) {
                 <div class="icons-navbar">
                     <div class="menu-btn-bars text-white"><button class="menu-btn fas fa-bars text-warning w-100 fa-3x p-0"></button></div>
                     <a href="index.php" class="text-warning m-auto"><h2 class="m-0">S.K.elec</h2></a>
-                    <a href="modif_profil.php" class="text-white pl-3"><i class="menu-btn-plus fas fa-user text-warning fa-3x rounded-circle"></i></a>
+                    <div action='api/user/edit_profil.php' method='GET'>
+                        <?php
+                        echo $_SESSION['id'];
+
+                            if ($_SESSION['id'] == $admin['id']) {
+                                $admin_sql = "SELECT * FROM `admin`";
+                                if($admin_result = mysqli_query($db, $admin_sql)){
+                                    if(mysqli_num_rows($admin_result) > 0){
+                                        if($db === false){
+                                            die("ERROR: Could not connect. " . mysqli_connect_error());
+                                        }
+                                        while($row = $admin_result->fetch_array()) {
+                                            echo "<a href='modif_profil.php?id=" . $row['id'] . "' class='text-white pl-3'><i class='menu-btn-plus fas fa-user text-warning fa-3x rounded-circle'></i></a>";
+                                        }
+                                        mysqli_free_result($admin_result);
+                                    } else {
+                                        echo "No records matching your query were found.";
+                                    }
+                                }
+                            } else {
+                                $user_sql = "SELECT * FROM users";
+                                if ($user_result = mysqli_query($db, $user_sql)){
+                                    if (mysqli_num_rows($user_result) > 0){
+                                        if ($db === false) {
+                                            die("ERROR: Could not connect. " . mysqli_connect_error());
+                                        }
+                                        while ($row = $user_result->fetch_array()){
+                                            if ($row['id'] == $_SESSION['id']) {
+                                                echo "<a href='modif_profil.php?id=" . $row['id'] . "' class='text-white pl-3'><i class='menu-btn-plus fas fa-user text-warning fa-3x rounded-circle'></i></a>";
+                                            }
+                                        }
+                                        mysqli_free_result($admin_result);
+                                    }
+                                } else {
+                                    echo "ERROR: Could not able to execute $admin_sql. " . mysqli_error($db);
+                                }
+                            }
+                        ?>
+                    </div>
                 </div>
             </div>
         </header>
@@ -81,13 +133,13 @@ if(!($_SESSION['username'])) {
                                     while($row = $result->fetch_array()){
                                         $time = strtotime($row['total_hours']);
                                         echo '<tr>';
-                                            echo '<td class="align-middle p-4 w-25">' . $row['username'] . '</td>';
+                                            echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . $row['username'] . '</td>';
                                             //echo '<td class="align-middle p-4" style="word-wrap: break-word; max-width: 85px;">' . $row['e_mail'] . '</td>';
-                                            echo '<td class="align-middle p-4 w-25">' . $row['phone'] . '</td>';
-                                            echo '<td class="align-middle p-4 w-25">' . date('H:i', $time) . '</td>';
+                                            echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . $row['phone'] . '</td>';
+                                            echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . date('H:i', $time) . '</td>';
                                             //echo '<td class="align-middle p-4 w-25">' . $row['id'] . '</td>';
                                             $id_user_row = $row['id'];
-                                            echo "<td class='p-0 align-middle w-25'><a href='modif_profil.php?id=". $id_user_row ."'><i class='fas fa-tools'></i></a></td>";
+                                            echo "<td class='p-0 align-middle w-25'><a href='modif_profil.php?id=" . $id_user_row . "'><i class='fas fa-tools'></i></a></td>";
                                         echo '</tr>';
                                     }
                                 echo '</tbody>';
