@@ -71,7 +71,38 @@ if($user) {
                 <h3 class="text-center mt-0 mb-3 pt-5">Modification du compte</h3>
                 <form class="w-100 pt-2 pl-4 pb-0 pr-4" action="api/user/edit_profil.php" method="POST">
                     <?php
-                        if($_GET['id'] != $admin['id']) {
+                        $sql = $bdd->prepare("SELECT 
+                        c.id AS chantier_id,
+                        c.created as date_chantier,
+                        concat(year(g.created),
+                        month(g.created),
+                        week(g.created)),
+                        c.name AS name_chantier,
+                        username,
+                        u.id AS user_id,
+                        #if (SUM(intervention_hours) > 80000, SUM(intervention_hours) - 80000, NULL) as \'> 80000\',
+                        #if (SUM(intervention_hours)-40000 > 0,if( SUM(intervention_hours) -40000>30000,30000,SUM(intervention_hours) - 40000), NULL) as \'> 40000\',
+                        SUM(intervention_hours) AS totalheure
+                        #SUM(night_hours) AS maj50
+                        FROM
+                            chantiers AS c
+                            JOIN
+                            global_reference AS g ON c.id = chantier_id
+                            JOIN
+                            users AS u ON g.user_id = u.id
+                        WHERE
+                            u.id = '". $_GET['id'] ."'
+                            #g.created BETWEEN \'2019-10-01\' AND \'2019-11-30\'
+                        GROUP BY c.id , u.id , c.created , username , c.name , concat(year(g.created) , month(g.created), week(g.created)) with ROLLUP");
+                        
+                        $sql->execute();
+                        while ($total_user = $sql->fetch()) {
+                            if ($total_user['chantier_id'] == NULL) {
+                                $total['totalheure'] = $total_user['totalheure'];
+                            } 
+                        }
+
+                        if(($_GET['id'] != $admin['id'] and $_SESSION['id'] == $_GET['id'] and $_SESSION['id'] == $user['id']) or $_SESSION['id'] == $admin['id']) {
                             $stmt = $bdd->prepare("SELECT * FROM users WHERE id = '". $_GET['id'] ."'");
                             $stmt->execute();
                             $user = $stmt->fetch();
@@ -82,7 +113,6 @@ if($user) {
                                 $modif_user['last_name'] = $user['last_name'];
                                 $modif_user['e_mail'] = $user['e_mail'];
                                 $modif_user['phone'] = $user['phone'];
-                                $modif_user['total_hours'] = $user['total_hours'];
 
                                 echo '<input type="text" value="' . $modif_user['id'] . '" id="id" name="id" style="display: none;"">';
                                 echo '<div class="md-form mt-1">';
@@ -106,9 +136,22 @@ if($user) {
                                     echo '<input type="text" value="' . $modif_user['phone'] . '" id="phone" name="phone" class="form-control" placeholder="' . $modif_user['phone'] . '">';
                                 echo '</div>';
                                 echo '<div class="md-form mt-4">';
-                                    echo '<label for="total_hours">H/totales</label>';
-                                    echo '<input type="time" value="' . $modif_user['total_hours'] . '" id="total_hours" name="total_hours" class="form-control" placeholder="' . $modif_user['total_hours'] . '">';
-                                echo '</div>';
+                                    echo '<label for="total_hours">H/totales</label>';?>
+                                    <input type="number" value="<?php 
+                                        $total = $total['totalheure'];
+                                        $hours = (int)($total / 10000);
+                                        $minutes = ((int)($total - ($hours * 10000)) / 100) / 60;
+                                        $total = $hours + $minutes;
+                                        echo $total;?>" 
+                                    id="total_hours" name="total_hours" class="form-control" placeholder="
+                                    <?php 
+                                        $total = $total['totalheure'];
+                                        $hours = (int)($total / 10000);
+                                        $minutes = ((int)($total - ($hours * 10000)) / 100) / 60;
+                                        $total = $hours + $minutes;
+                                        echo $total;
+                                        ?>" disabled>
+                                <?php echo '</div>';
                                 echo '<div class="md-form mt-4">';
                                     echo '<label for="pass1">Password</label>';
                                     echo '<input type="password" id="pass1" name="pass1" class="form-control" data-type="password" required>';
@@ -120,7 +163,7 @@ if($user) {
                             } else {
                                 echo "ERROR: Could not get 'id' of current user [first_method]";
                             }
-                        } else {/*
+                        } elseif ($_SESSION['id'] == $admin['id'] and $admin['id'] == $_GET['id']) {/*
                             $_SESSION['id'] = $admin['id'];
                             $_SESSION['username'] = $admin['admin_name'];
                             $_SESSION['first_name'] = $admin['first_name'];
@@ -162,6 +205,67 @@ if($user) {
                                 echo '<label for="pass2">Confirm Password</label>';
                                 echo '<input type="password" id="pass2" name="pass2" class="form-control">';
                             echo '</div>';
+                        } else {
+                            $stmt = $bdd->prepare("SELECT * FROM users WHERE id = '". $_GET['id'] ."'");
+                            $stmt->execute();
+                            $user = $stmt->fetch();
+                            if($user) {
+                                $modif_user['id'] = $user['id'];
+                                $modif_user['username'] = $user['username'];
+                                $modif_user['first_name'] = $user['first_name'];
+                                $modif_user['last_name'] = $user['last_name'];
+                                $modif_user['e_mail'] = $user['e_mail'];
+                                $modif_user['phone'] = $user['phone'];
+
+                                echo '<input type="text" value="' . $modif_user['id'] . '" id="id" name="id" style="display: none;"">';
+                                echo '<div class="md-form mt-1">';
+                                    echo '<label for="fusername">Username</label>';
+                                    echo '<input type="text" value="' . $modif_user['username'] . '" id="username" name="username" class="form-control" placeholder="' . $modif_user['username'] . '"" disabled>';
+                                echo '</div>';
+                                echo '<div class="md-form mt-4">';
+                                    echo '<label for="first-name">First name</label>';
+                                    echo '<input type="text" value="' . $modif_user['first_name'] . '" id="first_name" name="first_name" class="form-control" placeholder="' . $modif_user['first_name'] . '" disabled>';
+                                echo '</div>';
+                                echo '<div class="md-form mt-4">';
+                                    echo '<label for="last_name">Last name</label>';
+                                    echo '<input type="text" value="' . $modif_user['last_name'] . '" id="last_name" name="last_name" class="form-control" placeholder="' . $modif_user['last_name'] . '" disabled>';
+                                echo '</div>';
+                                echo '<div class="md-form mt-4">';
+                                    echo '<label for="e_mail">E_mail</label>';
+                                    echo '<input type="email" value="' . $modif_user['e_mail'] . '" id="e-mail" name="e_mail" class="form-control" placeholder="' . $modif_user['e_mail'] . '" disabled>';
+                                echo '</div>';
+                                echo '<div class="md-form mt-4">';
+                                    echo '<label for="phone">Téléphone</label>';
+                                    echo '<input type="text" value="' . $modif_user['phone'] . '" id="phone" name="phone" class="form-control" placeholder="' . $modif_user['phone'] . '" disabled>';
+                                echo '</div>';
+                                echo '<div class="md-form mt-4">';
+                                    echo '<label for="total_hours">H/totales</label>';?>
+                                    <input type="number" value="<?php 
+                                        $total = $total['totalheure'];
+                                        $hours = (int)($total / 10000);
+                                        $minutes = ((int)($total - ($hours * 10000)) / 100) / 60;
+                                        $total = $hours + $minutes;
+                                        echo $total;?>" 
+                                    id="total_hours" name="total_hours" class="form-control" placeholder="
+                                    <?php 
+                                        $total = $total['totalheure'];
+                                        $hours = (int)($total / 10000);
+                                        $minutes = ((int)($total - ($hours * 10000)) / 100) / 60;
+                                        $total = $hours + $minutes;
+                                        echo $total;
+                                        ?>" disabled>
+                                <?php echo '</div>';
+                                echo '<div class="md-form mt-4">';
+                                    echo '<label for="pass1">Password</label>';
+                                    echo '<input type="password" id="pass1" name="pass1" class="form-control" data-type="password" required>';
+                                echo '</div>';
+                                echo '<div class="md-form mt-4">';
+                                    echo '<label for="pass2">Confirm Password</label>';
+                                    echo '<input type="password" id="pass2" name="pass2" class="form-control">';
+                                echo '</div>';
+                            } else {
+                                echo "ERROR: Could not get 'id' of current user [first_method]";
+                            }
                         }
                     ?>
                     <div class="pt-5 w-75 m-auto">

@@ -63,7 +63,7 @@ if($user) {
                     <div action='api/user/edit_profil.php' method='GET'>
                         <?php
                         echo $_SESSION['id'];
-
+                        
                             if ($_SESSION['id'] == $admin['id']) {
                                 $admin_sql = "SELECT * FROM `admin`";
                                 if($admin_result = mysqli_query($db, $admin_sql)){

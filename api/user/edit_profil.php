@@ -14,7 +14,7 @@ if($bdd === false){
     die("ERROR: Could not connect. " . mysqli_connect_error());
 }
 
-if($_POST['id'] != $admin['id']) {
+if($_POST['id'] != $admin['id'] or ($_POST['id'] == $user['id'] and $_SESSION['id'] == $user['id'])) {
 
     if(!empty($_POST['username']) AND $_POST['username'] != $user['username']) {
         $newusername = htmlspecialchars($_POST['username']);
