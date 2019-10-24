@@ -122,7 +122,7 @@ if($_POST['id'] != $admin['id']) {
         $pass1 = md5($_POST['pass1']);
         $pass2 = md5($_POST['pass2']);
         if($pass1 == $pass2 and $pass1 != md5($admin['password'])) {
-            $insertpassword = $bdd->prepare("UPDATE `admin` SET password = '". $pass1 ."' WHERE id = '". $_POST['id'] ."'");
+            $insertpassword = $bdd->prepare("UPDATE `admin` SET `password` = '". $pass1 ."' WHERE id = '". $_POST['id'] ."'");
             $insertpassword->execute(array($pass1, $_POST['password']));
             echo "Success !! :)";
             header('refresh:5; url= ../../index.php');
