@@ -19,15 +19,16 @@ $reponse = $db->query('SELECT admin_name FROM admin WHERE admin_name = "' . $_PO
 $admin = $reponse->fetch();
 if($admin) {
     if ($_POST['username'] == $admin['admin_name']) {
-        $_SESSION['username']= "admin";
+        $_SESSION['username'] = "admin";
+        $_SESSION['admin_name'] = $_POST['username'];
         header("Location:../../index.php");
         exit();
     }
 }
 
 if($stmt->rowCount() > 0){
-    $_SESSION['username']= $_POST['username'];//here session is used and value of 'username' store in $_SESSION.
-    //echo $_SESSION['username'];
+    $_SESSION['username'] = $_POST['username'];//here session is used and value of 'username' store in $_SESSION.
+    echo $_SESSION['username'];
     header("Location:../../index.php");
     exit();
 }

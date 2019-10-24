@@ -6,6 +6,7 @@ class Intervention{
     private $table = "global_reference";
 
     // object properties
+    public $id;
     public $user_id;
     public $chantier_id;
     public $intervention_hours;
@@ -48,13 +49,12 @@ class Intervention{
         $stmt->bindParam(":commit", $this->commit);
         $stmt->bindParam(":created", $this->created);
     
-        // execute query
-        if($stmt->execute()){
+        if ($stmt->execute()) {
+            echo "youpiiiii";
             $this->id = $this->conn->lastInsertId();
             return true;
         }
-    
+        echo "et merde ..";
         return false;
-        
     }
 }

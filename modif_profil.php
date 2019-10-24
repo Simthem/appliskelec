@@ -1,13 +1,26 @@
 <?php
 session_start();
 include_once 'api/config/db_connexion.php';
-require_once 'api/user/edit_profil.php';
+//require_once 'api/user/edit_profil.php';
 
 if(!($_SESSION['username'])) {  
   
-    header("Location: signin.php");//redirect to login page to secure the welcome page without login access.
+    header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
 }
-//header("Cache-Control: must-revalidate");
+
+$stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");
+$stmt->execute();
+$user = $stmt->fetch();
+$stmt_admin = $bdd->prepare("SELECT * FROM `admin` WHERE admin_name = '". $_SESSION['admin_name'] ."'");
+$stmt_admin->execute();
+$admin = $stmt_admin->fetch();
+if($user) {
+    $_SESSION['id'] = $user['id'];
+} elseif ($admin) {
+    $_SESSION['id'] = $admin['id'];
+} else {
+    echo "ERROR: Could not get 'id' of current user [first_method]";
+}
 ?>
 
 <!DOCTYPE html>
@@ -56,56 +69,100 @@ if(!($_SESSION['username'])) {
         <div id="container">
             <div class="content">
                 <h3 class="text-center mt-0 mb-3 pt-5">Modification du compte</h3>
-                <form class="w-100 pt-2 pl-4 pb-0 pr-4" action="" method="POST">
+                <form class="w-100 pt-2 pl-4 pb-0 pr-4" action="api/user/edit_profil.php" method="POST">
                     <?php
-                    $stmt = $bdd->prepare("SELECT * FROM users WHERE username = '". $_SESSION['username'] ."'");
-                    $stmt->execute();
-                    $user = $stmt->fetch();
-                    if($user) {
-                        $_SESSION['id'] = $user['id'];
-                        $_SESSION['first_name'] = $user['first_name'];
-                        $_SESSION['last_name'] = $user['last_name'];
-                        $_SESSION['e_mail'] = $user['e_mail'];
-                        $_SESSION['phone'] = $user['phone'];
-                        $_SESSION['total_hours'] = $user['totals_hours'];
-                        //print_r($_SESSION);
-                    }
-                    else {
-                        echo "ERROR: Could not get 'id' of current user [first_method]";
-                    }
+                        if($_GET['id'] != $admin['id']) {
+                            $stmt = $bdd->prepare("SELECT * FROM users WHERE id = '". $_GET['id'] ."'");
+                            $stmt->execute();
+                            $user = $stmt->fetch();
+                            if($user) {
+                                $modif_user['id'] = $user['id'];
+                                $modif_user['username'] = $user['username'];
+                                $modif_user['first_name'] = $user['first_name'];
+                                $modif_user['last_name'] = $user['last_name'];
+                                $modif_user['e_mail'] = $user['e_mail'];
+                                $modif_user['phone'] = $user['phone'];
+                                $modif_user['total_hours'] = $user['total_hours'];
 
-                    echo '<div class="md-form mt-1">';
-                        echo '<label for="fusername">Username</label>';
-                        echo '<input type="text" id="username" name="username" class="form-control" placeholder="' . $_SESSION['username'] . '" disabled="disabled">';
-                    echo '</div>';
-                    echo '<div class="md-form mt-4">';
-                        echo '<label for="first-name">First name</label>';
-                        echo '<input type="text" id="first_name" name="first_name" class="form-control" placeholder="' . $_SESSION['first_name'] . '">';
-                    echo '</div>';
-                    echo '<div class="md-form mt-4">';
-                        echo '<label for="last_name">Last name</label>';
-                        echo '<input type="text" id="last_name" name="last_name" class="form-control" placeholder="' . $_SESSION['Last_name'] . '">';
-                    echo '</div>';
-                    echo '<div class="md-form mt-4">';
-                        echo '<label for="e_mail">E_mail</label>';
-                        echo '<input type="e-mail" id="e-mail" name="e_mail" class="form-control" placeholder="' . $_SESSION['e_mail'] . '">';
-                    echo '</div>';
-                    echo '<div class="md-form mt-4">';
-                        echo '<label for="phone">Téléphone</label>';
-                        echo '<input type="text" id="phone" name="phone" class="form-control" placeholder="' . $_SESSION['phone'] . '">';
-                    echo '</div>';
-                    echo '<div class="md-form mt-4">';
-                        echo '<label for="total_hours">H/totales</label>';
-                        echo '<input type="text" id="hours" name="total_hours" class="form-control" placeholder="' . $_SESSION['total_hours'] . '">';
-                    echo '</div>';
-                    echo '<div class="md-form mt-4">';
-                        echo '<label for="pass1">Password</label>';
-                        echo '<input type="password" id="pass1" name="pass1" class="form-control" data-type="password" required>';
-                    echo '</div>';
-                    echo '<div class="md-form mt-4">';
-                        echo '<label for="pass2">Confirm Password</label>';
-                        echo '<input type="password" id="pass2" name="pass2" class="form-control">';
-                    echo '</div>';
+                                echo '<input type="text" value="' . $modif_user['id'] . '" id="id" name="id" style="display: none;"">';
+                                echo '<div class="md-form mt-1">';
+                                    echo '<label for="fusername">Username</label>';
+                                    echo '<input type="text" value="' . $modif_user['username'] . '" id="username" name="username" class="form-control" placeholder="' . $modif_user['username'] . '"">';
+                                echo '</div>';
+                                echo '<div class="md-form mt-4">';
+                                    echo '<label for="first-name">First name</label>';
+                                    echo '<input type="text" value="' . $modif_user['first_name'] . '" id="first_name" name="first_name" class="form-control" placeholder="' . $modif_user['first_name'] . '">';
+                                echo '</div>';
+                                echo '<div class="md-form mt-4">';
+                                    echo '<label for="last_name">Last name</label>';
+                                    echo '<input type="text" value="' . $modif_user['last_name'] . '" id="last_name" name="last_name" class="form-control" placeholder="' . $modif_user['last_name'] . '">';
+                                echo '</div>';
+                                echo '<div class="md-form mt-4">';
+                                    echo '<label for="e_mail">E_mail</label>';
+                                    echo '<input type="email" value="' . $modif_user['e_mail'] . '" id="e-mail" name="e_mail" class="form-control" placeholder="' . $modif_user['e_mail'] . '">';
+                                echo '</div>';
+                                echo '<div class="md-form mt-4">';
+                                    echo '<label for="phone">Téléphone</label>';
+                                    echo '<input type="text" value="' . $modif_user['phone'] . '" id="phone" name="phone" class="form-control" placeholder="' . $modif_user['phone'] . '">';
+                                echo '</div>';
+                                echo '<div class="md-form mt-4">';
+                                    echo '<label for="total_hours">H/totales</label>';
+                                    echo '<input type="time" value="' . $modif_user['total_hours'] . '" id="total_hours" name="total_hours" class="form-control" placeholder="' . $modif_user['total_hours'] . '">';
+                                echo '</div>';
+                                echo '<div class="md-form mt-4">';
+                                    echo '<label for="pass1">Password</label>';
+                                    echo '<input type="password" id="pass1" name="pass1" class="form-control" data-type="password" required>';
+                                echo '</div>';
+                                echo '<div class="md-form mt-4">';
+                                    echo '<label for="pass2">Confirm Password</label>';
+                                    echo '<input type="password" id="pass2" name="pass2" class="form-control">';
+                                echo '</div>';
+                            } else {
+                                echo "ERROR: Could not get 'id' of current user [first_method]";
+                            }
+                        } else {/*
+                            $_SESSION['id'] = $admin['id'];
+                            $_SESSION['username'] = $admin['admin_name'];
+                            $_SESSION['first_name'] = $admin['first_name'];
+                            $_SESSION['last_name'] = $admin['last_name'];
+                            $_SESSION['e_mail'] = $admin['e_mail'];
+                            $_SESSION['phone'] = $admin['phone'];
+                            $_SESSION['total_hours'] = $admin['total_hours'];*/
+
+                            echo '<input type="text" value="' . $admin['id'] . '" id="id" name="id" style="display: none;"">';
+                            echo '<div class="md-form mt-1">';
+                                echo '<label for="fusername">Username</label>';
+                                echo '<input type="text" value="' . $admin['admin_name'] . '" id="username" name="username" class="form-control" placeholder="' . $admin['username'] . '"">';
+                            echo '</div>';
+                            echo '<div class="md-form mt-4">';
+                                echo '<label for="first-name">First name</label>';
+                                echo '<input type="text" value="' . $admin['first_name'] . '" id="first_name" name="first_name" class="form-control" placeholder="' . $admin['first_name'] . '">';
+                            echo '</div>';
+                            echo '<div class="md-form mt-4">';
+                                echo '<label for="last_name">Last name</label>';
+                                echo '<input type="text" value="' . $admin['last_name'] . '" id="last_name" name="last_name" class="form-control" placeholder="' . $admin['last_name'] . '">';
+                            echo '</div>';
+                            echo '<div class="md-form mt-4">';
+                                echo '<label for="e_mail">E_mail</label>';
+                                echo '<input type="email" value="' . $admin['e_mail'] . '" id="e-mail" name="e_mail" class="form-control" placeholder="' . $admin['e_mail'] . '">';
+                            echo '</div>';
+                            echo '<div class="md-form mt-4">';
+                                echo '<label for="phone">Téléphone</label>';
+                                echo '<input type="text" value="' . $admin['phone'] . '" id="phone" name="phone" class="form-control" placeholder="' . $admin['phone'] . '">';
+                            echo '</div>';
+                            echo '<div class="md-form mt-4">';
+                                echo '<label for="total_hours">H/totales</label>';
+                                echo '<input type="time" value="' . $admin['total_hours'] . '" id="total_hours" name="total_hours" class="form-control" placeholder="' . $admin['total_hours'] . '">';
+                            echo '</div>';
+                            echo '<div class="md-form mt-4">';
+                                echo '<label for="pass1">Password</label>';
+                                echo '<input type="password" id="pass1" name="pass1" class="form-control" data-type="password" required>';
+                            echo '</div>';
+                            echo '<div class="md-form mt-4">';
+                                echo '<label for="pass2">Confirm Password</label>';
+                                echo '<input type="password" id="pass2" name="pass2" class="form-control">';
+                            echo '</div>';
+                        }
                     ?>
                     <div class="pt-5 w-75 m-auto">
                         <input type="submit" value="Valider" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">
