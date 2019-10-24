@@ -1,9 +1,9 @@
 /* Generals */
 
-html
+/*html
 {
     height: 100%;
-}
+}*/
 
 body
 {
@@ -100,12 +100,6 @@ textarea
 
 /* Specifics */
 
-.signin-card
-{
-    padding-top: 10%;
-    padding-bottom: 5%;
-}
-
 .nav-pills>li.active>a,
 .nav-pills>li.active>a:focus,
 .nav-pills>li.active>a:hover
@@ -179,6 +173,7 @@ li a
 }
 
 /* Menu Movement */
+
 .left-menu
 {
     -webkit-transform: translate3d(-200px, 0, 0);
@@ -226,6 +221,7 @@ li a
 }
 
 /* Menu Transitions */
+
 #container,
 .menu-btn,
 .menu-content
@@ -251,6 +247,14 @@ li a
 }
 
 /* Signin page */
+
+.signin-card
+{
+    padding-top: 0;
+    padding-bottom: 0;
+    min-height: 100%;
+    overflow-y: hidden;
+}
 
 .form-elegant
 {
@@ -288,12 +292,20 @@ li a
     html
     {
         background-color: #FFF;
+        height: 100%;
+        margin-bottom: 10%;
     }
+
     body
     {
         background-color: #dfe3ee !important;
     }
     
+    .card
+    {
+        height: 100%;
+    }
+
     #container
     {
         width: 75%;
@@ -332,6 +344,7 @@ li a
     html
     {
         width: 33%;
+        height: 100%;
         margin-left: 33%;
         padding-top: 2%;
     }
@@ -339,6 +352,18 @@ li a
     body
     {
         min-height: max-content;
+    }
+
+    .signin-card
+    {
+        padding-top: 10%;
+        padding-bottom: 10%;
+        /*min-height: max-content;*/
+    }
+
+    .card
+    {
+        height: max-content;
     }
 
     .header
