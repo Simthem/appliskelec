@@ -31,7 +31,7 @@ if($user) {
     if ($_SESSION['id'] != $_GET['id']) {
         echo "<html class='overflow-hidden'>";
     } else {
-        echo '<html>';
+        echo "<html class='overflow-y'>";
     }
 ?>
     <head>

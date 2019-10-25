@@ -108,9 +108,9 @@ if(!($_SESSION['username'])) {
                     </table>
                 </div>
                 <form>
-                    <div class="pt-2 w-75 m-auto">
-                        <a href="add_troubleshooting.php" class="btn send border-0 bg-white z-depth-1a mt-4 mb-3 text-dark">Ajouter un chantier</a>
-                        <a href="#" class="btn finish border-0 bg-white z-depth-1a mt-4 mb-3">Supprimer un chantier</a>
+                    <div class="pt-1 w-75 m-auto">
+                        <a href="add_troubleshooting.php" class="btn send border-0 bg-white z-depth-1a mt-2 mb-2 text-dark">Ajouter un chantier</a>
+                        <a href="#" class="btn finish border-0 bg-white z-depth-1a mt-3 mb-2">Supprimer un chantier</a>
                     </div>
                 </form>
             </div>
