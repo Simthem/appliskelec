@@ -26,7 +26,7 @@ if($user) {
 
 <!DOCTYPE html>
 
-<html>
+<html class="overflow-hidden">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -157,9 +157,9 @@ if($user) {
                 <?php
                     if ($_SESSION['id'] == $admin['id']) {
                         echo "<form>";
-                            echo "<div class='pt-2 w-75 m-auto'>";
-                                echo "<a href='add_profil.php' class='btn send border-0 bg-white z-depth-1a mt-4 mb-3 text-dark'>Ajouter un compte</a>";
-                                echo "<a href='#' value='delete' class='btn finish border-0 bg-white z-depth-1a mt-4 mb-3 text-dark'>Supprimer un compte</a>";
+                            echo "<div class='pt-1 w-75 m-auto'>";
+                                echo "<a href='add_profil.php' class='btn send border-0 bg-white z-depth-1a mt-2 mb-2 text-dark'>Ajouter un compte</a>";
+                                echo "<a href='#' value='delete' class='btn finish border-0 bg-white z-depth-1a mt-2 mb-2 text-dark'>Supprimer un compte</a>";
                             echo "</div>";
                         echo "</form>";
                     } else {

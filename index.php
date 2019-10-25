@@ -27,7 +27,7 @@ if($user) {
 
 <!DOCTYPE html>
 
-<html>
+<html class="overflow-hidden">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -102,8 +102,8 @@ if($user) {
                     </div>
                     <div class="pt-5 w-50 m-auto text-center">
                         <label for="input_time m-auto">Heures réalisées</label>
-                        <div class="col w-50 m-auto pb-4">
-                            <input type="time" id="ntervention_hours" name="intervention_hours" class="form-control text-center p-1" placeholder="hh:mm" />
+                        <div class="w-50 m-auto pb-4">
+                            <input type="time" id="ntervention_hours" name="intervention_hours" class="form-control text-center align-middle m-auto p-1" style="line-height: 25px;" placeholder="hh:mm" />
                         </div>
                     </div>
                     <div class="m-auto d-flex flex-column border-top pt-4 pb-3 w-75">
@@ -118,7 +118,7 @@ if($user) {
                                     <label class="mb-0 mt-1 ml-5 text-center" for="">Dont :</label>
                                 </div>
                                 <div class="col d-inline-flex pr-0 pl-2 mt-auto mb-auto">
-                                    <input type="time" id="night_hours" name="night_hours" class="col-7 form-control p-1 mt-auto mb-auto text-center" placeholder="minutes/heures">
+                                    <input type="time" id="night_hours" name="night_hours" class="col-7 form-control p-1 mt-auto mb-auto text-center" style="line-height: 25px;" placeholder="minutes/heures">
                                     <label class="mt-1 ml-3 mb-auto">heures de nuit</label>
                                 </div>
                             </div>
