@@ -7,6 +7,21 @@ if(!($_SESSION['username'])) {
   
     header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
 }
+
+$stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");
+$stmt->execute();
+$user = $stmt->fetch();
+
+$stmt_admin = $bdd->prepare("SELECT id FROM `admin` WHERE admin_name = '". $_SESSION['admin_name'] ."'");
+$stmt_admin->execute();
+$admin = $stmt_admin->fetch();
+if($user) {
+    $_SESSION['id'] = $user['id'];
+} elseif ($admin and empty($user)) {
+    $_SESSION['id'] = $admin['id'];
+} else {
+    echo "ERROR: Could not get 'id' of current user [first_method]";
+}
 ?>
 
 <!DOCTYPE html>
@@ -56,10 +71,23 @@ if(!($_SESSION['username'])) {
             <div class="content">
                 <h3 class="text-center mt-0 mb-3 pt-5">Ajout d'un chantier</h3>
                 <form id="add_trouble" class="w-100 pt-3 pl-4 pb-0 pr-4" action="./api/troubleshooting/add_site.php" method="POST">
-                    <div class="md-form mt-1">
-                        <label for="num_chantier">ID de chantier</label>
-                        <input type="number" id="num_chantier" name="num_chantier" class="form-control">
-                    </div>
+                    <?php
+                    echo $_SESSION['id'];
+                        if ($_SESSION['id'] == $admin['id']) {
+                            echo '<div class="md-form mt-1">
+                                <label for="num_chantier">ID de chantier</label>
+                                <input type="number" id="num_chantier" name="num_chantier" class="form-control">';
+                    ?>          <input value="<?php echo $_SESSION['id'] ?>" id="session" name="session" style="display: none;">
+                    <?php   echo '</div>';
+                        } else {
+                            echo '<div class="md-form mt-1">
+                                <label for="num_chantier" class="text-secondary">ID de chantier</label>
+                                <input type="number" id="num_chantier" name="num_chantier" class="form-control" disabled>';
+                    ?>          <input value="" id="session" name="session" style="display: none;">
+                    <?php   echo '</div>';
+                        }
+                    ?>
+                    
                     <div class="md-form mt-4">
                         <label for="name">Libellé de chantier</label>
                         <input type="text" id="name" name="name" class="form-control" required>
@@ -80,9 +108,10 @@ if(!($_SESSION['username'])) {
                         <label for="commit">Commentaires</label>
                         <textarea type="text" id="commit" name="commit" class="form-control"></textarea>
                     </div>
+                    <input type="text" id="type" name="type" value="NULL" style="display: none;">
                     <input type="number" id="state" name="state" value="1" style="display: none;">
                     <div class="pt-5 w-75 m-auto">
-                        <input type="submit" value="Valider" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark" onClick="checkForm()">
+                        <input type="submit" value="Valider" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark"><!--onClick="checkForm()"-->
                         <a href="troubleshooting_list.php" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4 text-dark">Précédent</a>
                     </div>
                 </form>
