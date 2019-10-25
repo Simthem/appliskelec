@@ -72,11 +72,22 @@ if($user) {
                 <h3 class="text-center mt-0 mb-3 pt-5">Ajout d'un chantier</h3>
                 <form id="add_trouble" class="w-100 pt-3 pl-4 pb-0 pr-4" action="./api/troubleshooting/add_site.php" method="POST">
                     <?php
-                    echo $_SESSION['id'];
                         if ($_SESSION['id'] == $admin['id']) {
+                            $sql = $bdd->prepare(
+                            "SELECT 
+                                MAX(last_insert_id(num_chantier)) as max
+                            FROM
+                                appli_skelec.chantiers
+                            WHERE
+                                num_chantier != 0");
+
+                            $sql->execute();
+                            $result = $sql->fetch();
+                            $new_id = $result['max'] + 1;
+
                             echo '<div class="md-form mt-1">
-                                <label for="num_chantier">ID de chantier</label>
-                                <input type="number" id="num_chantier" name="num_chantier" class="form-control">';
+                                <label for="num_chantier">ID de chantier</label>';
+                            echo "<input type='number' value=" . $new_id . " id='num_chantier' name='num_chantier' class='form-control'>";
                     ?>          <input value="<?php echo $_SESSION['id'] ?>" id="session" name="session" style="display: none;">
                     <?php   echo '</div>';
                         } else {
@@ -111,7 +122,7 @@ if($user) {
                     <input type="text" id="type" name="type" value="NULL" style="display: none;">
                     <input type="number" id="state" name="state" value="1" style="display: none;">
                     <div class="pt-5 w-75 m-auto">
-                        <input type="submit" value="Valider" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark"><!--onClick="checkForm()"-->
+                        <input type="submit" value="Valider" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark" onClick="checkForm()">
                         <a href="troubleshooting_list.php" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4 text-dark">Précédent</a>
                     </div>
                 </form>

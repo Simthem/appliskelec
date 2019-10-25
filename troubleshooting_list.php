@@ -18,13 +18,17 @@ if(!($_SESSION['username'])) {
         <meta name="apple-mobile-web-app-capable" content="yes">
         <link  rel="stylesheet" href="assets/css/bootstrap.css">
         <link rel="stylesheet" href="assets/css/style.css">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <script src="https://kit.fontawesome.com/f14bbc71a6.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js" ></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <script src="//code.jquery.com/jquery-1.8.3.js"></script>
+        <script src="//code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
         <title>Appli Skelec</title>
     </head>
     <body>
@@ -54,11 +58,29 @@ if(!($_SESSION['username'])) {
         <div id="container">
             <div class="content">
                 <h3 class="text-center mt-0 pt-5 pb-3">Liste des chantiers</h3>
+                <ul class="nav nav-pills">
+                    <li class="active h-50"><a href="#tab1" data-toggle="pill" class="h-75">Chantiers</a></li><!-- -->
+                    <li class="h-50"><a href="#tab2" data-toggle="pill" class="h-75">Dépannages</a></li><!-- -->
+                </ul>
                 <table class="table table-striped mt-0 ml-0 mb-0 text-center" style="height: 50px;">
                     <?php
-                        $sql = "SELECT * FROM chantiers";
-                        if($result = mysqli_query($db, $sql)){
-                            if(mysqli_num_rows($result) > 0){
+                        $sql = 
+                        "SELECT 
+                            id,
+                            name,
+                            contact_address,
+                            num_chantier
+                        FROM
+                            appli_skelec.chantiers
+                        WHERE
+                            num_chantier != 0
+                        GROUP BY
+                            id, num_chantier, name, contact_address
+                        ORDER BY
+                            id DESC";
+
+                        if($result_chant = mysqli_query($db, $sql)){
+                            if(mysqli_num_rows($result_chant) > 0){
                                 echo '<thead>';
                                     echo '<tr>';
                                         echo '<th scope="col" class="text-center align-middle p-2 w-25" id="num_chantier">ID\'s</th>';
@@ -70,14 +92,15 @@ if(!($_SESSION['username'])) {
                                 echo '</thead>';
                     ?>
                 </table>
-                <div class="container-list m-auto">
-                    <table class="table table-striped pr-4 pl-4 mt-3 ml-auto mr-auto text-center" action="" method="POST">
-                        <?php
+                <div class="tab-content">
+                    <div id="tab1" class="container-list m-auto tab-pane fade active in">
+                        <table class="table table-striped pr-4 pl-4 mt-3 ml-auto mr-auto text-center" action="" method="POST">
+                            <?php
                                 if($db === false){
                                     die("ERROR: Could not connect. " . mysqli_connect_error());
                                 }
                                 echo '<tbody>';
-                                    while($row = $result->fetch_array()){
+                                    while($row = $result_chant->fetch_array()){
                                         echo '<tr>';
                                             if($row['num_chantier'] != 0 or !empty($row['num_chantier'])) {
                                                 echo '<td class="align-middle p-4 w-25">' . $row['num_chantier'] . '</td>';
@@ -85,27 +108,65 @@ if(!($_SESSION['username'])) {
                                                 echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 85px;">' . $row['name'] . '</td>';
                                                 echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 85px;">' . $row['contact_address'] . '</td>';
                                                 echo "<td class='p-0 align-middle w-25'><a href='troubleshooting_details.php?chantier_id=" . $row['id']  . "'><i class='fas fa-tools'></i></a></td>";
-                                            } else {
-                                                echo '<td class="align-middle p-4 w-25 bg-success text-white">Dép.</td>';
-                                                //echo '<td class="align-middle p-4" style="word-wrap: break-word; max-width: 85px;">' . $row['e_mail'] . '</td>';
-                                                echo '<td class="align-middle p-4 w-25 bg-success text-white" style="word-wrap: break-word; max-width: 85px;">' . $row['name'] . '</td>';
-                                                echo '<td class="align-middle p-4 w-25 bg-success text-white" style="word-wrap: break-word; max-width: 85px;">' . $row['contact_address'] . '</td>';
-                                                echo "<td class='p-0 align-middle w-25 bg-success'><a href='troubleshooting_details.php?chantier_id=" . $row['id']  . "'><i class='fas fa-tools text-white'></i></a></td>";
                                             }
-                                            
                                         echo '</tr>';
                                     }
                                 echo '</tbody>';
-                                mysqli_free_result($result);
-                            } else{
+                                mysqli_free_result($result_chant);
+                            } else {
                                 echo "No records matching your query were found.";
                             }
-                        } else{
-                            echo "ERROR: Could not able to execute $sql. " . mysqli_error($db);
                         }
-                        mysqli_close($db);
-                        ?>
-                    </table>
+                    ?>
+                        </table>
+                    </div>
+                </div>
+                <div class="tab-content">
+                    <div id="tab2" class="container-list m-auto tab-pane fade">
+                        <table class="table table-striped pr-4 pl-4 mt-3 ml-auto mr-auto text-center" action="" method="POST">
+                            <?php
+                            
+                                $stmt =
+                                "SELECT 
+                                    id,
+                                    #created,
+                                    name,
+                                    contact_address,
+                                    num_chantier
+                                FROM
+                                    appli_skelec.chantiers
+                                WHERE
+                                    num_chantier is NULL
+                                ORDER BY
+                                    id DESC";
+                                if($result = mysqli_query($db, $stmt)){
+                                        if(mysqli_num_rows($result) > 0){
+
+                                            if($db === false){
+                                                die("ERROR: Could not connect. " . mysqli_connect_error());
+                                            }
+                                            echo '<tbody>';
+                                                while($row = $result->fetch_array()){
+                                                    echo '<tr>';
+                                                            echo '<td class="align-middle p-4 w-25 bg-success text-white">Dép.</td>';
+                                                            //echo '<td class="align-middle p-4" style="word-wrap: break-word; max-width: 85px;">' . $row['e_mail'] . '</td>';
+                                                            echo '<td class="align-middle p-4 w-25 bg-success text-white" style="word-wrap: break-word; max-width: 85px;">' . $row['name'] . '</td>';
+                                                            echo '<td class="align-middle p-4 w-25 bg-success text-white" style="word-wrap: break-word; max-width: 85px;">' . $row['contact_address'] . '</td>';
+                                                            echo "<td class='p-0 align-middle w-25 bg-success'><a href='troubleshooting_details.php?chantier_id=" . $row['id']  . "'><i class='fas fa-tools text-white'></i></a></td>";
+                                                    echo '</tr>';
+                                                }
+                                            echo '</tbody>';
+                                            mysqli_free_result($result);
+                                        } else {
+                                            echo "No records matching your query were found.";
+                                        }
+                                    } else {
+                                        echo "ERROR: Could not able to execute $stmt. " . mysqli_error($db);
+                                    }
+                                    mysqli_close($db);
+                            ?>
+                        </table>
+                    </div>
                 </div>
                 <form>
                     <div class="pt-1 w-75 m-auto">
@@ -115,11 +176,53 @@ if(!($_SESSION['username'])) {
                 </form>
             </div>
         </div>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     </body>
 
     <footer>
     </footer>
+    <!--<script type="text/javascript"> 
+        document.getElementById("menu_tab2").onclick = function() { 
+  
+            document.getElementById("tab1").removeClass('active');
+            document.getElementById("tab2").addClass('active');
+  
+        } 
+  
+        document.getElementById("menu_tab1").onclick = function() { 
 
+            document.getElementById("tab2").removeClass('active');
+            document.getElementById("tab1").addClass('active');
+  
+        } 
+    </script> 
+    <script>
+    $(document).ready(function(){
+        $(".nav-tabs a").click(function(){
+            $(this).tab('show');
+        });
+    });
+</script>
+
+    <script>
+        $('.nav-pills a:first').on('click', function(event) {
+            $('.nav-pills li').removeClass('active'); // remove active class from tabs
+            $(this).addClass('active'); // add active class to clicked tab
+            $('.nav-tabs a:last').hide(); // hide all tab content
+            //$('#' + $(this).data(id)).show(); // show the tab content with matching id
+            $('.nav-tabs a:first').tab(show);
+        });
+        $('.nav-pills a:last').on('click', function(event) {
+            $('.nav-pills li').removeClass('active'); // remove active class from tabs
+            $(this).addClass('active'); // add active class to clicked tab
+            $('.nav-tabs a:first').hide(); // hide all tab content
+            //$('#' + $(this).data(id)).show(); // show the tab content with matching id
+            $('.nav-tabs a:last').tab(show);
+        });
+
+    </script>-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="js/script.js"></script>
     <script src="js/bootstrap.js"></script>
