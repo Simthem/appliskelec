@@ -236,43 +236,43 @@ if($user) {
         ?>
             <div id="container">
                 <div class="content">
-                    <h3 class="text-center mt-0 mb-3 pt-5">Modification du compte</h3>
+                    <h3 class="text-center mt-0 mb-3 pt-5">Détails d'un compte</h3>
                     <form class="w-100 pt-2 pl-4 pb-0 pr-4">
                         <?php
                             $stmt = $bdd->prepare("SELECT * FROM users WHERE id = '". $_GET['id'] ."'");
                             $stmt->execute();
                             $user = $stmt->fetch();
                             if($user) {
-                                $modif_user['id'] = $user['id'];
+                                //$modif_user['id'] = $user['id'];
                                 $modif_user['username'] = $user['username'];
                                 $modif_user['first_name'] = $user['first_name'];
                                 $modif_user['last_name'] = $user['last_name'];
                                 $modif_user['e_mail'] = $user['e_mail'];
                                 $modif_user['phone'] = $user['phone'];
 
-                                echo '<input type="text" value="' . $modif_user['id'] . '" id="id" name="id" style="display: none;"">';
+                                //echo '<input type="text" value="' . $modif_user['id'] . '" id="id" name="id" style="display: none;"">';
                                 echo '<div class="md-form mt-1">';
-                                    echo '<label for="fusername">Username</label>';
+                                    echo '<label for="fusername" class="text-secondary">Username</label>';
                                     echo '<input type="text" value="' . $modif_user['username'] . '" id="username" name="username" class="form-control" placeholder="' . $modif_user['username'] . '"" disabled>';
                                 echo '</div>';
                                 echo '<div class="md-form mt-4">';
-                                    echo '<label for="first-name">First name</label>';
+                                    echo '<label for="first-name" class="text-secondary">First name</label>';
                                     echo '<input type="text" value="' . $modif_user['first_name'] . '" id="first_name" name="first_name" class="form-control" placeholder="' . $modif_user['first_name'] . '" disabled>';
                                 echo '</div>';
                                 echo '<div class="md-form mt-4">';
-                                    echo '<label for="last_name">Last name</label>';
+                                    echo '<label for="last_name" class="text-secondary">Last name</label>';
                                     echo '<input type="text" value="' . $modif_user['last_name'] . '" id="last_name" name="last_name" class="form-control" placeholder="' . $modif_user['last_name'] . '" disabled>';
                                 echo '</div>';
                                 echo '<div class="md-form mt-4">';
-                                    echo '<label for="e_mail">E_mail</label>';
+                                    echo '<label for="e_mail" class="text-secondary">E_mail</label>';
                                     echo '<input type="email" value="' . $modif_user['e_mail'] . '" id="e-mail" name="e_mail" class="form-control" placeholder="' . $modif_user['e_mail'] . '" disabled>';
                                 echo '</div>';
                                 echo '<div class="md-form mt-4">';
-                                    echo '<label for="phone">Téléphone</label>';
+                                    echo '<label for="phone" class="text-secondary">Téléphone</label>';
                                     echo '<input type="text" value="' . $modif_user['phone'] . '" id="phone" name="phone" class="form-control" placeholder="' . $modif_user['phone'] . '" disabled>';
                                 echo '</div>';
                                 echo '<div class="md-form mt-4">';
-                                    echo '<label for="total_hours">H/totales</label>';
+                                    echo '<label for="total_hours" class="text-secondary">H/totales</label>';
                         ?>
                                     <input type="number" value="<?php 
                                         $total = $total['totalheure'];

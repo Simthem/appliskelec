@@ -82,14 +82,14 @@ if(!($_SESSION['username'])) {
                                             if($row['num_chantier'] != 0 or !empty($row['num_chantier'])) {
                                                 echo '<td class="align-middle p-4 w-25">' . $row['num_chantier'] . '</td>';
                                                 //echo '<td class="align-middle p-4" style="word-wrap: break-word; max-width: 85px;">' . $row['e_mail'] . '</td>';
-                                                echo '<td class="align-middle p-4 w-25">' . $row['name'] . '</td>';
-                                                echo '<td class="align-middle p-4 w-25">' . $row['contact_address'] . '</td>';
+                                                echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 85px;">' . $row['name'] . '</td>';
+                                                echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 85px;">' . $row['contact_address'] . '</td>';
                                                 echo "<td class='p-0 align-middle w-25'><a href='troubleshooting_details.php?chantier_id=" . $row['id']  . "'><i class='fas fa-tools'></i></a></td>";
                                             } else {
                                                 echo '<td class="align-middle p-4 w-25 bg-success text-white">Dép.</td>';
                                                 //echo '<td class="align-middle p-4" style="word-wrap: break-word; max-width: 85px;">' . $row['e_mail'] . '</td>';
-                                                echo '<td class="align-middle p-4 w-25 bg-success text-white">' . $row['name'] . '</td>';
-                                                echo '<td class="align-middle p-4 w-25 bg-success text-white">' . $row['contact_address'] . '</td>';
+                                                echo '<td class="align-middle p-4 w-25 bg-success text-white" style="word-wrap: break-word; max-width: 85px;">' . $row['name'] . '</td>';
+                                                echo '<td class="align-middle p-4 w-25 bg-success text-white" style="word-wrap: break-word; max-width: 85px;">' . $row['contact_address'] . '</td>';
                                                 echo "<td class='p-0 align-middle w-25 bg-success'><a href='troubleshooting_details.php?chantier_id=" . $row['id']  . "'><i class='fas fa-tools text-white'></i></a></td>";
                                             }
                                             
