@@ -1,3 +1,19 @@
+$('.nav-pills a:last').on('click', function() {
+    $('.nav-pills a:first').removeClass('active'); // remove active class from tabs
+    $(this).addClass('active'); // add active class to clicked tab
+    $('.tab-content #tab1').hide(); // hide all tab content
+    //$('#' + $(this).data(id)).show(); // show the tab content with matching id
+    $('.tab-content #tab2').show();
+});
+
+$('.nav-pills a:first').on('click', function() {
+    $('.nav-pills a:last').removeClass('active'); // remove active class from tabs
+    $(this).addClass('active'); // add active class to clicked tab
+    $('.tab-content #tab2').hide(); // hide all tab content
+    //$('#' + $(this).data(id)).show(); // show the tab content with matching id
+    $('.tab-content #tab1').show();
+});
+
 function checkForm(){
     if(document.getElementById('name').value == ""){
         alert('Vous devez indiquer un libellé obligatoirement !');
