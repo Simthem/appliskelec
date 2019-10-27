@@ -50,11 +50,9 @@ class Intervention{
         $stmt->bindParam(":created", $this->created);
     
         if ($stmt->execute()) {
-            echo "youpiiiii";
             $this->id = $this->conn->lastInsertId();
             return true;
         }
-        echo "et merde ..";
         return false;
     }
 }

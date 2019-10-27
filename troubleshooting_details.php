@@ -136,7 +136,7 @@ $sql = "SELECT
                                     <tr>
                                         <th scope='col' class='text-center border-right align-middle w-25'>Salarié(s) sur le chantier</th>
                                         <th scope='col' class='text-center border-right align-middle w-25'>Nombre d'heures correspondant</th>
-                                        <th scope='col' class='text-center align-middle' style='width: 15%;'>Détails</th>
+                                        <th scope='col' class='text-center align-middle w-25'>Détails</th>
                                     </tr>
                                 </thead>
                             </table>";
@@ -160,8 +160,8 @@ $sql = "SELECT
 
                                             if (!empty($row['username']) and !empty($row['name_chantier'])){
                                                 echo "<tr>";
-                                                    echo "<td class='align-middle p-1 w-25'>" . $row['username'] . "</td>";
-                                                    echo "<td class='align-middle p-1 w-25'>";
+                                                    echo "<td class='align-middle p-1 w-25' style='word-wrap: break-word; max-width: 85px;'>" . $row['username'] . "</td>";
+                                                    echo "<td class='align-middle p-1 w-25' style='word-wrap: break-word; max-width: 85px;'>";
                                                         $total = $row['totalheure'];
                                                         $hours = (int)($total / 10000);
                                                         $minutes = (int)($total - ($hours * 10000)) / 100;
@@ -176,7 +176,7 @@ $sql = "SELECT
                                                             echo "00";
                                                         }
                                                     echo "</td>";
-                                                    echo "<td class='align-middle p-1' style='width: 15%;'><a href='list_profil.php'><i class='fas fa-tools align-middle'></i></a></td>";
+                                                    echo "<td class='align-middle p-1 w-25'><a href='list_profil.php'><i class='fas fa-tools align-middle'></i></a></td>";
                                                 echo "</tr>";
                                             }
                                         }

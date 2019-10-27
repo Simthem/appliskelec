@@ -66,9 +66,9 @@ if($user) {
                             
                             if ($_SESSION['id'] == $admin['id']) {
                                 $admin_sql = "SELECT * FROM `admin`";
-                                if($admin_result = mysqli_query($db, $admin_sql)){
-                                    if(mysqli_num_rows($admin_result) > 0){
-                                        if($db === false){
+                                if ($admin_result = mysqli_query($db, $admin_sql)){
+                                    if (mysqli_num_rows($admin_result) > 0){
+                                        if ($db === false){
                                             die("ERROR: Could not connect. " . mysqli_connect_error());
                                         }
                                         while($row = $admin_result->fetch_array()) {
@@ -109,9 +109,13 @@ if($user) {
                 <h3 class="text-center mt-0 pb-3 pt-5">Liste des salariés</h3>
                 <table class="table table-striped mt-0 ml-0 mb-0 text-center" style="height: 50px;">
                     <?php
-                    $sql = "SELECT * FROM users";
-                    if($result = mysqli_query($db, $sql)){
-                        if(mysqli_num_rows($result) > 0){
+
+                    $sql = 
+                    "SELECT username, phone 
+                    FROM users";
+
+                    if ($result = mysqli_query($db, $sql)){
+                        if (mysqli_num_rows($result) > 0){
                             echo '<thead>';
                                 echo '<tr>';
                                     echo '<th scope="col" class="text-center align-middle p-2 w-25" id="first_name">Prénom</th>';
@@ -126,31 +130,87 @@ if($user) {
                 <div class="container-list m-auto">
                     <table class="table table-striped pr-4 pl-4 mt-3 ml-auto mr-auto text-center" action="api/user/edit_profil.php" method="GET">
                         <?php
-                        if($db === false){
-                            die("ERROR: Could not connect. " . mysqli_connect_error());
-                        }
-                                echo '<tbody>';
-                                    while($row = $result->fetch_array()){
-                                        $time = strtotime($row['total_hours']);
-                                        echo '<tr>';
-                                            echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . $row['username'] . '</td>';
-                                            //echo '<td class="align-middle p-4" style="word-wrap: break-word; max-width: 85px;">' . $row['e_mail'] . '</td>';
-                                            echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . $row['phone'] . '</td>';
-                                            echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . date('H:i', $time) . '</td>';
-                                            //echo '<td class="align-middle p-4 w-25">' . $row['id'] . '</td>';
-                                            $id_user_row = $row['id'];
-                                            echo "<td class='p-0 align-middle w-25'><a href='modif_profil.php?id=" . $id_user_row . "'><i class='fas fa-tools'></i></a></td>";
-                                        echo '</tr>';
-                                    }
-                                echo '</tbody>';
-                                mysqli_free_result($result);
-                            } else{
-                                echo "No records matching your query were found.";
+                            if ($db === false){
+                                die("ERROR: Could not connect. " . mysqli_connect_error());
                             }
-                        } else{
-                            echo "ERROR: Could not able to execute $sql. " . mysqli_error($db);
+                            echo '<tbody>';
+                            
+                                while ($row = $result->fetch_array()){
+                                    echo '<tr>';
+                                        echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . $row['username'] . '</td>';
+                                        //echo '<td class="align-middle p-4" style="word-wrap: break-word; max-width: 85px;">' . $row['e_mail'] . '</td>';
+                                        echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . $row['phone'] . '</td>';
+                                        
+                                        
+                                        $sql_hours = 
+                                        "SELECT 
+                                            username,
+                                            c.id AS chantier_id,
+                                            #c.created as date_chantier,
+                                            #concat(year(g.created),
+                                            #month(g.created),
+                                            #week(g.created)),
+                                            #c.name AS name_chantier,
+                                            u.id AS `user_id`,
+                                            #if (SUM(intervention_hours) > 80000, SUM(intervention_hours) - 80000, NULL) as \'> 80000\',
+                                            #if (SUM(intervention_hours)-40000 > 0,if( SUM(intervention_hours) -40000>30000,30000,SUM(intervention_hours) - 40000), NULL) as \'> 40000\',
+                                            SUM(intervention_hours) AS totalheure
+                                            #SUM(night_hours) AS maj50
+                                        FROM
+                                            chantiers AS c
+                                            JOIN
+                                            global_reference AS g ON c.id = chantier_id
+                                            JOIN
+                                            users AS u ON g.user_id = u.id
+                                        WHERE
+                                            username = '" . $row['username'] . "'
+                                            #c.id is NULL
+                                            #g.created BETWEEN \'2019-10-01\' AND \'2019-11-30\'
+                                        GROUP BY username , c.id , u.id WITH ROLLUP# c.created , c.name , concat(year(g.created) , month(g.created), week(g.created)) with ROLLUP";
+                                        
+                                        if ($result_hours = mysqli_query($db, $sql_hours)){
+                                            //print_r($result_hours);
+                                            //echo "<br /><br />";
+                                            //print_r($result_hours);
+                                            if (mysqli_num_rows($result_hours) > 0){
+                                                while ($row_hours = $result_hours->fetch_array()) {
+                                                    //print_r($row_hours);
+                                                    //echo '<br />' . $row_hours['totalheure'] . '<br />';
+                                                    if (!empty($row_hours['username']) and empty($row_hours['chantier_id']) /*and !empty($row_hours['user_id'])*/) {
+                                                        //$time = strtotime($row_hours['totalheure']);
+                                                        $total = $row_hours['totalheure'];
+                                                        $hours = (int)($total / 10000);
+                                                        $minutes = ((int)($total - ($hours * 10000)) / 100);
+                                                        if ($minutes > 10) {
+                                                            $minutes = $minutes;
+                                                        } elseif ($minutes < 10 and $minutes > 0) {
+                                                            $minutes = "0" . $minutes;
+                                                        } else {
+                                                            $minutes = "00";
+                                                        }
+                                                        echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . $hours . ':' . $minutes . '</td>';
+                                                    }
+                                                }
+                                                mysqli_free_result($result_hours);
+                                            } else {
+                                                echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">00:00</td>';
+                                            }
+                                        } else {
+                                            echo "ERROR: Could not able to execute $result_hours. " . mysqli_error($db);
+                                        }
+                                    $id_user_row = $row['id'];
+                                    echo "<td class='p-0 align-middle w-25'><a href='modif_profil.php?id=" . $id_user_row . "'><i class='fas fa-tools'></i></a></td>";
+                                    echo '</tr>';
+                                }
+                            mysqli_free_result($result);
+                            echo '</tbody>';
+                        } else {
+                            echo "No records matching your query were found.";
                         }
-                        mysqli_close($db);
+                    } else{
+                        echo "ERROR: Could not able to execute $sql. " . mysqli_error($db);
+                    }
+                    mysqli_close($db); 
                         ?>
                     </table>
                 </div>

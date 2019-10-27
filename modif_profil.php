@@ -160,7 +160,7 @@ if($user) {
                                             $minutes = ((int)($total - ($hours * 10000)) / 100) / 60;
                                             $total = $hours + $minutes;
                                             echo $total;
-                                            ?>" disabled>
+                                        ?>" disabled>
                                     <?php 
                                     echo '</div>';
                                     if ($_GET['id'] != $admin['id'] and $_SESSION['id'] == $_GET['id'] and $_SESSION['id'] == $user['id']) {
@@ -174,6 +174,41 @@ if($user) {
                                         echo '</div>';
                                     }
                                 } elseif ($admin) {
+
+                                    echo "first-step";
+                                    echo $admin['id'];
+                                    $admin_sql = $bdd->prepare("SELECT 
+                                        c.id AS chantier_id,
+                                        c.created as date_chantier,
+                                        concat(year(g.created),
+                                        month(g.created),
+                                        week(g.created)),
+                                        c.name AS name_chantier,
+                                        admin_name,
+                                        a.id AS admin_id,
+                                        #if (SUM(intervention_hours) > 80000, SUM(intervention_hours) - 80000, NULL) as \'> 80000\',
+                                        #if (SUM(intervention_hours)-40000 > 0,if( SUM(intervention_hours) -40000>30000,30000,SUM(intervention_hours) - 40000), NULL) as \'> 40000\',
+                                        SUM(intervention_hours) AS totalheure
+                                        #SUM(night_hours) AS maj50
+                                    FROM
+                                        chantiers AS c
+                                        JOIN
+                                        global_reference AS g ON c.id = chantier_id
+                                        JOIN
+                                        admin AS a ON g.user_id = a.id
+                                    WHERE
+                                        a.id = '" . $admin['id'] . "'
+                                        #g.created BETWEEN \'2019-10-01\' AND \'2019-11-30\'
+                                    GROUP BY c.id , a.id , c.created , admin_name , c.name , concat(year(g.created) , month(g.created), week(g.created)) with ROLLUP");
+                                    
+                                    $admin_sql->execute();
+                                    while ($total_admin = $admin_sql->fetch()) {
+                                        if ($total_admin['chantier_id'] == NULL) {
+                                            $total['totalheure'] = $total_admin['totalheure'];
+                                        } 
+                                    }
+
+                                    
                                     if ($_SESSION['id'] == $admin['id'] and $admin['id'] == $_GET['id']) {
                                         /*
                                         $_SESSION['id'] = $admin['id'];
@@ -206,9 +241,23 @@ if($user) {
                                             echo '<input type="text" value="' . $admin['phone'] . '" id="phone" name="phone" class="form-control" placeholder="' . $admin['phone'] . '">';
                                         echo '</div>';
                                         echo '<div class="md-form mt-4">';
-                                            echo '<label for="total_hours">H/totales</label>';
-                                            echo '<input type="time" value="' . $admin['total_hours'] . '" id="total_hours" name="total_hours" class="form-control" placeholder="' . $admin['total_hours'] . '">';
-                                        echo '</div>';
+                                        echo '<label for="total_hours">H/totales</label>';?>
+                                        <input type="number" value="<?php 
+                                            $total = $total['totalheure'];
+                                            $hours = (int)($total / 10000);
+                                            $minutes = ((int)($total - ($hours * 10000)) / 100) / 60;
+                                            $total = $hours + $minutes;
+                                            echo $total;?>" 
+                                        id="total_hours" name="total_hours" class="form-control" placeholder="
+                                        <?php 
+                                            $total = $total['totalheure'];
+                                            $hours = (int)($total / 10000);
+                                            $minutes = ((int)($total - ($hours * 10000)) / 100) / 60;
+                                            $total = $hours + $minutes;
+                                            echo $total;
+                                        ?>" disabled>
+                                    <?php 
+                                    echo '</div>';
                                         echo '<div class="md-form mt-4">';
                                             echo '<label for="pass1">Password</label>';
                                             echo '<input type="password" id="pass1" name="pass1" class="form-control" data-type="password" required>';
