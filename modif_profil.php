@@ -175,8 +175,6 @@ if($user) {
                                     }
                                 } elseif ($admin) {
 
-                                    echo "first-step";
-                                    echo $admin['id'];
                                     $admin_sql = $bdd->prepare("SELECT 
                                         c.id AS chantier_id,
                                         c.created as date_chantier,

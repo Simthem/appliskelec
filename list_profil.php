@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-include_once 'api/config/db_connexion.php';
+include 'api/config/db_connexion.php';
 
 
 if(!($_SESSION['username'])) {  
@@ -107,7 +107,7 @@ if($user) {
         <!-- Content -->
         <div id="container">
             <div class="content">
-                <h3 class="text-center mt-0 pb-3 pt-5">Liste des salariés</h3>
+                <h3 class="text-center mt-2 pb-3 pt-5">Liste des salariés</h3>
                 <table class="table table-striped mt-0 ml-0 mb-0 text-center" style="height: 50px;">
                     <?php
 
@@ -123,7 +123,7 @@ if($user) {
                                     //echo '<th scope="col" class="text-center align-middle p-4" id="e_mail">E-mail</th>';
                                     echo '<th scope="col" class="text-center align-middle p-2 w-25" id="phone">Téléphone</th>';
                                     echo '<th scope="col" class="text-center align-middle p-2 w-25" id="hours">H/totales</th>';
-                                    echo '<th scope="col" class="text-center align-middle p-0 w-25" id="">Détails</th>';
+                                    echo '<th scope="col" class="text-center align-middle p-2 w-25" id="">Détails</th>';
                                 echo '</tr>';
                             echo '</thead>';
                     ?>
@@ -190,12 +190,22 @@ if($user) {
                                         } else {
                                             echo "ERROR: Could not able to execute $result_hours. " . mysqli_error($db);
                                         }
-                                    echo "<td class='p-0 align-middle w-50'><a href='modif_profil.php?id=" . $id_user_row . "'><i class='fas fa-tools'></i></a></td>";
-                                    ?>
-                                    <form action="api/user/delete_user.php" method="GET" >
-                                        <td class="p-0 align-middle w-50" id="<?php echo $id_user_row; ?>" name="<?php echo $id_user_row; ?>" class="remove" onClick="reply_click_user(this.id)"><i class="fas fa-trash-alt"></i></td>
-                                    </form>
-                                    <?php
+
+
+
+                                        if ($_SESSION['id'] == $admin['id']) {
+                                            echo '<td class="p-0 align-middle w-25>';
+                                            ?>
+                                            <form action="api/user/delete_user.php" method="GET" >
+                                                <div class="float-left pl-0" id="<?php echo $id_user_row; ?>" name="<?php echo $id_user_row; ?>" class="remove" onClick="reply_click_user(this.id)"><i class="fas fa-trash-alt"></i></div>
+                                            </form>
+                                            <div class="w-100 text-center"><a href="modif_profil.php?id=<?php echo $id_user_row; ?>"><i class="fas fa-tools mr-2"></i></a></div>
+
+                                        <?php
+                                        echo '</td>';
+                                        } else {
+                                            echo "<td class='p-0 align-middle w-25'><a href='modif_profil.php?id=" . $id_user_row . "'><i class='fas fa-tools'></i></a></td>";
+                                        }
                                     echo '</tr>';
                                 }
                             mysqli_free_result($result_hours);
@@ -207,25 +217,24 @@ if($user) {
                     } else{
                         echo "ERROR: Could not able to execute $sql. " . mysqli_error($db);
                     }
-                    mysqli_close($db); 
                         ?>
                     </table>
                 </div>
                 <?php
                     if ($_SESSION['id'] == $admin['id']) {
-                        echo "<form>";
-                            echo "<div class='pt-1 w-75 m-auto'>";
+                        echo "<form class='pt-5 mt-5'>";
+                            echo "<div class='pt-5 w-75 m-auto'>";
                                 echo "<a href='add_profil.php' class='btn send border-0 bg-white z-depth-1a mt-2 mb-2 text-dark'>Ajouter un compte</a>";
-                                echo "<a href='#' value='delete' class='btn finish border-0 bg-white z-depth-1a mt-2 mb-2 text-dark'>Supprimer un compte</a>";
                             echo "</div>";
                         echo "</form>";
                     } else {
-                        echo "<div class='pt-5 pb-5'>";
-                            echo "<div class='pt-2 w-75 m-auto'>";
+                        echo "<div class='pt-5 mt-5'>";
+                            echo "<div class='pt-5 w-75 m-auto'>";
                                 echo "<a href='index.php' value='delete' class='btn finish border-0 bg-white z-depth-1a mt-4 mb-3 text-dark'>Précédent</a>";
                             echo "</div>";
                         echo "</div>";
                     }
+                    mysqli_close($db); 
                 ?>
             </div>
         </div>

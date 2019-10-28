@@ -139,7 +139,7 @@ ORDER BY
                                                     echo '<form action="api/user/delete_troubles.php" method="GET" >';
                                                         echo '<td class="p-0 align-middle">';
                                                             echo '<div class="float-left pl-0" id="' . $row['id'] . '" name="' . $row['id'] . '" onClick="reply_click_troubles(this.id)"><i class="fas fa-trash-alt"></i></div>';
-                                                            echo '<div class="p-0 text-center w-100"><a href="troubleshooting_details.php?chantier_id="' . $row['id'] . '"><i class="fas fa-tools"></i></a></div>';
+                                                            echo '<div class="p-0 text-center w-100"><a href="troubleshooting_details.php?chantier_id="' . $row['id'] . '"><i class="fas fa-tools mr-2"></i></a></div>';
                                                         echo '</td>';
                                                     echo '</form>';
                                                 } else {
