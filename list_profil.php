@@ -193,7 +193,7 @@ if($user) {
                                     echo "<td class='p-0 align-middle w-50'><a href='modif_profil.php?id=" . $id_user_row . "'><i class='fas fa-tools'></i></a></td>";
                                     ?>
                                     <form action="api/user/delete_user.php" method="GET" >
-                                        <td class="p-0 align-middle w-50" id="<?php echo $id_user_row; ?>" name="<?php echo $id_user_row; ?>" class="remove" onClick="reply_click(this.id)"><i class="fas fa-trash-alt"></i></td>
+                                        <td class="p-0 align-middle w-50" id="<?php echo $id_user_row; ?>" name="<?php echo $id_user_row; ?>" class="remove" onClick="reply_click_user(this.id)"><i class="fas fa-trash-alt"></i></td>
                                     </form>
                                     <?php
                                     echo '</tr>';

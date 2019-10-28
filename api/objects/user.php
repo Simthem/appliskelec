@@ -103,35 +103,15 @@ class User{
 }
 
 
-class DeleteClass{
-
+class DeleteUser{
 
     // database connection and table name
     private $conn;
     private $table_name = "users";
-
-    // connect to mysql database
-    /*public function __construct($host, $username, $password, $db_name)
-    {
-        $this->connection = new mysqli($host, $username, $password, $db_name);
-        if($this->connection->connect_errno)
-            die("Error " . $this->connection->connect_error);
-    }*/
-    
-
-    // fetch all the user records from db
-    /*public function select_user()
-    {
-        $query = "SELECT * FROM users";
-        $result = $this->conn->prepare($query);
-        $result->execute();
-        return $result;
-    }*/
     
     // delete user record for given id
     public function delete_user($id)
     {
-        echo "first step - USER";
         $query = "SELECT * FROM users";
         $result = $this->conn->prepare($query);
         $result->execute();

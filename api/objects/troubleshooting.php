@@ -88,3 +88,21 @@ class Troubles{
         }
     }
 }
+
+
+class DeleteTroubles{
+
+    // database connection and table name
+    private $conn;
+    private $table_name = "chantiers";
+    
+    // delete troubles record for given id
+    public function delete_troubles($id)
+    {
+        $query = "SELECT * FROM chantiers";
+        $result = $this->conn->prepare($query);
+        $result->execute();
+        return $result;
+    }
+}
+?>

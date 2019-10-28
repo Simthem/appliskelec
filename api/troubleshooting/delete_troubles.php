@@ -7,7 +7,7 @@ if(!($_SESSION['username'])) {
 }
 
 // get database connection
-include_once '../objects/user.php';
+include_once '../objects/troubleshooting.php';
 include_once '../config/db_connexion.php';
 
 
@@ -15,9 +15,9 @@ $database = new Database();
 $db = $database->getConnection();
  
 
-$user = new DeleteUser($bdd);
+$user = new DeleteTroubles($bdd);
 
-$stmt = "DELETE FROM users WHERE id = " . $_GET['id'];
+$stmt = "DELETE FROM chantiers WHERE id = " . $_GET['id'];
 $del = $bdd->prepare($stmt);
 $del->execute();
 return $del;

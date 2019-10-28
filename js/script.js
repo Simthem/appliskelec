@@ -1,12 +1,35 @@
 //function DELETE_USER
 
-function reply_click(clicked_id){
+function reply_click_user(clicked_id){
     var id = clicked_id;
 
     if(confirm('Are you sure to remove this record ?'))
     {
         $.ajax({
             url: '../api/user/delete_user.php',
+            type: 'GET',
+            data: {id: id},
+            error: function() {
+                alert('Something is wrong');
+            },
+            success: function(data) {
+                //$("#"+id).remove();
+                alert("Record removed successfully");
+                location.reload();
+            }
+        });
+    }
+};
+
+//function DELETE_TROUBLES
+
+function reply_click_troubles(clicked_id){
+    var id = clicked_id;
+
+    if(confirm('Are you sure to remove this record ?'))
+    {
+        $.ajax({
+            url: '../api/troubleshooting/delete_troubles.php',
             type: 'GET',
             data: {id: id},
             error: function() {
