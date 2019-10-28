@@ -23,6 +23,7 @@ if($user) {
 } else {
     echo "ERROR: Could not get 'id' of current user [first_method]";
 }
+//$date_now = date('Y-m-d');
 ?>
 
 <!DOCTYPE html>
@@ -62,7 +63,7 @@ if($user) {
                 </nav>
                 <div class="icons-navbar">
                     <div class="menu-btn-bars text-white"><button class="menu-btn fas fa-bars text-warning w-100 fa-3x p-0"></button></div>
-                    <a href="index.php" class="text-warning m-auto"><h2 class="m-0">S.K.elec</h2></a>
+                    <a href="index.php" class="text-warning d-inline-flex m-auto"><img class="mr-2 ml-2" src="img/ampoule_skelec.png" alt="logo S.K.elec" height="45" width="30"><h2 class="d-inline-flex mt-0 mr-2 mb-0 ml-0">S.K.elec</h2></a>
                     <a href="add_troubleshooting.php" class="text-white pl-3"><i class="menu-btn-plus fas fa-plus-circle text-warning fa-3x rounded-circle"></i></a>
                 </div>
             </div>
@@ -71,27 +72,32 @@ if($user) {
         <!-- Content -->
         <div id="container">
             <div class="content">
-                <div class="w-50 m-auto p-3">
-                    <h4 class="text-center"><?php echo date('d/m/Y'); ?></h4>
-                    <div class="text-center"><?php echo $_SESSION['username']; ?></div>
-                    <div class="text-center"><?php if($_SESSION['username'] == "admin") { echo "Administrateur de S.K.elec_app ;)";}?></div>
-                </div>
                 <form action="./api/index_global/create_intervention.php" method="POST">
+                    <div class="m-auto p-3">
+                        <h6 class="text-center w-75 mr-auto ml-auto"><input class="w-50 text-right" type="date" id="up_inter" name="up_inter"  placeholder="<?//php echo $date_now; ?>" required="required"></h6>
+                        <div class="text-center"><?php echo $_SESSION['username']; ?></div>
+                        <div class="text-center"><?php 
+                                                    if($_SESSION['username'] == "admin") { 
+                                                        echo "Administrateur de S.K.elec_app ;)";
+                                                    }
+                                                ?>
+                        </div>
+                    </div>
                     <?php echo "<input type='number' id='user_id' name='user_id' value='" . $_SESSION['id'] . "' style='display: none'>" ?>
                     <div class="text-center">
                         <select name="chantier_id" size="1">
                             <?php
-                                $sql = "SELECT * FROM chantiers";
-                                if($result = mysqli_query($db, $sql)){
-                                    if(mysqli_num_rows($result) > 0){
-                                        if($db === false){
+                                $sql = "SELECT id, name FROM chantiers";
+                                if ($result = mysqli_query($db, $sql)) {
+                                    if (mysqli_num_rows($result) > 0) {
+                                        if ($db === false){
                                             die("ERROR: Could not connect. " . mysqli_connect_error());
                                         }
-                                        while($row = $result->fetch_array()){
+                                        while ($row = $result->fetch_array()){
                                             echo "<option value='" . $row['id'] . "'>" . $row['name'] . '</option>';
                                         }
                                         mysqli_free_result($result);
-                                    } else{
+                                    } else {
                                         echo "No records matching your query were found.";
                                     }
                                 } else{
@@ -104,7 +110,7 @@ if($user) {
                     <div class="pt-5 w-50 m-auto text-center">
                         <label for="input_time m-auto">Heures réalisées</label>
                         <div class="w-50 m-auto pb-4">
-                            <input type="time" id="ntervention_hours" name="intervention_hours" class="form-control text-center align-middle m-auto p-1" style="line-height: 25px;" placeholder="hh:mm" />
+                            <input type="time" id="ntervention_hours" name="intervention_hours" step="120" class="form-control text-center align-middle m-auto p-1" style="line-height: 25px;" placeholder="hh:mm" />
                         </div>
                     </div>
                     <div class="m-auto d-flex flex-column border-top pt-4 pb-3 w-75">
@@ -116,10 +122,10 @@ if($user) {
                             <div class="d-inline-flex h-25">
                                 <div class="mt-auto mb-auto pt-1">
                                     <input type="checkbox" class="form-check-input align-middle">
-                                    <label class="mb-0 mt-1 ml-5 text-center" for="">Dont :</label>
+                                    <label class="col-8 mb-0 mt-1 ml-5 p-0 text-center" for="">Dont :</label>
                                 </div>
-                                <div class="col d-inline-flex pr-0 pl-2 mt-auto mb-auto">
-                                    <input type="time" id="night_hours" name="night_hours" class="col-7 form-control p-1 mt-auto mb-auto text-center" style="line-height: 25px;" placeholder="minutes/heures">
+                                <div class="col-10 d-inline-flex pr-0 pl-4 mt-auto mb-auto">
+                                    <input type="time" id="night_hours" name="night_hours" class="col-8 form-control p-1 mt-auto mb-auto text-center" style="line-height: 25px;" placeholder="minutes/heures">
                                     <label class="mt-1 ml-3 mb-auto">heures de nuit</label>
                                 </div>
                             </div>

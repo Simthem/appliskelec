@@ -9,11 +9,11 @@ if(!($_SESSION['username'])) {
 }
 
 
-$stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");
+$stmt = $bdd->prepare("SELECT id FROM appli_skelec.users WHERE username = '". $_SESSION['username'] ."'");
 $stmt->execute();
 $user = $stmt->fetch();
 
-$stmt_admin = $bdd->prepare("SELECT * FROM `admin` WHERE admin_name = '". $_SESSION['admin_name'] ."'");
+$stmt_admin = $bdd->prepare("SELECT * FROM appli_skelec.admin WHERE admin_name = '". $_SESSION['admin_name'] ."'");
 $stmt_admin->execute();
 $admin = $stmt_admin->fetch();
 if($user) {
@@ -207,7 +207,6 @@ if($user) {
                                             $total['totalheure'] = $total_admin['totalheure'];
                                         } 
                                     }
-
                                     
                                     if ($_SESSION['id'] == $admin['id'] and $admin['id'] == $_GET['id']) {
                                         /*

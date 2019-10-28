@@ -1,3 +1,5 @@
+    //nav choice for troubleshooting list
+
 $('.nav-pills a:last').on('click', function() {
     $('.nav-pills a:first').removeClass('active'); // remove active class from tabs
     $(this).addClass('active'); // add active class to clicked tab
@@ -14,6 +16,11 @@ $('.nav-pills a:first').on('click', function() {
     $('.tab-content #tab1').show();
 });
 
+
+
+
+//check formula in index
+
 function checkForm(){
     if(document.getElementById('name').value == ""){
         alert('Vous devez indiquer un libellé obligatoirement !');
@@ -24,6 +31,10 @@ function checkForm(){
     document.getElementById('add_trouble').submit();
     }
 }
+
+
+
+//Slide
 
 !function(a){
     function b(){

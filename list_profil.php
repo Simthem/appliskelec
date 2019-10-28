@@ -91,7 +91,7 @@ if($user) {
                                                 echo "<a href='modif_profil.php?id=" . $row['id'] . "' class='text-white pl-3'><i class='menu-btn-plus fas fa-user text-warning fa-3x rounded-circle'></i></a>";
                                             }
                                         }
-                                        mysqli_free_result($admin_result);
+                                        mysqli_free_result($user_result);
                                     }
                                 } else {
                                     echo "ERROR: Could not able to execute $admin_sql. " . mysqli_error($db);
@@ -111,7 +111,7 @@ if($user) {
                     <?php
 
                     $sql = 
-                    "SELECT username, phone 
+                    "SELECT id, username, phone 
                     FROM users";
 
                     if ($result = mysqli_query($db, $sql)){
@@ -140,7 +140,7 @@ if($user) {
                                         echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . $row['username'] . '</td>';
                                         //echo '<td class="align-middle p-4" style="word-wrap: break-word; max-width: 85px;">' . $row['e_mail'] . '</td>';
                                         echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . $row['phone'] . '</td>';
-                                        
+                                        $id_user_row = $row['id'];
                                         
                                         $sql_hours = 
                                         "SELECT 
@@ -164,20 +164,12 @@ if($user) {
                                             users AS u ON g.user_id = u.id
                                         WHERE
                                             username = '" . $row['username'] . "'
-                                            #c.id is NULL
-                                            #g.created BETWEEN \'2019-10-01\' AND \'2019-11-30\'
-                                        GROUP BY username , c.id , u.id WITH ROLLUP# c.created , c.name , concat(year(g.created) , month(g.created), week(g.created)) with ROLLUP";
+                                        GROUP BY username , c.id , u.id WITH ROLLUP";
                                         
                                         if ($result_hours = mysqli_query($db, $sql_hours)){
-                                            //print_r($result_hours);
-                                            //echo "<br /><br />";
-                                            //print_r($result_hours);
                                             if (mysqli_num_rows($result_hours) > 0){
                                                 while ($row_hours = $result_hours->fetch_array()) {
-                                                    //print_r($row_hours);
-                                                    //echo '<br />' . $row_hours['totalheure'] . '<br />';
                                                     if (!empty($row_hours['username']) and empty($row_hours['chantier_id']) /*and !empty($row_hours['user_id'])*/) {
-                                                        //$time = strtotime($row_hours['totalheure']);
                                                         $total = $row_hours['totalheure'];
                                                         $hours = (int)($total / 10000);
                                                         $minutes = ((int)($total - ($hours * 10000)) / 100);
@@ -191,17 +183,16 @@ if($user) {
                                                         echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . $hours . ':' . $minutes . '</td>';
                                                     }
                                                 }
-                                                mysqli_free_result($result_hours);
                                             } else {
                                                 echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">00:00</td>';
                                             }
                                         } else {
                                             echo "ERROR: Could not able to execute $result_hours. " . mysqli_error($db);
                                         }
-                                    $id_user_row = $row['id'];
                                     echo "<td class='p-0 align-middle w-25'><a href='modif_profil.php?id=" . $id_user_row . "'><i class='fas fa-tools'></i></a></td>";
                                     echo '</tr>';
                                 }
+                            mysqli_free_result($result_hours);
                             mysqli_free_result($result);
                             echo '</tbody>';
                         } else {

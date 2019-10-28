@@ -6,6 +6,26 @@ include_once '../config/database.php';
 include_once '../config/db_connexion.php';
 include_once '../objects/intervention.php';
  
+$sql_date = "SELECT id, created FROM chantiers WHERE id ='" . $_POST['chantier_id'] . "'";
+if($res_date = mysqli_query($db, $sql_date)){
+    if(mysqli_num_rows($res_date) > 0){
+        if ( $db === false){
+            die("ERROR: Could not connect. " . mysqli_connect_error());
+        }
+/*$sql_date = $bdd->prepare("SELECT id, created FROM chantiers WHERE id = " . $row['id']);
+$sql_date->execute();
+$result_date = $sql_date->fetch();*/
+        while ($date = $res_date->fetch_array()){
+            $created = $date['created'];
+        }
+        mysqli_free_result($res_date);
+    } else{
+        echo "No records matching your query were found.";
+    }
+} else {
+    echo "ERROR: Could not able to execute $sql_date. " . mysqli_error($db);
+}
+
 $database = new Database();
 $db = $database->getConnection();
  
@@ -22,7 +42,9 @@ if(isset($_POST['panier_repas'])) {
 }
 $intervention->night_hours = $_POST['night_hours'];
 $intervention->commit = $_POST['commit'];
-$intervention->created = date('Y-m-d');
+$intervention->created = $created;
+$intervention->updated = $_POST['up_inter'];
+
 
 if(empty($_POST['chantier_id'])) {
     echo "chantier_id required";

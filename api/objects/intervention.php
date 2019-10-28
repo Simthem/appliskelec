@@ -14,6 +14,7 @@ class Intervention{
     public $night_hours;
     public $commit;
     public $created;
+    public $updated;
 
 
     // constructor with $db as database connection
@@ -26,7 +27,7 @@ class Intervention{
         $query = "INSERT INTO
                     " . $this->table . "
                 SET
-                    user_id=:user_id, chantier_id=:chantier_id, intervention_hours=:intervention_hours, panier_repas=:panier_repas, night_hours=:night_hours, commit=:commit, created=:created";
+                    user_id=:user_id, chantier_id=:chantier_id, intervention_hours=:intervention_hours, panier_repas=:panier_repas, night_hours=:night_hours, commit=:commit, created=:created, updated=:updated";//
     
         // prepare query
         $stmt = $this->conn->prepare($query);
@@ -39,6 +40,7 @@ class Intervention{
         $this->night_hours=htmlspecialchars(strip_tags($this->night_hours));
         $this->commit=htmlspecialchars(strip_tags($this->commit));
         $this->created=htmlspecialchars(strip_tags($this->created));
+        $this->updated=htmlspecialchars(strip_tags($this->updated));
     
         // bind values
         $stmt->bindParam(":user_id", $this->user_id);
@@ -48,6 +50,7 @@ class Intervention{
         $stmt->bindParam(":night_hours", $this->night_hours);
         $stmt->bindParam(":commit", $this->commit);
         $stmt->bindParam(":created", $this->created);
+        $stmt->bindParam(":updated", $this->updated);
     
         if ($stmt->execute()) {
             $this->id = $this->conn->lastInsertId();
