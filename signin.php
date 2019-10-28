@@ -9,13 +9,6 @@ if($_POST['username'] and $_POST['password']) {
 
 <!DOCTYPE html>
 
-<!--<script>
-if ( $(window).width() < 1080)  {
-  print "<html class='overflow-hidden'>";
-} else {
-  print '<html>';
-}
-</script>-->
 <html>
   <head>
     <meta charset="utf-8">
@@ -40,10 +33,6 @@ if ( $(window).width() < 1080)  {
 
       <section class="form-elegant mt-auto mb-auto">
         <div class="card-body">
-          <!--<ul class="nav nav-pills">
-            <li class="active h-50"><a href="#tab1" data-toggle="tab" class="h-75">Sign In</a></li>
-            <li class="h-50"><a href="#tab2" data-toggle="tab" class="h-75">Sign Up</a></li>
-          </ul>-->
           <div class="tab-content">
             <div class="tab-pane active" id="tab1">
               <form class="w-100 h-75 ml-auto mb-auto" action="./api/user/login.php" method="POST">
@@ -63,25 +52,6 @@ if ( $(window).width() < 1080)  {
                 </div>
               </form>
             </div>
-            <!--<div class="tab-pane" id="tab2">
-              <form id="signup" class="w-100 h-75 pt-1 mt-0 mr-2 mb-0 ml-2" action="./api/user/signup.php" method="POST">
-                <div class="md-form pt-0 pb-3">
-                  <label for="username1">Username</label>
-                  <input id="username1" name="username1" type="text" class="form-control" required>
-                </div>
-                <div class="md-form pt-0">
-                  <label for="pass1">Password</label>
-                  <input id="pass1" name="pass1" type="password" class="form-control" data-type="password" required>
-                </div>
-                <div class="md-form pt-0">
-                  <label for="pass2">Confirm Password</label>
-                  <input id="pass2" name="pass2" type="password" class="form-control" data-type="password" required>
-                </div>
-                <div class="text-center mt-3 mb-4">
-                  <input type="submit" class="btn send border-0 bg-white z-depth-1a pl-5 pr-5 text-dark" value="Sign Up">
-                </div>
-              </form>
-            </div>-->
           </div>
         </div>
         

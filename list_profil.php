@@ -2,12 +2,13 @@
 session_start();
 
 include_once 'api/config/db_connexion.php';
-//require_once 'api/user/edit_profil.php';
+
 
 if(!($_SESSION['username'])) {  
   
     header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
 }
+
 
 $stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");
 $stmt->execute();
@@ -189,7 +190,12 @@ if($user) {
                                         } else {
                                             echo "ERROR: Could not able to execute $result_hours. " . mysqli_error($db);
                                         }
-                                    echo "<td class='p-0 align-middle w-25'><a href='modif_profil.php?id=" . $id_user_row . "'><i class='fas fa-tools'></i></a></td>";
+                                    echo "<td class='p-0 align-middle w-50'><a href='modif_profil.php?id=" . $id_user_row . "'><i class='fas fa-tools'></i></a></td>";
+                                    ?>
+                                    <form action="api/user/delete_user.php" method="GET" >
+                                        <td class="p-0 align-middle w-50" id="<?php echo $id_user_row; ?>" name="<?php echo $id_user_row; ?>" class="remove" onClick="reply_click(this.id)"><i class="fas fa-trash-alt"></i></td>
+                                    </form>
+                                    <?php
                                     echo '</tr>';
                                 }
                             mysqli_free_result($result_hours);

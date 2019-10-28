@@ -1,4 +1,27 @@
-    //nav choice for troubleshooting list
+//function DELETE_USER
+
+function reply_click(clicked_id){
+    var id = clicked_id;
+
+    if(confirm('Are you sure to remove this record ?'))
+    {
+        $.ajax({
+            url: '../api/user/delete_user.php',
+            type: 'GET',
+            data: {id: id},
+            error: function() {
+                alert('Something is wrong');
+            },
+            success: function(data) {
+                //$("#"+id).remove();
+                alert("Record removed successfully");
+                location.reload();
+            }
+        });
+    }
+};
+
+//nav choice for troubleshooting list
 
 $('.nav-pills a:last').on('click', function() {
     $('.nav-pills a:first').removeClass('active'); // remove active class from tabs

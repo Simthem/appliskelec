@@ -1,5 +1,5 @@
 <?php
-class User{
+class User {
  
     // database connection and table name
     private $conn;
@@ -19,6 +19,8 @@ class User{
     public function __construct($db){
         $this->conn = $db;
     }
+
+
     // signup user
     function signup(){
     
@@ -61,9 +63,12 @@ class User{
         return false;
         
     }
+
+
     // login user
+
     function login(){
-        // select all query
+        // select query
         $query = "SELECT
                     `id`, `username`, `password`, `created`
                 FROM
@@ -76,6 +81,8 @@ class User{
         $stmt->execute();
         return $stmt;
     }
+
+
     function isAlreadyExist(){
         $query = "SELECT *
             FROM
@@ -94,3 +101,4 @@ class User{
         }
     }
 }
+?>
