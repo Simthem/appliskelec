@@ -31,7 +31,7 @@ $sql = "SELECT
         WHERE
             chantier_id = '" . $_GET['chantier_id'] . "'
             #g.created BETWEEN \'2019-10-01\' AND \'2019-11-30\'
-        GROUP BY c.id , u.id , c.created , g.updated , username , c.name with ROLLUP";#, concat(year(g.created) , month(g.created), week(g.created));
+        GROUP BY c.id , username , u.id , c.created , g.updated , c.name with ROLLUP";#, concat(year(g.created) , month(g.created), week(g.created));
 ?>
 
 <!DOCTYPE html>
@@ -159,7 +159,7 @@ $sql = "SELECT
                                                 die("ERROR: Could not connect. " . mysqli_connect_error());
                                             }
 
-                                            if (!empty($row['username']) and !empty($row['name_chantier'])){
+                                            if (!empty($row['username']) and empty($row['name_chantier']) and empty($row['inter_chantier']) and empty($row['user_id'])){
                                                 echo "<tr>";
                                                     echo "<td class='align-middle p-1 w-25' style='word-wrap: break-word; max-width: 85px;'>" . $row['username'] . "</td>";
                                                     echo "<td class='align-middle p-1 w-25' style='word-wrap: break-word; max-width: 85px;'>";
