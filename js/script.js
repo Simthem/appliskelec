@@ -44,6 +44,7 @@ function reply_click_troubles(clicked_id){
     }
 };
 
+
 //nav choice for troubleshooting list
 
 $('.nav-pills a:last').on('click', function() {
@@ -61,8 +62,6 @@ $('.nav-pills a:first').on('click', function() {
     //$('#' + $(this).data(id)).show(); // show the tab content with matching id
     $('.tab-content #tab1').show();
 });
-
-
 
 
 //check formula in index
