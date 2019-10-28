@@ -1,3 +1,52 @@
+//function DELETE_USER
+
+function reply_click_user(clicked_id){
+    var id = clicked_id;
+
+    if(confirm('Are you sure to remove this record ?'))
+    {
+        $.ajax({
+            url: '../api/user/delete_user.php',
+            type: 'GET',
+            data: {id: id},
+            error: function() {
+                alert('Something is wrong');
+            },
+            success: function(data) {
+                //$("#"+id).remove();
+                alert("Record removed successfully");
+                location.reload();
+            }
+        });
+    }
+};
+
+//function DELETE_TROUBLES
+
+function reply_click_troubles(clicked_id){
+    var id = clicked_id;
+
+    if(confirm('Are you sure to remove this record ?'))
+    {
+        $.ajax({
+            url: '../api/troubleshooting/delete_troubles.php',
+            type: 'GET',
+            data: {id: id},
+            error: function() {
+                alert('Something is wrong');
+            },
+            success: function(data) {
+                //$("#"+id).remove();
+                alert("Record removed successfully");
+                location.reload();
+            }
+        });
+    }
+};
+
+
+//nav choice for troubleshooting list
+
 $('.nav-pills a:last').on('click', function() {
     $('.nav-pills a:first').removeClass('active'); // remove active class from tabs
     $(this).addClass('active'); // add active class to clicked tab
@@ -14,6 +63,9 @@ $('.nav-pills a:first').on('click', function() {
     $('.tab-content #tab1').show();
 });
 
+
+//check formula in index
+
 function checkForm(){
     if(document.getElementById('name').value == ""){
         alert('Vous devez indiquer un libellé obligatoirement !');
@@ -24,6 +76,10 @@ function checkForm(){
     document.getElementById('add_trouble').submit();
     }
 }
+
+
+
+//Slide
 
 !function(a){
     function b(){

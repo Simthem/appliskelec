@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-//include_once '../config/database.php';
 include_once '../objects/user.php';
 include_once '../config/db_connexion.php';
 

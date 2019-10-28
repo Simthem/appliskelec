@@ -8,6 +8,20 @@ if(!($_SESSION['username'])) {
     header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
 }
 
+$co_stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");
+$co_stmt->execute();
+$user = $co_stmt->fetch();
+$co_stmt = $bdd->prepare("SELECT id FROM `admin` WHERE admin_name = '". $_SESSION['admin_name'] ."'");
+$co_stmt->execute();
+$admin = $co_stmt->fetch();
+if($user) {
+    $_SESSION['id'] = $user['id'];
+} elseif ($admin) {
+    $_SESSION['id'] = $admin['id'];
+} else {
+    echo "ERROR: Could not get 'id' of current user [first_method]";
+}
+
 $sql = 
 "SELECT 
     id,
@@ -87,9 +101,9 @@ ORDER BY
         <div id="container">
             <div class="content">
                 <h3 class="text-center mt-0 pt-5 pb-3">Liste des chantiers</h3>
-                <ul class="nav nav-pills">
-                    <li class="active h-50"><a href="#tab1" data-toggle="pill" data-id="tab1" class="h-75">Chantiers</a></li>
-                    <li class="h-50"><a href="#tab2" data-toggle="pill" data-id="tab2" class="h-75">Dépannages</a></li>
+                <ul class="nav nav-pills float-left">
+                    <li class="active h-50"><a href="#tab1" data-toggle="pill" data-id="tab1" class="h-75 tab-1">Chantiers</a></li>
+                    <li class="h-50"><a href="#tab2" data-toggle="pill" data-id="tab2" class="h-75 tab-2">Dépannages</a></li>
                 </ul>
                 <table class="table table-striped mt-0 ml-0 mb-0 text-center" style="height: 50px;">
                     <?php
@@ -121,7 +135,16 @@ ORDER BY
                                                 //echo '<td class="align-middle p-4" style="word-wrap: break-word; max-width: 85px;">' . $row['e_mail'] . '</td>';
                                                 echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 85px;">' . $row['name'] . '</td>';
                                                 echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 85px;">' . $row['contact_address'] . '</td>';
-                                                echo "<td class='p-0 align-middle w-25'><a href='troubleshooting_details.php?chantier_id=" . $row['id']  . "'><i class='fas fa-tools'></i></a></td>";
+                                                if ($_SESSION['id'] == $admin['id']) {
+                                                    echo '<form action="api/user/delete_troubles.php" method="GET" >';
+                                                        echo '<td class="p-0 align-middle">';
+                                                            echo '<div class="float-left pl-0" id="' . $row['id'] . '" name="' . $row['id'] . '" onClick="reply_click_troubles(this.id)"><i class="fas fa-trash-alt"></i></div>';
+                                                            echo '<div class="p-0 text-center w-100"><a href="troubleshooting_details.php?chantier_id="' . $row['id'] . '"><i class="fas fa-tools mr-2"></i></a></div>';
+                                                        echo '</td>';
+                                                    echo '</form>';
+                                                } else {
+                                                    echo "<td class='p-0 align-middle w-25'><a href='troubleshooting_details.php?chantier_id=" . $row['id']  . "'><i class='fas fa-tools'></i></a></td>";
+                                                }
                                             }
                                         echo '</tr>';
                                     }
@@ -148,11 +171,23 @@ ORDER BY
                                 echo '<tbody>';
                                     while($row = $result->fetch_array()){
                                         echo '<tr>';
+                                            if($row['num_chantier'] == 0 or empty($row['num_chantier'])) {
                                                 echo '<td class="align-middle p-4 w-25 bg-success text-white">Dép.</td>';
                                                 //echo '<td class="align-middle p-4" style="word-wrap: break-word; max-width: 85px;">' . $row['e_mail'] . '</td>';
                                                 echo '<td class="align-middle p-4 w-25 bg-success text-white" style="word-wrap: break-word; max-width: 85px;">' . $row['name'] . '</td>';
                                                 echo '<td class="align-middle p-4 w-25 bg-success text-white" style="word-wrap: break-word; max-width: 85px;">' . $row['contact_address'] . '</td>';
-                                                echo "<td class='p-0 align-middle w-25 bg-success'><a href='troubleshooting_details.php?chantier_id=" . $row['id']  . "'><i class='fas fa-tools text-white'></i></a></td>";
+                                                //echo "<td class='p-0 align-middle w-25 bg-success'><a href='troubleshooting_details.php?chantier_id=" . $row['id']  . "'><i class='fas fa-tools text-white'></i></a></td>";
+                                                if ($_SESSION['id'] == $admin['id']) {
+                                                    echo '<form action="api/user/delete_troubles.php" method="GET" >';
+                                                        echo '<td class="p-0 align-middle bg-success">';
+                                                            echo '<div class="float-left pl-0" id="' . $row['id'] . '" name="' . $row['id'] . '" onClick="reply_click_troubles(this.id)"><i class="fas fa-trash-alt text-white"></i></div>';
+                                                            echo '<div class="w-100 text-center"><a href="troubleshooting_details.php?chantier_id="' . $row['id'] . '"><i class="fas fa-tools text-white"></i></a></div>';
+                                                        echo '</td>';
+                                                    echo '</form>';
+                                                } else {
+                                                    echo "<td class='p-0 align-middle w-25 bg-success'><a href='troubleshooting_details.php?chantier_id=" . $row['id']  . "'><i class='fas fa-tools text-white'></i></a></td>";
+                                                }
+                                            }
                                         echo '</tr>';
                                     }
                                 echo '</tbody>';
@@ -168,10 +203,9 @@ ORDER BY
                         </table>
                     </div>
                 </div>
-                <form>
-                    <div class="pt-1 w-75 m-auto">
+                <form class="pt-5 mt-5">
+                    <div class="w-75 m-auto">
                         <a href="add_troubleshooting.php" class="btn send border-0 bg-white z-depth-1a mt-2 mb-2 text-dark">Ajouter un chantier</a>
-                        <a href="#" class="btn finish border-0 bg-white z-depth-1a mt-3 mb-2">Supprimer un chantier</a>
                     </div>
                 </form>
             </div>

@@ -1,13 +1,14 @@
 <?php
 session_start();
 
-include_once 'api/config/db_connexion.php';
-//require_once 'api/user/edit_profil.php';
+include 'api/config/db_connexion.php';
+
 
 if(!($_SESSION['username'])) {  
   
     header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
 }
+
 
 $stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");
 $stmt->execute();
@@ -91,7 +92,7 @@ if($user) {
                                                 echo "<a href='modif_profil.php?id=" . $row['id'] . "' class='text-white pl-3'><i class='menu-btn-plus fas fa-user text-warning fa-3x rounded-circle'></i></a>";
                                             }
                                         }
-                                        mysqli_free_result($admin_result);
+                                        mysqli_free_result($user_result);
                                     }
                                 } else {
                                     echo "ERROR: Could not able to execute $admin_sql. " . mysqli_error($db);
@@ -106,12 +107,12 @@ if($user) {
         <!-- Content -->
         <div id="container">
             <div class="content">
-                <h3 class="text-center mt-0 pb-3 pt-5">Liste des salariés</h3>
+                <h3 class="text-center mt-2 pb-3 pt-5">Liste des salariés</h3>
                 <table class="table table-striped mt-0 ml-0 mb-0 text-center" style="height: 50px;">
                     <?php
 
                     $sql = 
-                    "SELECT username, phone 
+                    "SELECT id, username, phone 
                     FROM users";
 
                     if ($result = mysqli_query($db, $sql)){
@@ -122,7 +123,7 @@ if($user) {
                                     //echo '<th scope="col" class="text-center align-middle p-4" id="e_mail">E-mail</th>';
                                     echo '<th scope="col" class="text-center align-middle p-2 w-25" id="phone">Téléphone</th>';
                                     echo '<th scope="col" class="text-center align-middle p-2 w-25" id="hours">H/totales</th>';
-                                    echo '<th scope="col" class="text-center align-middle p-0 w-25" id="">Détails</th>';
+                                    echo '<th scope="col" class="text-center align-middle p-2 w-25" id="">Détails</th>';
                                 echo '</tr>';
                             echo '</thead>';
                     ?>
@@ -140,7 +141,7 @@ if($user) {
                                         echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . $row['username'] . '</td>';
                                         //echo '<td class="align-middle p-4" style="word-wrap: break-word; max-width: 85px;">' . $row['e_mail'] . '</td>';
                                         echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . $row['phone'] . '</td>';
-                                        
+                                        $id_user_row = $row['id'];
                                         
                                         $sql_hours = 
                                         "SELECT 
@@ -164,20 +165,12 @@ if($user) {
                                             users AS u ON g.user_id = u.id
                                         WHERE
                                             username = '" . $row['username'] . "'
-                                            #c.id is NULL
-                                            #g.created BETWEEN \'2019-10-01\' AND \'2019-11-30\'
-                                        GROUP BY username , c.id , u.id WITH ROLLUP# c.created , c.name , concat(year(g.created) , month(g.created), week(g.created)) with ROLLUP";
+                                        GROUP BY username , c.id , u.id WITH ROLLUP";
                                         
                                         if ($result_hours = mysqli_query($db, $sql_hours)){
-                                            //print_r($result_hours);
-                                            //echo "<br /><br />";
-                                            //print_r($result_hours);
                                             if (mysqli_num_rows($result_hours) > 0){
                                                 while ($row_hours = $result_hours->fetch_array()) {
-                                                    //print_r($row_hours);
-                                                    //echo '<br />' . $row_hours['totalheure'] . '<br />';
                                                     if (!empty($row_hours['username']) and empty($row_hours['chantier_id']) /*and !empty($row_hours['user_id'])*/) {
-                                                        //$time = strtotime($row_hours['totalheure']);
                                                         $total = $row_hours['totalheure'];
                                                         $hours = (int)($total / 10000);
                                                         $minutes = ((int)($total - ($hours * 10000)) / 100);
@@ -191,17 +184,31 @@ if($user) {
                                                         echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . $hours . ':' . $minutes . '</td>';
                                                     }
                                                 }
-                                                mysqli_free_result($result_hours);
                                             } else {
                                                 echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">00:00</td>';
                                             }
                                         } else {
                                             echo "ERROR: Could not able to execute $result_hours. " . mysqli_error($db);
                                         }
-                                    $id_user_row = $row['id'];
-                                    echo "<td class='p-0 align-middle w-25'><a href='modif_profil.php?id=" . $id_user_row . "'><i class='fas fa-tools'></i></a></td>";
+
+
+
+                                        if ($_SESSION['id'] == $admin['id']) {
+                                            echo '<td class="p-0 align-middle w-25>';
+                                            ?>
+                                            <form action="api/user/delete_user.php" method="GET" >
+                                                <div class="float-left pl-0" id="<?php echo $id_user_row; ?>" name="<?php echo $id_user_row; ?>" class="remove" onClick="reply_click_user(this.id)"><i class="fas fa-trash-alt"></i></div>
+                                            </form>
+                                            <div class="w-100 text-center"><a href="modif_profil.php?id=<?php echo $id_user_row; ?>"><i class="fas fa-tools mr-2"></i></a></div>
+
+                                        <?php
+                                        echo '</td>';
+                                        } else {
+                                            echo "<td class='p-0 align-middle w-25'><a href='modif_profil.php?id=" . $id_user_row . "'><i class='fas fa-tools'></i></a></td>";
+                                        }
                                     echo '</tr>';
                                 }
+                            mysqli_free_result($result_hours);
                             mysqli_free_result($result);
                             echo '</tbody>';
                         } else {
@@ -210,25 +217,24 @@ if($user) {
                     } else{
                         echo "ERROR: Could not able to execute $sql. " . mysqli_error($db);
                     }
-                    mysqli_close($db); 
                         ?>
                     </table>
                 </div>
                 <?php
                     if ($_SESSION['id'] == $admin['id']) {
-                        echo "<form>";
-                            echo "<div class='pt-1 w-75 m-auto'>";
+                        echo "<form class='pt-5 mt-5'>";
+                            echo "<div class='pt-5 w-75 m-auto'>";
                                 echo "<a href='add_profil.php' class='btn send border-0 bg-white z-depth-1a mt-2 mb-2 text-dark'>Ajouter un compte</a>";
-                                echo "<a href='#' value='delete' class='btn finish border-0 bg-white z-depth-1a mt-2 mb-2 text-dark'>Supprimer un compte</a>";
                             echo "</div>";
                         echo "</form>";
                     } else {
-                        echo "<div class='pt-5 pb-5'>";
-                            echo "<div class='pt-2 w-75 m-auto'>";
+                        echo "<div class='pt-5 mt-5'>";
+                            echo "<div class='pt-5 w-75 m-auto'>";
                                 echo "<a href='index.php' value='delete' class='btn finish border-0 bg-white z-depth-1a mt-4 mb-3 text-dark'>Précédent</a>";
                             echo "</div>";
                         echo "</div>";
                     }
+                    mysqli_close($db); 
                 ?>
             </div>
         </div>

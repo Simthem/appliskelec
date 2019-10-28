@@ -19,6 +19,8 @@ class User{
     public function __construct($db){
         $this->conn = $db;
     }
+
+
     // signup user
     function signup(){
     
@@ -61,9 +63,12 @@ class User{
         return false;
         
     }
+
+
     // login user
+
     function login(){
-        // select all query
+        // select query
         $query = "SELECT
                     `id`, `username`, `password`, `created`
                 FROM
@@ -76,6 +81,8 @@ class User{
         $stmt->execute();
         return $stmt;
     }
+
+
     function isAlreadyExist(){
         $query = "SELECT *
             FROM
@@ -92,5 +99,22 @@ class User{
         else{
             return false;
         }
+    }
+}
+
+
+class DeleteUser{
+
+    // database connection and table name
+    private $conn;
+    private $table_name = "users";
+    
+    // delete user record for given id
+    public function delete_user($id)
+    {
+        $query = "SELECT * FROM users";
+        $result = $this->conn->prepare($query);
+        $result->execute();
+        return $result;
     }
 }
