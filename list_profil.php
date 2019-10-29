@@ -168,7 +168,7 @@ if($user) {
                                             JOIN
                                             users AS u ON g.user_id = u.id
                                         WHERE
-                                            username = '" . $row['username'] . "'
+                                            username = '" . $row['id'] . "'
                                         GROUP BY username , c.id , u.id WITH ROLLUP";
                                         
                                         if ($result_hours = mysqli_query($db, $sql_hours)){
