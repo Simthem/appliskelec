@@ -87,7 +87,13 @@ if($user) {
                     <div class="text-center">
                         <select name="chantier_id" size="1">
                             <?php
-                                $sql = "SELECT id, name FROM chantiers";
+                                $sql = 
+                                "SELECT 
+                                    id, `name` 
+                                FROM 
+                                    chantiers 
+                                ORDER BY 
+                                    id DESC";
                                 if ($result = mysqli_query($db, $sql)) {
                                     if (mysqli_num_rows($result) > 0) {
                                         if ($db === false){
@@ -119,14 +125,14 @@ if($user) {
                                 <input type="checkbox" id="panier_repas" name="panier_repas" value="1" class="form-check-input align-middle">
                                 <label class="mt-1 ml-5 mb-auto" for="">Panier repas</label>
                             </div>
-                            <div class="d-inline-flex h-25">
+                            <div class="d-inline-flex h-25 w-100 mw-100">
                                 <div class="mt-auto mb-auto pt-1">
                                     <input type="checkbox" class="form-check-input align-middle">
                                     <label class="col-8 mb-0 mt-1 ml-5 p-0 text-center" for="">Dont :</label>
                                 </div>
                                 <div class="col-10 d-inline-flex pr-0 pl-4 mt-auto mb-auto">
-                                    <input type="time" id="night_hours" name="night_hours" class="col-8 form-control p-1 mt-auto mb-auto text-center" style="line-height: 25px;" placeholder="minutes/heures">
-                                    <label class="mt-1 ml-3 mb-auto">heures de nuit</label>
+                                    <input type="time" id="night_hours" name="night_hours" class="col-7 form-control p-1 mt-auto mb-auto text-center" style="line-height: 25px;" placeholder="minutes/heures">
+                                    <label class="mt-1 ml-3 mb-auto text-wrap mw-50">heures de nuit</label>
                                 </div>
                             </div>
                             <div class="form mt-2 mb-2 pt-2 pb-2">

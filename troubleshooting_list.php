@@ -136,14 +136,17 @@ ORDER BY
                                                 echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 85px;">' . $row['name'] . '</td>';
                                                 echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 85px;">' . $row['contact_address'] . '</td>';
                                                 if ($_SESSION['id'] == $admin['id']) {
-                                                    echo '<form action="api/user/delete_troubles.php" method="GET" >';
-                                                        echo '<td class="p-0 align-middle">';
-                                                            echo '<div class="float-left pl-0" id="' . $row['id'] . '" name="' . $row['id'] . '" onClick="reply_click_troubles(this.id)"><i class="fas fa-trash-alt"></i></div>';
-                                                            echo '<div class="p-0 text-center w-100"><a href="troubleshooting_details.php?chantier_id="' . $row['id'] . '"><i class="fas fa-tools mr-2"></i></a></div>';
-                                                        echo '</td>';
-                                                    echo '</form>';
+                                                    echo '<td class="p-0 align-middle w-25 bg-success>';
+                                                    ?>
+                                                    <form action="api/user/delete_troubles.php" method="GET" >
+                                                        <div class="float-left pl-0" id="<?php echo $row['id']; ?>" name="<?php echo $row['id']; ?>" onClick="reply_click_troubles(this.id)"><i class="fas fa-trash-alt"></i></div>
+                                                    </form>
+                                                    <div class="w-100 text-center"><a href="troubleshooting_details.php?chantier_id=<?php echo $row['id']; ?>"><i class="fas fa-tools mr-2"></i></a></div>
+        
+                                                    <?php
+                                                    echo '</td>';
                                                 } else {
-                                                    echo "<td class='p-0 align-middle w-25'><a href='troubleshooting_details.php?chantier_id=" . $row['id']  . "'><i class='fas fa-tools'></i></a></td>";
+                                                    echo "<td class='p-0 align-middle w-25 bg-success'><a href='troubleshooting_details.php?chantier_id=" . $row['id'] . "'><i class='fas fa-tools'></i></a></td>";
                                                 }
                                             }
                                         echo '</tr>';
@@ -177,15 +180,19 @@ ORDER BY
                                                 echo '<td class="align-middle p-4 w-25 bg-success text-white" style="word-wrap: break-word; max-width: 85px;">' . $row['name'] . '</td>';
                                                 echo '<td class="align-middle p-4 w-25 bg-success text-white" style="word-wrap: break-word; max-width: 85px;">' . $row['contact_address'] . '</td>';
                                                 //echo "<td class='p-0 align-middle w-25 bg-success'><a href='troubleshooting_details.php?chantier_id=" . $row['id']  . "'><i class='fas fa-tools text-white'></i></a></td>";
+                                                
                                                 if ($_SESSION['id'] == $admin['id']) {
-                                                    echo '<form action="api/user/delete_troubles.php" method="GET" >';
-                                                        echo '<td class="p-0 align-middle bg-success">';
-                                                            echo '<div class="float-left pl-0" id="' . $row['id'] . '" name="' . $row['id'] . '" onClick="reply_click_troubles(this.id)"><i class="fas fa-trash-alt text-white"></i></div>';
-                                                            echo '<div class="w-100 text-center"><a href="troubleshooting_details.php?chantier_id="' . $row['id'] . '"><i class="fas fa-tools text-white"></i></a></div>';
-                                                        echo '</td>';
-                                                    echo '</form>';
+                                                    echo '<td class="p-0 align-middle w-25 bg-success>';
+                                                    ?>
+                                                    <form action="api/user/delete_troubles.php" method="GET" >
+                                                        <div class="float-left pl-0" id="<?php echo $row['id']; ?>" name="<?php echo $row['id']; ?>" onClick="reply_click_troubles(this.id)"><i class="fas fa-trash-alt text-white"></i></div>
+                                                    </form>
+                                                    <div class="w-100 text-center"><a href="troubleshooting_details.php?chantier_id=<?php echo $row['id']; ?>"><i class="fas fa-tools mr-2 text-white"></i></a></div>
+        
+                                                    <?php
+                                                    echo '</td>';
                                                 } else {
-                                                    echo "<td class='p-0 align-middle w-25 bg-success'><a href='troubleshooting_details.php?chantier_id=" . $row['id']  . "'><i class='fas fa-tools text-white'></i></a></td>";
+                                                    echo "<td class='p-0 align-middle w-25 bg-success'><a href='troubleshooting_details.php?chantier_id=" . $row['id'] . "'><i class='fas fa-tools text-white'></i></a></td>";
                                                 }
                                             }
                                         echo '</tr>';

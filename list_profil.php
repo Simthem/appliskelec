@@ -201,8 +201,8 @@ if($user) {
                                             </form>
                                             <div class="w-100 text-center"><a href="modif_profil.php?id=<?php echo $id_user_row; ?>"><i class="fas fa-tools mr-2"></i></a></div>
 
-                                        <?php
-                                        echo '</td>';
+                                            <?php
+                                            echo '</td>';
                                         } else {
                                             echo "<td class='p-0 align-middle w-25'><a href='modif_profil.php?id=" . $id_user_row . "'><i class='fas fa-tools'></i></a></td>";
                                         }
