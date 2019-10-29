@@ -8,8 +8,23 @@ if(!($_SESSION['username'])) {
     header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
 }
 
+$stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");
+$stmt->execute();
+$user = $stmt->fetch();
+$stmt_admin = $bdd->prepare("SELECT id FROM `admin` WHERE admin_name = '". $_SESSION['admin_name'] ."'");
+$stmt_admin->execute();
+$admin = $stmt_admin->fetch();
+if($user) {
+    $_SESSION['id'] = $user['id'];
+} elseif ($admin) {
+    $_SESSION['id'] = $admin['id'];
+} else {
+    echo "ERROR: Could not get 'id' of current user [first_method]";
+}
+
 $sql = "SELECT 
             c.id AS chantier_id,
+            c.num_chantier AS num_chantier,
             c.created as date_chantier,
             g.updated as inter_chantier,
             #concat(year(g.created),
@@ -29,14 +44,14 @@ $sql = "SELECT
             JOIN
             users AS u ON g.user_id = u.id
         WHERE
-            chantier_id = '" . $_GET['chantier_id'] . "'
+            chantier_id = '" . $_GET['id'] . "'
             #g.created BETWEEN \'2019-10-01\' AND \'2019-11-30\'
-        GROUP BY c.id , username , u.id , c.created , g.updated , c.name with ROLLUP";#, concat(year(g.created) , month(g.created), week(g.created));
+        GROUP BY c.id , num_chantier , username , u.id , c.created , g.updated , c.name with ROLLUP";#, concat(year(g.created) , month(g.created), week(g.created));
 ?>
 
 <!DOCTYPE html>
 
-<html class="overflow-hidden">
+<html class="overflow-y mb-0">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -78,32 +93,46 @@ $sql = "SELECT
 
         <!-- Content -->
         <div id="container">
-            <div class="content">
+            <div class="content pt-0 overflow-hidden">
                 <?php
                     
                     
                     if($result = mysqli_query($db, $sql)) {
                         if (mysqli_num_rows($result) > 0) {
 
-                            $flag = 0;
+                            $flag = 1;
 
+                            if ($db === false) {
+                                die("ERROR: Could not connect. " . mysqli_connect_error());
+                            }
+
+                            echo '<h3 class="text-center mt-0 mb-3 pt-5">Détails du chantier</h3>';
+                            
                             while ($row = $result->fetch_array()) {
-                                if( $db === false){
-                                    die("ERROR: Could not connect. " . mysqli_connect_error());
-                                }
-
                                 if (!empty($row['date_chantier'])) {
                                     $created = date_create($row['date_chantier']);
                                 }
 
+                                if ($flag == 1 and !empty($row['name_chantier'])) {
+                                    echo '<div class="w-50 text-center m-auto">';
+                                        echo "<h5 class='text-center mt-2 ml-auto mr-auto'>" . $row['name_chantier'] . "</h5>";
+                                    echo '</div>';
+                                    if (!empty($row['num_chantier'])) {
+                                        echo '<div class="w-25 text-center m-auto">';
+                                            echo "<h5 class='w-50 text-center mt-2 ml-auto mr-auto'>" . $row['num_chantier'] . "</h5>";
+                                        echo '</div>';
+                                    }
+                                    $flag = 0;
+                                } else {
+                                    $flag = 0;
+                                }
+
                                 if (empty($row['user_id']) and empty($row['chantier_id']) and empty($row['name_chantier']) and $flag == 0) {
-                                    echo '<h3 class="text-center mt-0 mb-3 pt-5">Détails du chantier</h3>';
-                                    echo "<h5 class='text-center mt-2'>" . $row['name_chantier'] . "</h5>";
-                                    echo '<table class="table table-striped mt-5 ml-auto mb-5 mr-auto w-75 text-center">';
+                                    echo '<table class="table table-striped mt-4 ml-auto mb-5 mr-auto w-75 text-center">';
                                     echo "<thead>
                                             <tr>
                                                 <th scope='col' class='align-middle text-center w-50'>Date de création</th>
-                                                <th scope='col' class='align-middle text-center w-50'>Temps d'intervention réalisé</th>
+                                                <th scope='col' class='align-middle text-center w-50'>Totalité des heures</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -142,8 +171,42 @@ $sql = "SELECT
                                 </thead>
                             </table>";
                         } else {
-                            echo "Chantier programmé pour des horaires à venir.";
+                            $no_hours = "SELECT * FROM chantiers WHERE id =" . $_GET['id'];
+                            if($reponse = mysqli_query($db, $no_hours)) {
+                                if (mysqli_num_rows($reponse) > 0) {
+                                    
+                                    while ($chant = $reponse->fetch_array()) {
+                                        if (!empty($chant['created'])) {
+                                            $created = date_create($chant['created']);
+                                        }
+
+                                        echo '<table class="table table-striped mt-5 ml-auto mb-5 mr-auto w-50 text-center">';
+                                            echo "<thead>
+                                                <tr>
+                                                    <th scope='col' class='align-middle text-center w-50'>Date de création</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class='align-middle bg-white p-1'>" . date_format($created, 'd-M-Y') . "</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>";
+                                        echo "<div class='h6 m-auto text-center w-75'>Chantier programmé pour des horaires à venir.</div>";
+                                        echo "<div class='ml-auto mr-auto mt-5 w-75'>
+                                            <a href='modif_troubleshooting.php?id='" . $chant['chantier_id'] . "' class='btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark'>Modifier</a>
+                                            <a href='troubleshooting_list.php' type='submit' value='return' class='btn finish border-0 bg-white z-depth-1a mt-1 mb-4'>Précédent</a>
+                                        </div>";
+                                    }
+                                    mysqli_free_result($reponse);
+                                } else {
+                                    echo "No records matching your query were found.";
+                                }
+                            } else {
+                                echo "ERROR: Could not able to execute $no_hours. " . mysqli_error($db);
+                            }
                         }
+                        mysqli_free_result($result);
                     }
                 
                 ?>
@@ -157,6 +220,10 @@ $sql = "SELECT
 
                                             if( $db === false){
                                                 die("ERROR: Could not connect. " . mysqli_connect_error());
+                                            }
+
+                                            if (!empty($row['user_id'])) {
+                                                $id_user = $row['user_id'];
                                             }
 
                                             if (!empty($row['username']) and empty($row['name_chantier']) and empty($row['inter_chantier']) and empty($row['user_id'])){
@@ -177,20 +244,29 @@ $sql = "SELECT
                                                             echo "00";
                                                         }
                                                     echo "</td>";
-                                                    echo "<td class='align-middle p-1 w-25'><a href='list_profil.php'><i class='fas fa-tools align-middle'></i></a></td>";
+                                                    echo "<td class='align-middle p-1 w-25'><a href='modif_profil.php?id=" . $id_user . "'><i class='fas fa-tools align-middle'></i></a></td>";
+                                                    
                                                 echo "</tr>";
                                             }
                                         }
+                                    mysqli_free_result($result);
                                     echo "</tbody>";
-                                ;}
-                            }
                         ?>
                     </table>
+                    <?php
+                    ?>
                 </div>
-                <div class="ml-auto mr-auto mt-5 w-75">
-                    <a href="#" type="submit" value="valid" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">Modifier</a>
-                    <a href="troubleshooting_list.php" type="submit" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4">Précédent</a>
+                <div class="ml-auto mr-auto mt-2 w-75">
+                    <a href="modif_troubleshooting.php?id=<?php echo $_GET['id']; ?>" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">Modifier</a>
+                    <a href="troubleshooting_list.php" type="submit" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-1">Précédent</a>
                 </div>
+                            <?php
+                                }
+                            } else {
+                                echo "ERROR: Could not able to execute $sql. " . mysqli_error($db);
+                            }
+                            mysqli_close($db);
+                            ?>
             </div>
         </div>
     </body>

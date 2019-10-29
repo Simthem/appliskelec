@@ -27,7 +27,7 @@ if($user) {
 
 <!DOCTYPE html>
 
-<html class="overflow-hidden">
+<html class="overflow-y mb-0">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -79,6 +79,8 @@ if($user) {
                                     } else {
                                         echo "No records matching your query were found.";
                                     }
+                                } else {
+                                    echo "ERROR: Could not able to execute $admin_sql. " . mysqli_error($db);
                                 }
                             } else {
                                 $user_sql = "SELECT * FROM users";
@@ -93,6 +95,8 @@ if($user) {
                                             }
                                         }
                                         mysqli_free_result($user_result);
+                                    } else {
+                                        echo "No records matching your query were found.";
                                     }
                                 } else {
                                     echo "ERROR: Could not able to execute $admin_sql. " . mysqli_error($db);
@@ -106,8 +110,8 @@ if($user) {
 
         <!-- Content -->
         <div id="container">
-            <div class="content">
-                <h3 class="text-center mt-2 pb-3 pt-5">Liste des salariés</h3>
+            <div class="content pt-0 overflow-hidden">
+                <h3 class="text-center mt-2 pb-4 pt-5">Liste des salariés</h3>
                 <table class="table table-striped mt-0 ml-0 mb-0 text-center" style="height: 50px;">
                     <?php
 
@@ -164,7 +168,7 @@ if($user) {
                                             JOIN
                                             users AS u ON g.user_id = u.id
                                         WHERE
-                                            username = '" . $row['username'] . "'
+                                            username = '" . $row['id'] . "'
                                         GROUP BY username , c.id , u.id WITH ROLLUP";
                                         
                                         if ($result_hours = mysqli_query($db, $sql_hours)){
@@ -201,8 +205,8 @@ if($user) {
                                             </form>
                                             <div class="w-100 text-center"><a href="modif_profil.php?id=<?php echo $id_user_row; ?>"><i class="fas fa-tools mr-2"></i></a></div>
 
-                                        <?php
-                                        echo '</td>';
+                                            <?php
+                                            echo '</td>';
                                         } else {
                                             echo "<td class='p-0 align-middle w-25'><a href='modif_profil.php?id=" . $id_user_row . "'><i class='fas fa-tools'></i></a></td>";
                                         }
@@ -230,7 +234,7 @@ if($user) {
                     } else {
                         echo "<div class='pt-5 mt-5'>";
                             echo "<div class='pt-5 w-75 m-auto'>";
-                                echo "<a href='index.php' value='delete' class='btn finish border-0 bg-white z-depth-1a mt-4 mb-3 text-dark'>Précédent</a>";
+                                echo "<a href='javascript:history.go(-1)' value='return' class='btn finish border-0 bg-white z-depth-1a mt-4 mb-3 text-dark'>Précédent</a>";
                             echo "</div>";
                         echo "</div>";
                     }
