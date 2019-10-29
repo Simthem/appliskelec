@@ -102,7 +102,7 @@ $cur_chant = $sql->fetch();
                                 <div class='md-form mt-4'>
                                     <label for='commit'>Commentaires</label>
                                     <textarea type='text' id='commit' name='commit' class='form-control' value='" . $cur_chant['commit'] . "'></textarea>
-                                </div>;
+                                </div>
                             </div>";
                         } else {
                             echo "<div class='md-form mt-1'>

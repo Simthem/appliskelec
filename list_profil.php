@@ -79,6 +79,8 @@ if($user) {
                                     } else {
                                         echo "No records matching your query were found.";
                                     }
+                                } else {
+                                    echo "ERROR: Could not able to execute $admin_sql. " . mysqli_error($db);
                                 }
                             } else {
                                 $user_sql = "SELECT * FROM users";
@@ -93,6 +95,8 @@ if($user) {
                                             }
                                         }
                                         mysqli_free_result($user_result);
+                                    } else {
+                                        echo "No records matching your query were found.";
                                     }
                                 } else {
                                     echo "ERROR: Could not able to execute $admin_sql. " . mysqli_error($db);

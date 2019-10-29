@@ -47,8 +47,6 @@ $sql = "SELECT
             chantier_id = '" . $_GET['chantier_id'] . "'
             #g.created BETWEEN \'2019-10-01\' AND \'2019-11-30\'
         GROUP BY c.id , num_chantier , username , u.id , c.created , g.updated , c.name with ROLLUP";#, concat(year(g.created) , month(g.created), week(g.created));
-
-echo $_GET['chantier_id'];
 ?>
 
 <!DOCTYPE html>
@@ -104,14 +102,13 @@ echo $_GET['chantier_id'];
 
                             $flag = 1;
 
+                            if ($db === false) {
+                                die("ERROR: Could not connect. " . mysqli_connect_error());
+                            }
 
                             echo '<h3 class="text-center mt-0 mb-3 pt-5">Détails du chantier</h3>';
                             
                             while ($row = $result->fetch_array()) {
-                                if( $db === false){
-                                    die("ERROR: Could not connect. " . mysqli_connect_error());
-                                }
-
                                 if (!empty($row['date_chantier'])) {
                                     $created = date_create($row['date_chantier']);
                                 }
@@ -131,7 +128,7 @@ echo $_GET['chantier_id'];
                                 }
 
                                 if (empty($row['user_id']) and empty($row['chantier_id']) and empty($row['name_chantier']) and $flag == 0) {
-                                    echo '<table class="table table-striped mt-5 ml-auto mb-5 mr-auto w-75 text-center">';
+                                    echo '<table class="table table-striped mt-4 ml-auto mb-5 mr-auto w-75 text-center">';
                                     echo "<thead>
                                             <tr>
                                                 <th scope='col' class='align-middle text-center w-50'>Date de création</th>
@@ -174,7 +171,40 @@ echo $_GET['chantier_id'];
                                 </thead>
                             </table>";
                         } else {
-                            echo "Chantier programmé pour des horaires à venir.";
+                            $no_hours = "SELECT * FROM chantiers WHERE id =" . $_GET['chantier_id'];
+                            if($reponse = mysqli_query($db, $no_hours)) {
+                                if (mysqli_num_rows($reponse) > 0) {
+                                    
+                                    while ($chant = $reponse->fetch_array()) {
+                                        if (!empty($chant['created'])) {
+                                            $created = date_create($chant['created']);
+                                        }
+
+                                        echo '<table class="table table-striped mt-5 ml-auto mb-5 mr-auto w-50 text-center">';
+                                            echo "<thead>
+                                                <tr>
+                                                    <th scope='col' class='align-middle text-center w-50'>Date de création</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class='align-middle bg-white p-1'>" . date_format($created, 'd-M-Y') . "</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>";
+                                        echo "<div class='h6 m-auto text-center w-75'>Chantier programmé pour des horaires à venir.</div>";
+                                        echo "<div class='ml-auto mr-auto mt-5 w-75'>
+                                            <a href='modif_troubleshooting.php?id='" . $chant['chantier_id'] . "' class='btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark'>Modifier</a>
+                                            <a href='javascript:history.go(-1)' type='submit' value='return' class='btn finish border-0 bg-white z-depth-1a mt-1 mb-4'>Précédent</a>
+                                        </div>";
+                                    }
+                                    mysqli_free_result($result);
+                                } else {
+                                    echo "No records matching your query were found.";
+                                }
+                            } else {
+                                echo "ERROR: Could not able to execute $no_hours. " . mysqli_error($db);
+                            }
                         }
                     }
                 
@@ -218,29 +248,26 @@ echo $_GET['chantier_id'];
                                                 echo "</tr>";
                                             }
                                         }
+                                    mysqli_free_result($result);
                                     echo "</tbody>";
                         ?>
                     </table>
                     <?php
-                    echo $row['chantier_id'];
                     ?>
                 </div>
-                <div class="ml-auto mr-auto mt-5 w-75">
+                <div class="ml-auto mr-auto mt-2 w-75">
                     <a href="modif_troubleshooting.php?id=<?php echo $_GET['chantier_id']; ?>" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">Modifier</a>
-                    <a href="javascript:history.go(-1)" type="submit" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4">Précédent</a>
+                    <a href="javascript:history.go(-1)" type="submit" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-1">Précédent</a>
                 </div>
-                <?php
+                            <?php
                                 } else {
-                                    echo "<div class='ml-auto mr-auto mt-5 w-75'>
-                                        <a href='modif_troubleshooting.php?id='" . $_GET['chantier_id'] . "' class='btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark'>Modifier</a>
-                                        <a href='javascript:history.go(-1)' type='submit' value='return' class='btn finish border-0 bg-white z-depth-1a mt-1 mb-4'>Précédent</a>
-                                    </div>";
+                                    echo "No records matching your query were found.";
                                 }
                             } else {
                                 echo "ERROR: Could not able to execute $sql. " . mysqli_error($db);
-                    }
-                    mysqli_close($db);
-                ?>
+                            }
+                            mysqli_close($db);
+                            ?>
             </div>
         </div>
     </body>
