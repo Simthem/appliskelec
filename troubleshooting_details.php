@@ -44,14 +44,14 @@ $sql = "SELECT
             JOIN
             users AS u ON g.user_id = u.id
         WHERE
-            chantier_id = '" . $_GET['chantier_id'] . "'
+            chantier_id = '" . $_GET['id'] . "'
             #g.created BETWEEN \'2019-10-01\' AND \'2019-11-30\'
         GROUP BY c.id , num_chantier , username , u.id , c.created , g.updated , c.name with ROLLUP";#, concat(year(g.created) , month(g.created), week(g.created));
 ?>
 
 <!DOCTYPE html>
 
-<html class="overflow-hidden">
+<html class="overflow-y mb-0">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -93,7 +93,7 @@ $sql = "SELECT
 
         <!-- Content -->
         <div id="container">
-            <div class="content">
+            <div class="content pt-0 overflow-hidden">
                 <?php
                     
                     
@@ -115,11 +115,11 @@ $sql = "SELECT
 
                                 if ($flag == 1 and !empty($row['name_chantier'])) {
                                     echo '<div class="w-50 text-center m-auto">';
-                                        echo "<input class='h5 text-center mt-2' value='" . $row['name_chantier'] . "'></input>";
+                                        echo "<h5 class='text-center mt-2 ml-auto mr-auto'>" . $row['name_chantier'] . "</h5>";
                                     echo '</div>';
                                     if (!empty($row['num_chantier'])) {
                                         echo '<div class="w-25 text-center m-auto">';
-                                            echo "<input class='h5 w-50 text-center mt-2' value='" . $row['num_chantier'] . "'></input>";
+                                            echo "<h5 class='w-50 text-center mt-2 ml-auto mr-auto'>" . $row['num_chantier'] . "</h5>";
                                         echo '</div>';
                                     }
                                     $flag = 0;
@@ -171,7 +171,7 @@ $sql = "SELECT
                                 </thead>
                             </table>";
                         } else {
-                            $no_hours = "SELECT * FROM chantiers WHERE id =" . $_GET['chantier_id'];
+                            $no_hours = "SELECT * FROM chantiers WHERE id =" . $_GET['id'];
                             if($reponse = mysqli_query($db, $no_hours)) {
                                 if (mysqli_num_rows($reponse) > 0) {
                                     
@@ -195,10 +195,10 @@ $sql = "SELECT
                                         echo "<div class='h6 m-auto text-center w-75'>Chantier programmé pour des horaires à venir.</div>";
                                         echo "<div class='ml-auto mr-auto mt-5 w-75'>
                                             <a href='modif_troubleshooting.php?id='" . $chant['chantier_id'] . "' class='btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark'>Modifier</a>
-                                            <a href='javascript:history.go(-1)' type='submit' value='return' class='btn finish border-0 bg-white z-depth-1a mt-1 mb-4'>Précédent</a>
+                                            <a href='troubleshooting_list.php' type='submit' value='return' class='btn finish border-0 bg-white z-depth-1a mt-1 mb-4'>Précédent</a>
                                         </div>";
                                     }
-                                    mysqli_free_result($result);
+                                    mysqli_free_result($reponse);
                                 } else {
                                     echo "No records matching your query were found.";
                                 }
@@ -206,6 +206,7 @@ $sql = "SELECT
                                 echo "ERROR: Could not able to execute $no_hours. " . mysqli_error($db);
                             }
                         }
+                        mysqli_free_result($result);
                     }
                 
                 ?>
@@ -256,12 +257,10 @@ $sql = "SELECT
                     ?>
                 </div>
                 <div class="ml-auto mr-auto mt-2 w-75">
-                    <a href="modif_troubleshooting.php?id=<?php echo $_GET['chantier_id']; ?>" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">Modifier</a>
-                    <a href="javascript:history.go(-1)" type="submit" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-1">Précédent</a>
+                    <a href="modif_troubleshooting.php?id=<?php echo $_GET['id']; ?>" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">Modifier</a>
+                    <a href="troubleshooting_list.php" type="submit" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-1">Précédent</a>
                 </div>
                             <?php
-                                } else {
-                                    echo "No records matching your query were found.";
                                 }
                             } else {
                                 echo "ERROR: Could not able to execute $sql. " . mysqli_error($db);

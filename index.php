@@ -71,7 +71,7 @@ if($user) {
 
         <!-- Content -->
         <div id="container">
-            <div class="content">
+            <div class="content overflow-hidden">
                 <form action="./api/index_global/create_intervention.php" method="POST">
                     <div class="m-auto p-3">
                         <h6 class="text-center w-75 mr-auto ml-auto"><input class="w-50 text-right" type="date" id="up_inter" name="up_inter"  placeholder="<?//php echo $date_now; ?>" required="required"></h6>

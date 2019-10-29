@@ -31,7 +31,7 @@ $cur_chant = $sql->fetch();
 
 <!DOCTYPE html>
 
-<html class="overflow-hidden">
+<html class="overflow-y mb-0">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -75,12 +75,18 @@ $cur_chant = $sql->fetch();
         <div id="container">
             <div class="content">
                 <h3 class="text-center mt-0 mb-3 pt-5">Édition d'un chantier</h3>
-                <form id="add_trouble" class="w-100 pt-3 pl-4 pb-0 pr-4" action="./api/troubleshooting/modif_site.php" method="POST">
+                <form class="w-100 pt-3 pl-4 pb-0 pr-4" action="./api/troubleshooting/edit_site.php" method="POST">
                     <?php
                         if ($_SESSION['id'] == $admin['id']) {
+                            if ($cur_chant['state']) {
+                                echo '<button type="submit" id="state" name="state" value="0" class="bg-danger text-white float-right">Clôturer le chantier</button>';
+                            } else {
+                                echo '<button type="submit" id="state" name="state" value="1" class="bg-success text-white float-right">Réouvrir le chantier</button>';
+                            }
                             echo "<div class='md-form mt-1'>
                                 <div class='md-form mt-2'>
                                     <label for='num_chantier'>ID de chantier</label>
+                                    <input type='number' value='" . $cur_chant['id'] . "' id='id' name='id' style='display: none;'>
                                     <input type='number' value='" . $cur_chant['num_chantier'] . "' id='num_chantier' name='num_chantier' class='form-control'>
                                 </div>
                                 <div class='md-form mt-4'>
@@ -101,7 +107,7 @@ $cur_chant = $sql->fetch();
                                 </div>
                                 <div class='md-form mt-4'>
                                     <label for='commit'>Commentaires</label>
-                                    <textarea type='text' id='commit' name='commit' class='form-control' value='" . $cur_chant['commit'] . "'></textarea>
+                                    <textarea type='text' id='commit' name='commit' class='form-control' value='" . $cur_chant['commit'] . "' placeholder='" . $cur_chant['commit'] . "'></textarea>
                                 </div>
                             </div>";
                         } else {
@@ -128,37 +134,15 @@ $cur_chant = $sql->fetch();
                                 </div>
                                 <div class='md-form mt-4'>
                                     <label for='commit'>Commentaires</label>
-                                    <textarea type='text' id='commit' name='commit' class='form-control' value='" . $cur_chant['commit'] . "'></textarea>
+                                    <textarea type='text' id='commit' name='commit' class='form-control' value='" . $cur_chant['commit'] . "' placeholder='" . $cur_chant['commit'] . "'></textarea><br />
                                 </div>
                             </div>";
                         }
                     ?>
-                    <!--
-                    <div class="md-form mt-4">
-                        <label for="name">Libellé de chantier</label>
-                        <input type="text" id="name" name="name" class="form-control" required>
-                    </div>
-                    <div class="md-form mt-4">
-                        <label for="contact_name">Nom du client</label>
-                        <input type="text" id="contact_name" name="contact_name" class="form-control" required>
-                    </div>
-                    <div class="md-form mt-4">
-                        <label for="contact_phone">Téléphone</label>
-                        <input type="text" id="contact_phone" name="contact_phone" class="form-control">
-                    </div>
-                    <div class="md-form mt-4">
-                        <label for="contact_address">Adresse</label>
-                        <input type="text" id="contact_address" name="contact_address" class="form-control">
-                    </div>
-                    <div class="md-form mt-4">
-                        <label for="commit">Commentaires</label>
-                        <textarea type="text" id="commit" name="commit" class="form-control"></textarea>
-                    </div>-->
-                    <input type="text" id="type" name="type" value="NULL" style="display: none;">
-                    <input type="number" id="state" name="state" value="1" style="display: none;">
+                    <input type="text" id="type" name="type" value="<?php echo $cur_chant['type']; ?>" style="display: none;">
                     <div class="pt-5 w-75 m-auto">
-                        <input type="submit" value="Valider" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark" onClick="checkForm()">
-                        <a href="troubleshooting_list.php" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4 text-dark">Précédent</a>
+                        <input type="submit" value="Valider" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">
+                        <a href="troubleshooting_details.php?id=<?php echo $_GET['id'] ?>" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4 text-dark">Précédent</a>
                     </div>
                 </form>
             </div>

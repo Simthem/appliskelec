@@ -54,7 +54,7 @@ ORDER BY
 
 <!DOCTYPE html>
 
-<html class="overflow-hidden">
+<html class="overflow-y mb-0">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -99,7 +99,7 @@ ORDER BY
 
         <!-- Content -->
         <div id="container">
-            <div class="content">
+            <div class="content pt-0 overflow-hidden">
                 <h3 class="text-center mt-0 pt-5 pb-3">Liste des chantiers</h3>
                 <ul class="nav nav-pills float-left pb-2">
                     <li class="active h-50"><a href="#tab1" data-toggle="pill" data-id="tab1" class="h-75 tab-1">Chantiers</a></li>
@@ -141,12 +141,12 @@ ORDER BY
                                                     <form action="api/user/delete_troubles.php" method="GET" >
                                                         <div class="float-left pl-0" id="<?php echo $row['id']; ?>" name="<?php echo $row['id']; ?>" onClick="reply_click_troubles(this.id)"><i class="fas fa-trash-alt"></i></div>
                                                     </form>
-                                                    <div class="w-100 text-center"><a href="troubleshooting_details.php?chantier_id=<?php echo $row['id']; ?>"><i class="fas fa-tools mr-2"></i></a></div>
+                                                    <div class="w-100 text-center"><a href="troubleshooting_details.php?id=<?php echo $row['id']; ?>"><i class="fas fa-tools mr-2"></i></a></div>
         
                                                     <?php
                                                     echo '</td>';
                                                 } else {
-                                                    echo "<td class='p-0 align-middle w-25'><a href='troubleshooting_details.php?chantier_id=" . $row['id'] . "'><i class='fas fa-tools'></i></a></td>";
+                                                    echo "<td class='p-0 align-middle w-25'><a href='troubleshooting_details.php?id=" . $row['id'] . "'><i class='fas fa-tools'></i></a></td>";
                                                 }
                                             }
                                         echo '</tr>';
@@ -187,11 +187,11 @@ ORDER BY
                                                         <form action="api/user/delete_troubles.php" method="GET" >
                                                             <div class="float-left pl-0" id="<?php echo $row['id']; ?>" name="<?php echo $row['id']; ?>" onClick="reply_click_troubles(this.id)"><i class="fas fa-trash-alt text-white"></i></div>
                                                         </form>
-                                                        <div class="w-100 text-center mt-auto mb-auto"><a href="troubleshooting_details.php?chantier_id=<?php echo $row['id']; ?>"><i class="fas fa-tools mr-2 text-white"></i></a></div>
+                                                        <div class="w-100 text-center mt-auto mb-auto"><a href="troubleshooting_details.php?id=<?php echo $row['id']; ?>"><i class="fas fa-tools mr-2 text-white"></i></a></div>
                                                     <?php
                                                     echo '</td>';
                                                 } else {
-                                                    echo "<td class='p-0 align-middle w-25 bg-success'><a href='troubleshooting_details.php?chantier_id=" . $row['id'] . "'><i class='fas fa-tools text-white'></i></a></td>";
+                                                    echo "<td class='p-0 align-middle w-25 bg-success'><a href='troubleshooting_details.php?id=" . $row['id'] . "'><i class='fas fa-tools text-white'></i></a></td>";
                                                 }
                                             }
                                         echo '</tr>';

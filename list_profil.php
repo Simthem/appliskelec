@@ -27,7 +27,7 @@ if($user) {
 
 <!DOCTYPE html>
 
-<html class="overflow-hidden">
+<html class="overflow-y mb-0">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -110,8 +110,8 @@ if($user) {
 
         <!-- Content -->
         <div id="container">
-            <div class="content">
-                <h3 class="text-center mt-2 pb-3 pt-5">Liste des salariés</h3>
+            <div class="content pt-0 overflow-hidden">
+                <h3 class="text-center mt-2 pb-4 pt-5">Liste des salariés</h3>
                 <table class="table table-striped mt-0 ml-0 mb-0 text-center" style="height: 50px;">
                     <?php
 
