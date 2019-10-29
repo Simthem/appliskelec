@@ -230,7 +230,7 @@ if($user) {
                     } else {
                         echo "<div class='pt-5 mt-5'>";
                             echo "<div class='pt-5 w-75 m-auto'>";
-                                echo "<a href='index.php' value='delete' class='btn finish border-0 bg-white z-depth-1a mt-4 mb-3 text-dark'>Précédent</a>";
+                                echo "<a href='javascript:history.go(-1)' value='return' class='btn finish border-0 bg-white z-depth-1a mt-4 mb-3 text-dark'>Précédent</a>";
                             echo "</div>";
                         echo "</div>";
                     }

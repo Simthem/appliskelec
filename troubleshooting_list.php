@@ -101,7 +101,7 @@ ORDER BY
         <div id="container">
             <div class="content">
                 <h3 class="text-center mt-0 pt-5 pb-3">Liste des chantiers</h3>
-                <ul class="nav nav-pills float-left">
+                <ul class="nav nav-pills float-left pb-2">
                     <li class="active h-50"><a href="#tab1" data-toggle="pill" data-id="tab1" class="h-75 tab-1">Chantiers</a></li>
                     <li class="h-50"><a href="#tab2" data-toggle="pill" data-id="tab2" class="h-75 tab-2">Dépannages</a></li>
                 </ul>
@@ -146,7 +146,7 @@ ORDER BY
                                                     <?php
                                                     echo '</td>';
                                                 } else {
-                                                    echo "<td class='p-0 align-middle w-25 bg-success'><a href='troubleshooting_details.php?chantier_id=" . $row['id'] . "'><i class='fas fa-tools'></i></a></td>";
+                                                    echo "<td class='p-0 align-middle w-25'><a href='troubleshooting_details.php?chantier_id=" . $row['id'] . "'><i class='fas fa-tools'></i></a></td>";
                                                 }
                                             }
                                         echo '</tr>';
@@ -182,13 +182,12 @@ ORDER BY
                                                 //echo "<td class='p-0 align-middle w-25 bg-success'><a href='troubleshooting_details.php?chantier_id=" . $row['id']  . "'><i class='fas fa-tools text-white'></i></a></td>";
                                                 
                                                 if ($_SESSION['id'] == $admin['id']) {
-                                                    echo '<td class="p-0 align-middle w-25 bg-success>';
+                                                    echo '<td class="bg-success p-0 align-middle w-25>';
                                                     ?>
-                                                    <form action="api/user/delete_troubles.php" method="GET" >
-                                                        <div class="float-left pl-0" id="<?php echo $row['id']; ?>" name="<?php echo $row['id']; ?>" onClick="reply_click_troubles(this.id)"><i class="fas fa-trash-alt text-white"></i></div>
-                                                    </form>
-                                                    <div class="w-100 text-center"><a href="troubleshooting_details.php?chantier_id=<?php echo $row['id']; ?>"><i class="fas fa-tools mr-2 text-white"></i></a></div>
-        
+                                                        <form action="api/user/delete_troubles.php" method="GET" >
+                                                            <div class="float-left pl-0" id="<?php echo $row['id']; ?>" name="<?php echo $row['id']; ?>" onClick="reply_click_troubles(this.id)"><i class="fas fa-trash-alt text-white"></i></div>
+                                                        </form>
+                                                        <div class="w-100 text-center mt-auto mb-auto"><a href="troubleshooting_details.php?chantier_id=<?php echo $row['id']; ?>"><i class="fas fa-tools mr-2 text-white"></i></a></div>
                                                     <?php
                                                     echo '</td>';
                                                 } else {

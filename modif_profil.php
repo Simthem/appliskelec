@@ -271,7 +271,7 @@ if($user) {
                             ?>
                             <div class="pt-5 w-75 m-auto">
                                 <input type="submit" value="Valider" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">
-                                <a href="list_profil.php" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4 text-dark">Précédent</a>
+                                <a href="javascript:history.go(-1)" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4 text-dark">Précédent</a>
                             </div>
                         </form>
                         
@@ -336,7 +336,7 @@ if($user) {
                         ?>
                         <div class="pt-5 w-75 m-auto">
                             <!--<input type="submit" value="Valider" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">-->
-                            <a href="list_profil.php" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4 text-dark">Précédent</a>
+                            <a href="javascript:history.go(-1)" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4 text-dark">Précédent</a>
                         </div>
                     </form>
             <?php } ?>
