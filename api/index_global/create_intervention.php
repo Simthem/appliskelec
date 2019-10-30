@@ -12,9 +12,6 @@ if($res_date = mysqli_query($db, $sql_date)){
         if ( $db === false){
             die("ERROR: Could not connect. " . mysqli_connect_error());
         }
-/*$sql_date = $bdd->prepare("SELECT id, created FROM chantiers WHERE id = " . $row['id']);
-$sql_date->execute();
-$result_date = $sql_date->fetch();*/
         while ($date = $res_date->fetch_array()){
             $created = $date['created'];
         }
@@ -28,7 +25,7 @@ $result_date = $sql_date->fetch();*/
 
 $database = new Database();
 $db = $database->getConnection();
- 
+
 $intervention = new Intervention($db);
 
 // set user property values
