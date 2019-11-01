@@ -25,15 +25,16 @@ if($user) {
 $sql = 
 "SELECT 
     id,
-    name,
+    `name`,
     contact_address,
-    num_chantier
+    num_chantier,
+    `state`
 FROM
     appli_skelec.chantiers
 WHERE
     num_chantier != 0
 GROUP BY
-    id, num_chantier, name, contact_address
+    id, num_chantier, `name`, contact_address, `state`
 ORDER BY
     id DESC";
 
@@ -41,9 +42,10 @@ $stmt =
 "SELECT 
     id,
     #created,
-    name,
+    `name`,
     contact_address,
-    num_chantier
+    num_chantier,
+    `state`
 FROM
     appli_skelec.chantiers
 WHERE
@@ -130,15 +132,33 @@ ORDER BY
                                 echo '<tbody>';
                                     while($row = $result_chant->fetch_array()){
                                         echo '<tr>';
-                                            if($row['num_chantier'] != 0 or !empty($row['num_chantier'])) {
+                                            if($row['num_chantier'] != 0 or !empty($row['num_chantier']) and ($row['state'])) {
                                                 echo '<td class="align-middle p-4 w-25">' . $row['num_chantier'] . '</td>';
                                                 //echo '<td class="align-middle p-4" style="word-wrap: break-word; max-width: 85px;">' . $row['e_mail'] . '</td>';
                                                 echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 85px;">' . $row['name'] . '</td>';
                                                 echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 85px;">' . $row['contact_address'] . '</td>';
                                                 if ($_SESSION['id'] == $admin['id']) {
-                                                    echo '<td class="p-0 align-middle w-25 bg-success>';
+                                                    echo '<td class="p-0 align-middle w-25">';
                                                     ?>
-                                                    <form action="api/user/delete_troubles.php" method="GET" >
+                                                    <form action="api/user/delete_troubles.php" method="GET" class="m-0 p-0">
+                                                        <div class="float-left pl-0" id="<?php echo $row['id']; ?>" name="<?php echo $row['id']; ?>" onClick="reply_click_troubles(this.id)"><i class="fas fa-trash-alt"></i></div>
+                                                    </form>
+                                                    <div class="w-100 text-center"><a href="troubleshooting_details.php?id=<?php echo $row['id']; ?>"><i class="fas fa-tools mr-2"></i></a></div>
+        
+                                                    <?php
+                                                    echo '</td>';
+                                                } else {
+                                                    echo "<td class='p-0 align-middle w-25'><a href='troubleshooting_details.php?id=" . $row['id'] . "'><i class='fas fa-tools'></i></a></td>";
+                                                }
+                                            } elseif ($row['num_chantier'] != 0 or !empty($row['num_chantier']) and !($row['state'])) {
+                                                echo '<td class="align-middle p-4 w-25 border-left border-top border-bottom border-danger">' . $row['num_chantier'] . '</td>';
+                                                echo '<td class="align-middle p-4" style="word-wrap: break-word; max-width: 85px;">' . $row['state'] . '</td>';
+                                                echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 85px;">' . $row['name'] . '</td>';
+                                                echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 85px;">' . $row['contact_address'] . '</td>';
+                                                if ($_SESSION['id'] == $admin['id']) {
+                                                    echo '<td class="p-0 align-middle w-25">';
+                                                    ?>
+                                                    <form action="api/user/delete_troubles.php" method="GET" class="m-0 p-0">
                                                         <div class="float-left pl-0" id="<?php echo $row['id']; ?>" name="<?php echo $row['id']; ?>" onClick="reply_click_troubles(this.id)"><i class="fas fa-trash-alt"></i></div>
                                                     </form>
                                                     <div class="w-100 text-center"><a href="troubleshooting_details.php?id=<?php echo $row['id']; ?>"><i class="fas fa-tools mr-2"></i></a></div>
@@ -182,9 +202,9 @@ ORDER BY
                                                 //echo "<td class='p-0 align-middle w-25 bg-success'><a href='troubleshooting_details.php?chantier_id=" . $row['id']  . "'><i class='fas fa-tools text-white'></i></a></td>";
                                                 
                                                 if ($_SESSION['id'] == $admin['id']) {
-                                                    echo '<td class="bg-success p-0 align-middle w-25>';
+                                                    echo '<td class="bg-success p-0 align-middle w-25">';
                                                     ?>
-                                                        <form action="api/user/delete_troubles.php" method="GET" >
+                                                        <form action="api/user/delete_troubles.php" method="GET" class="m-0 p-0">
                                                             <div class="float-left pl-0" id="<?php echo $row['id']; ?>" name="<?php echo $row['id']; ?>" onClick="reply_click_troubles(this.id)"><i class="fas fa-trash-alt text-white"></i></div>
                                                         </form>
                                                         <div class="w-100 text-center mt-auto mb-auto"><a href="troubleshooting_details.php?id=<?php echo $row['id']; ?>"><i class="fas fa-tools mr-2 text-white"></i></a></div>
