@@ -28,7 +28,6 @@ if($admin) {
 
 if($stmt->rowCount() > 0){
     $_SESSION['username'] = $_POST['username'];//here session is used and value of 'username' store in $_SESSION.
-    echo $_SESSION['username'];
     header("Location:../../index.php");
     exit();
 }
