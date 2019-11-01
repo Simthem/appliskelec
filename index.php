@@ -74,7 +74,7 @@ if($user) {
             <div class="content">
                 <form action="./api/index_global/create_intervention.php" method="POST">
                     <div class="m-auto p-3">
-                        <h6 class="text-center w-75 mr-auto ml-auto"><input class="w-50 text-right" type="date" id="up_inter" name="up_inter"  placeholder="<?//php echo $date_now; ?>" required="required"></h6>
+                        <h6 class="text-center w-75 mr-auto ml-auto"><input class="col-5 m-0 p-0 text-right" type="date" id="up_inter" name="up_inter"  placeholder="<?//php echo $date_now; ?>" required="required"></h6>
                         <div class="text-center"><?php echo $_SESSION['username']; ?></div>
                         <div class="text-center"><?php 
                                                     if($_SESSION['username'] == "admin") { 
@@ -133,7 +133,7 @@ if($user) {
                                 </div>
                                 <div class="col-8 d-inline-flex pr-0 pl-0 ml-auto">
                                     <input type="time" id="night_hours" name="night_hours" class="col-6 form-control text-center align-middle m-auto p-1 " style="line-height: 25px;" placeholder="minutes/heures">
-                                    <label class="mt-1 ml-3 mb-auto text-wrap">heures de nuit</label>
+                                    <label class="mt-auto ml-3 mb-auto text-wrap">heures de nuit</label>
                                 </div>
                             </div>
                             <div class="mt-2 mb-2 pt-5 pb-2">
