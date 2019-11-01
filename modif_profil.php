@@ -28,7 +28,7 @@ if($user) {
 <!DOCTYPE html>
 
 <?php
-    if ($_SESSION['id'] != $_GET['id']) {
+    if ($_SESSION['id'] != $_GET['id'] and $_SESSION['id'] != $admin['id']) {
         echo "<html class='overflow-hidden'>";
     } else {
         echo "<html class='overflow-y mb-0'>";
