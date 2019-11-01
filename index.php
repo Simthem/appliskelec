@@ -131,11 +131,9 @@ if($user) {
                                     </div>
                                     <label class="mt-auto mb-auto ml-4 pl-1 text-center" for="">Dont :</label>
                                 </div>
-                                <div>
                                 <div class="col-8 d-inline-flex pr-0 pl-0 ml-auto">
                                     <input type="time" id="night_hours" name="night_hours" class="col-6 form-control text-center align-middle m-auto p-1 " style="line-height: 25px;" placeholder="minutes/heures">
                                     <label class="mt-1 ml-3 mb-auto text-wrap">heures de nuit</label>
-                                </div>
                                 </div>
                             </div>
                             <div class="mt-2 mb-2 pt-5 pb-2">
