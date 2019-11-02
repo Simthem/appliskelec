@@ -100,11 +100,11 @@ if($user) {
                     ?>
                     
                     <div class="md-form mt-4">
-                        <label for="name">Libellé de chantier</label>
+                        <label for="name">Libellé de chantier *</label>
                         <input type="text" id="name" name="name" class="form-control" required>
                     </div>
                     <div class="md-form mt-4">
-                        <label for="contact_name">Nom du client</label>
+                        <label for="contact_name">Nom du client *</label>
                         <input type="text" id="contact_name" name="contact_name" class="form-control" required>
                     </div>
                     <div class="md-form mt-4">

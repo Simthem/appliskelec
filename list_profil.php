@@ -159,7 +159,7 @@ if($user) {
                                             u.id AS `user_id`,
                                             #if (SUM(intervention_hours) > 80000, SUM(intervention_hours) - 80000, NULL) as \'> 80000\',
                                             #if (SUM(intervention_hours)-40000 > 0,if( SUM(intervention_hours) -40000>30000,30000,SUM(intervention_hours) - 40000), NULL) as \'> 40000\',
-                                            SUM(intervention_hours + night_hours) AS totalheure
+                                            SUM(intervention_hours) AS totalheure
                                             #SUM(night_hours) AS maj50
                                         FROM
                                             chantiers AS c
@@ -178,6 +178,10 @@ if($user) {
                                                         $total = $row_hours['totalheure'];
                                                         $hours = (int)($total / 10000);
                                                         $minutes = ((int)($total - ($hours * 10000)) / 100);
+                                                        if ($minutes > 59) {
+                                                            $hours += 1;
+                                                            $minutes -= 60;
+                                                        }
                                                         if ($minutes > 10) {
                                                             $minutes = $minutes;
                                                         } elseif ($minutes < 10 and $minutes > 0) {

@@ -45,7 +45,7 @@ if(!($_SESSION['username'])) {
                 <div class="icons-navbar">
                     <div class="menu-btn-bars text-white"><button class="menu-btn fas fa-bars text-warning w-100 fa-3x p-0"></button></div>
                     <a href="index.php" class="text-warning m-auto"><h2 class="m-0">S.K.elec</h2></a>
-                    <a href="list_profil.html" class="text-white pl-3"><i class="menu-btn-plus fas fa-search text-warning fa-3x rounded-circle"></i></a>
+                    <a href="list_profil.php" class="text-white pl-3"><i class="menu-btn-plus fas fa-search text-warning fa-3x rounded-circle"></i></a>
                 </div>
             </div>
         </header>
@@ -56,11 +56,11 @@ if(!($_SESSION['username'])) {
                 <h3 class="text-center mt-0 mb-3 pt-5">Création d'un compte</h3>
                 <form class="w-100 pt-3 pl-4 pb-0 pr-4" action="./api/user/signup.php" method="POST">
                     <div class="md-form mt-1">
-                        <label for="username1">Username</label>
+                        <label for="username1">Username *</label>
                         <input id="username1" name="username1" type="text" class="form-control" required>
                     </div>
                     <div class="md-form mt-4">
-                        <label for="first-name">First name</label>
+                        <label for="first-name">First name *</label>
                         <input type="text" id="first_name" name="first_name" class="form-control" required>
                     </div>
                     <div class="md-form mt-4">
@@ -76,11 +76,11 @@ if(!($_SESSION['username'])) {
                         <input type="phone" id="phone" name="phone" class="form-control">
                     </div>
                     <div class="md-form mt-4">
-                        <label for="pass1">Password</label>
+                        <label for="pass1">Password *</label>
                         <input type="password" id="pass1" name="pass1" class="form-control" required>
                     </div>
                     <div class="md-form mt-4">
-                        <label for="pass2">Confirm password</label>
+                        <label for="pass2">Confirm password *</label>
                         <input type="password" id="pass2" name="pass2" class="form-control" required>
                     </div>
                     <div class="pt-5 w-75 m-auto">

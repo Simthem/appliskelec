@@ -85,7 +85,7 @@ if($user) {
                     </div>
                     <?php echo "<input type='number' id='user_id' name='user_id' value='" . $_SESSION['id'] . "' style='display: none'>" ?>
                     <div class="text-center">
-                        <select id="chantier_name" name="chantier_name" size="1">
+                        <select id="chantier_name" name="chantier_name" size="1" required>
                             <?php
                                 $sql = 
                                 "SELECT 
@@ -115,7 +115,7 @@ if($user) {
                     <div class="pt-5 w-50 m-auto text-center">
                         <label for="input_time m-auto">Heures réalisées</label>
                         <div class="w-50 m-auto pb-4">
-                            <input type="time" id="intervention_hours" name="intervention_hours" step="120" class="form-control text-center align-middle m-auto p-1" style="line-height: 25px;" placeholder="hh:mm" />
+                            <input type="time" id="intervention_hours" name="intervention_hours" class="form-control text-center align-middle m-auto p-1" style="line-height: 25px;" placeholder="hh:mm" required />
                         </div>
                     </div>
                     <div class="m-auto d-flex flex-column border-top pt-4 w-75">

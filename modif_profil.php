@@ -84,7 +84,7 @@ if($user) {
                 c.name AS name_chantier,
                 username,
                 u.id AS user_id,
-                SUM(intervention_hours + night_hours) AS totalheure,
+                SUM(intervention_hours) AS totalheure,
                 if (SUM(intervention_hours) - 350000 > 0, if( SUM(intervention_hours) - 350000 > 80000, 80000, SUM(intervention_hours) - 350000), NULL) AS maj25,
                 if (SUM(intervention_hours) > 430000, SUM(intervention_hours) - 430000, NULL) AS maj50,
                 SUM(night_hours) AS h_night
@@ -114,7 +114,7 @@ if($user) {
         <!-- Content -->
                 <div id="container">
                     <div class="content">
-                        <h3 class="text-center mt-0 mb-3 pt-5">Modification du compte</h3>
+                        <h3 class="text-center mt-0 mb-3 pt-5">Édition du compte</h3>
                         <form class="w-100 pt-2 pl-4 pb-0 pr-4" action="api/user/edit_profil.php" method="POST">
                             <?php
                                 $stmt = $bdd->prepare("SELECT * FROM users WHERE id = '". $_GET['id'] ."'");
@@ -214,7 +214,7 @@ if($user) {
                                         c.name AS name_chantier,
                                         admin_name,
                                         a.id AS admin_id,
-                                        SUM(intervention_hours + night_hours) AS totalheure,
+                                        SUM(intervention_hours) AS totalheure,
                                         if (SUM(intervention_hours) - 350000 > 0, if( SUM(intervention_hours) - 350000 > 430000, 80000, SUM(intervention_hours) - 350000), NULL) AS maj25,
                                         if (SUM(intervention_hours) > 430000, SUM(intervention_hours) - 430000, NULL) AS maj50,
                                         SUM(night_hours) AS h_night
