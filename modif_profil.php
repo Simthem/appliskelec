@@ -9,11 +9,11 @@ if(!($_SESSION['username'])) {
 }
 
 
-$stmt = $bdd->prepare("SELECT id FROM appli_skelec.users WHERE username = '". $_SESSION['username'] ."'");
+$stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");
 $stmt->execute();
 $user = $stmt->fetch();
 
-$stmt_admin = $bdd->prepare("SELECT * FROM appli_skelec.admin WHERE admin_name = '". $_SESSION['admin_name'] ."'");
+$stmt_admin = $bdd->prepare("SELECT * FROM `admin` WHERE admin_name = '". $_SESSION['admin_name'] ."'");
 $stmt_admin->execute();
 $admin = $stmt_admin->fetch();
 if($user) {
@@ -28,7 +28,7 @@ if($user) {
 <!DOCTYPE html>
 
 <?php
-    if ($_SESSION['id'] != $_GET['id']) {
+    if ($_SESSION['id'] != $_GET['id'] and $_SESSION['id'] != $admin['id']) {
         echo "<html class='overflow-hidden'>";
     } else {
         echo "<html class='overflow-y mb-0'>";
@@ -74,19 +74,20 @@ if($user) {
         </header>
 
         <?php
-            $sql = $bdd->prepare("SELECT 
-            c.id AS chantier_id,
-            c.created as date_chantier,
-            concat(year(g.created),
-            month(g.created),
-            week(g.created)),
-            c.name AS name_chantier,
-            username,
-            u.id AS user_id,
-            #if (SUM(intervention_hours) > 80000, SUM(intervention_hours) - 80000, NULL) as \'> 80000\',
-            #if (SUM(intervention_hours)-40000 > 0,if( SUM(intervention_hours) -40000>30000,30000,SUM(intervention_hours) - 40000), NULL) as \'> 40000\',
-            SUM(intervention_hours) AS totalheure
-            #SUM(night_hours) AS maj50
+            $sql = $bdd->prepare(
+            "SELECT 
+                c.id AS chantier_id,
+                c.created as date_chantier,
+                concat(year(g.created),
+                month(g.created),
+                week(g.created)),
+                c.name AS name_chantier,
+                username,
+                u.id AS user_id,
+                SUM(intervention_hours) AS totalheure,
+                if (SUM(intervention_hours) - 350000 > 0, if( SUM(intervention_hours) - 350000 > 80000, 80000, SUM(intervention_hours) - 350000), NULL) AS maj25,
+                if (SUM(intervention_hours) > 430000, SUM(intervention_hours) - 430000, NULL) AS maj50
+                #SUM(night_hours) AS maj50
             FROM
                 chantiers AS c
                 JOIN
@@ -102,6 +103,8 @@ if($user) {
             while ($total_user = $sql->fetch()) {
                 if ($total_user['chantier_id'] == NULL) {
                     $total['totalheure'] = $total_user['totalheure'];
+                    $m25['maj25'] = $total_user['maj25'];
+                    $m50['maj50'] = $total_user['maj50'];
                 } 
             }
 
@@ -145,25 +148,49 @@ if($user) {
                                         echo '<label for="phone">Téléphone</label>';
                                         echo '<input type="text" value="' . $modif_user['phone'] . '" id="phone" name="phone" class="form-control" placeholder="' . $modif_user['phone'] . '">';
                                     echo '</div>';
-                                    echo '<div class="md-form mt-4">';
-                                        echo '<label for="total_hours">H/totales</label>';?>
-                                        <input type="number" value="<?php 
-                                            $total = $total['totalheure'];
-                                            $hours = (int)($total / 10000);
-                                            $minutes = ((int)($total - ($hours * 10000)) / 100) / 60;
-                                            $total = $hours + $minutes;
-                                            echo $total;?>" 
-                                        id="total_hours" name="total_hours" class="form-control" placeholder="
+                                    echo '<div class="d-inline-flex">';
+                                        echo '<div class="md-form mt-4 col-4">';
+                                            echo '<label class="w-100 text-center" for="total_hours">H/totales</label>';?>
+                                            <input type="number" value="<?php 
+                                                $total = $total['totalheure'];
+                                                $hours = (int)($total / 10000);
+                                                $minutes = ((int)($total - ($hours * 10000)) / 100) / 60;
+                                                $total = $hours + $minutes;
+                                                echo $total;?>" 
+                                            id="total_hours" name="total_hours" class="form-control" placeholder="<?php
+                                                echo $total;?>" step=".01"
+                                            disabled>
                                         <?php 
-                                            $total = $total['totalheure'];
-                                            $hours = (int)($total / 10000);
-                                            $minutes = ((int)($total - ($hours * 10000)) / 100) / 60;
-                                            $total = $hours + $minutes;
-                                            echo $total;
-                                        ?>" disabled>
-                                    <?php 
+                                        echo '</div>';
+                                        echo '<div class="md-form mt-4 col-4">';
+                                            echo '<label class="w-100 text-center" for="total_hours">H + 25%</label>';?>
+                                            <input type="number" value="<?php
+                                                $m25 = $m25['maj25'];
+                                                $hours = (int)($m25 / 10000);
+                                                $minutes = ((int)($m25 - ($hours * 10000)) / 100) / 60;
+                                                $m25 = $hours + $minutes;
+                                                echo $m25;?>"
+                                            id="total_hours" name="total_hours" class="form-control" placeholder="<?php
+                                                echo $m25;?>" step=".01"
+                                            disabled>
+                                        <?php 
+                                        echo '</div>';
+                                        echo '<div class="md-form mt-4 col-4">';
+                                            echo '<label class="w-100 text-center" for="total_hours">H + 50%</label>';?>
+                                            <input type="number" value="<?php
+                                                $m50 = $m50['maj50'];
+                                                $hours = (int)($m50 / 10000);
+                                                $minutes = ((int)($m50 - ($hours * 10000)) / 100) / 60;
+                                                $m50 = $hours + $minutes;
+                                                echo $m50;?>"
+                                            id="total_hours" name="total_hours" class="form-control" placeholder="<?php
+                                                echo $m50;?>" step=".01"
+                                            disabled>
+                                        <?php 
+                                        echo '</div>';
                                     echo '</div>';
-                                    if ($_GET['id'] != $admin['id'] and $_SESSION['id'] == $_GET['id'] and $_SESSION['id'] == $user['id']) {
+
+                                    if (($_SESSION['id'] == $admin['id']) or ($_SESSION['id'] == $user['id'] and $_GET['id'] == $user['id'])) {
                                         echo '<div class="md-form mt-4">';
                                             echo '<label for="pass1">Password</label>';
                                             echo '<input type="password" id="pass1" name="pass1" class="form-control" data-type="password" required>';
@@ -184,9 +211,9 @@ if($user) {
                                         c.name AS name_chantier,
                                         admin_name,
                                         a.id AS admin_id,
-                                        #if (SUM(intervention_hours) > 80000, SUM(intervention_hours) - 80000, NULL) as \'> 80000\',
-                                        #if (SUM(intervention_hours)-40000 > 0,if( SUM(intervention_hours) -40000>30000,30000,SUM(intervention_hours) - 40000), NULL) as \'> 40000\',
-                                        SUM(intervention_hours) AS totalheure
+                                        SUM(intervention_hours) AS totalheure,
+                                        if (SUM(intervention_hours) - 350000 > 0, if( SUM(intervention_hours) - 350000 > 430000, 80000, SUM(intervention_hours) - 350000), NULL) AS maj25,
+                                        if (SUM(intervention_hours) > 430000, SUM(intervention_hours) - 430000, NULL) AS maj50
                                         #SUM(night_hours) AS maj50
                                     FROM
                                         chantiers AS c
@@ -203,6 +230,8 @@ if($user) {
                                     while ($total_admin = $admin_sql->fetch()) {
                                         if ($total_admin['chantier_id'] == NULL) {
                                             $total['totalheure'] = $total_admin['totalheure'];
+                                            $m25['maj25'] = $total_user['maj25'];
+                                            $m50['maj50'] = $total_user['maj50'];
                                         } 
                                     }
                                     
@@ -237,24 +266,47 @@ if($user) {
                                             echo '<label for="phone">Téléphone</label>';
                                             echo '<input type="text" value="' . $admin['phone'] . '" id="phone" name="phone" class="form-control" placeholder="' . $admin['phone'] . '">';
                                         echo '</div>';
-                                        echo '<div class="md-form mt-4">';
-                                        echo '<label for="total_hours">H/totales</label>';?>
-                                        <input type="number" value="<?php 
-                                            $total = $total['totalheure'];
-                                            $hours = (int)($total / 10000);
-                                            $minutes = ((int)($total - ($hours * 10000)) / 100) / 60;
-                                            $total = $hours + $minutes;
-                                            echo $total;?>" 
-                                        id="total_hours" name="total_hours" class="form-control" placeholder="
-                                        <?php 
-                                            $total = $total['totalheure'];
-                                            $hours = (int)($total / 10000);
-                                            $minutes = ((int)($total - ($hours * 10000)) / 100) / 60;
-                                            $total = $hours + $minutes;
-                                            echo $total;
-                                        ?>" disabled>
-                                    <?php 
-                                    echo '</div>';
+                                        echo '<div class="d-inline-flex">';
+                                            echo '<div class="md-form mt-4 col-4">';
+                                                echo '<label class="w-100 text-center" for="total_hours">H/totales</label>';?>
+                                                <input type="number" value="<?php 
+                                                    $total = $total['totalheure'];
+                                                    $hours = (int)($total / 10000);
+                                                    $minutes = ((int)($total - ($hours * 10000)) / 100) / 60;
+                                                    $total = $hours + $minutes;
+                                                    echo $total;?>" 
+                                                id="total_hours" name="total_hours" class="form-control" placeholder="<?php 
+                                                    echo $total;?>" step=".01"
+                                                disabled>
+                                            <?php 
+                                            echo '</div>';
+                                            echo '<div class="md-form mt-4 col-4">';
+                                                echo '<label class="w-100 text-center" for="total_hours">H + 25%</label>';?>
+                                                    <input type="number" value="<?php
+                                                    $m25 = $m25['maj25'];
+                                                    $hours = (int)($m25 / 10000);
+                                                    $minutes = ((int)($m25 - ($hours * 10000)) / 100) / 60;
+                                                    $m25 = $hours + $minutes;
+                                                    echo $m25;?>"
+                                                id="total_hours" name="total_hours" class="form-control" placeholder="<?php
+                                                    echo $m25;?>" step=".01"
+                                                disabled>
+                                            <?php 
+                                            echo '</div>';
+                                            echo '<div class="md-form mt-4 col-4">';
+                                                echo '<label class="w-100 text-center" for="total_hours">H + 50%</label>';?>
+                                                <input type="number" value="<?php
+                                                    $m50 = $m50['maj50'];
+                                                    $hours = (int)($m50 / 10000);
+                                                    $minutes = ((int)($m50 - ($hours * 10000)) / 100) / 60;
+                                                    $m50 = $hours + $minutes;
+                                                    echo $m50;?>"
+                                                id="total_hours" name="total_hours" class="form-control" placeholder="<?php
+                                                    echo $m50;?>" step=".01"
+                                                disabled>
+                                            <?php 
+                                            echo '</div>';
+                                        echo '</div>';
                                         echo '<div class="md-form mt-4">';
                                             echo '<label for="pass1">Password</label>';
                                             echo '<input type="password" id="pass1" name="pass1" class="form-control" data-type="password" required>';
@@ -263,7 +315,7 @@ if($user) {
                                             echo '<label for="pass2">Confirm Password</label>';
                                             echo '<input type="password" id="pass2" name="pass2" class="form-control" data-type="password" required>';
                                         echo '</div>';
-                                        
+                                    
                                     }
                                 } else {
                                     echo "ERROR : Could not get 'id' of current user [second_method]";
@@ -317,18 +369,45 @@ if($user) {
                                     echo '<label for="phone" class="text-secondary">Téléphone</label>';
                                     echo '<input type="text" value="' . $modif_user['phone'] . '" id="phone" name="phone" class="form-control" placeholder="' . $modif_user['phone'] . '" disabled>';
                                 echo '</div>';
-                                echo '<div class="md-form mt-4">';
-                                    echo '<label for="total_hours" class="text-secondary">H/totales</label>';
-                        ?>
-                                    <input type="number" value="<?php 
-                                        $total = $total['totalheure'];
-                                        $hours = (int)($total / 10000);
-                                        $minutes = ((int)($total - ($hours * 10000)) / 100) / 60;
-                                        $total = $hours + $minutes;
-                                        echo $total;?>" id="total_hours" name="total_hours" class="form-control" placeholder="<?php
-                                        echo $total;?>" 
-                                    disabled>
-                        <?php
+                                echo '<div class="d-inline-flex">';
+                                    echo '<div class="md-form mt-4 col-4">';
+                                        echo '<label class="w-100 text-center" for="total_hours">H/totales</label>';?>
+                                        <input type="number" value="<?php 
+                                            $total = $total['totalheure'];
+                                            $hours = (int)($total / 10000);
+                                            $minutes = ((int)($total - ($hours * 10000)) / 100) / 60;
+                                            $total = $hours + $minutes; 
+                                            echo $total;?>" id="total_hours" name="total_hours" class="form-control" placeholder="<?php
+                                            echo $total;?>" step=".01"
+                                        disabled>
+                                    <?php
+                                    echo '</div>';
+                                    echo '<div class="md-form mt-4 col-4">';
+                                        echo '<label class="w-100 text-center" for="total_hours">H + 25%</label>';?>
+                                        <input type="number" value="<?php
+                                            $m25 = $m25['maj25'];
+                                            $hours = (int)($m25 / 10000);
+                                            $minutes = ((int)($m25 - ($hours * 10000)) / 100) / 60;
+                                            $m25 = $hours + $minutes;
+                                            echo $m25;?>"
+                                        id="total_hours" name="total_hours" class="form-control" placeholder="<?php
+                                            echo $m25;?>" step=".01"
+                                        disabled>
+                                    <?php 
+                                    echo '</div>';
+                                    echo '<div class="md-form mt-4 col-4">';
+                                        echo '<label class="w-100 text-center" for="total_hours">H + 50%</label>';?>
+                                        <input type="number" value="<?php
+                                            $m50 = $m50['maj50'];
+                                            $hours = (int)($m50 / 10000);
+                                            $minutes = ((int)($m50 - ($hours * 10000)) / 100) / 60;
+                                            $m50 = $hours + $minutes;
+                                            echo $m50;?>"
+                                        id="total_hours" name="total_hours" class="form-control" placeholder="<?php
+                                            echo $m50;?>" step=".01"
+                                        disabled>
+                                    <?php 
+                                    echo '</div>';
                                 echo '</div>';
                             } else {
                                 echo "ERROR: Could not get 'id' of current user [third_method]";

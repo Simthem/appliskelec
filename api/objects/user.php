@@ -74,7 +74,7 @@ class User{
                 FROM
                     " . $this->table_name . " 
                 WHERE
-                    username='".$this->username."' AND password='".$this->password."'";
+                    username='" . $this->username . "' AND password='" . $this->password . "'";
         // prepare query statement
         $stmt = $this->conn->prepare($query);
         // execute query
@@ -88,7 +88,7 @@ class User{
             FROM
                 " . $this->table_name . " 
             WHERE
-                username='".$this->username."'";
+                username='" . $this->username . "'";
         // prepare query statement
         $stmt = $this->conn->prepare($query);
         // execute query
@@ -99,6 +99,38 @@ class User{
         else{
             return false;
         }
+    }
+}
+
+class Admin{
+    // database connection and table name
+    private $conn;
+    private $table_name = "admin";
+
+    // object properties
+    public $id;
+    public $admin_name;
+    public $admin_pass;
+    public $created;
+ 
+    // constructor with $db as database connection
+    public function __construct($db){
+        $this->conn = $db;
+    }
+
+    function login_ad(){
+        // select query
+        $query = "SELECT
+                    `id`, `admin_name`, `admin_pass`, `created`
+                FROM
+                    " . $this->table_name . " 
+                WHERE
+                    admin_name='" . $this->admin_name . "' AND admin_pass='" . $this->admin_pass . "'";
+        // prepare query statement
+        $sql = $this->conn->prepare($query);
+        // execute query
+        $sql->execute();
+        return $sql;
     }
 }
 

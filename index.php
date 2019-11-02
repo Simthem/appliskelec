@@ -28,7 +28,7 @@ if($user) {
 
 <!DOCTYPE html>
 
-<html class="overflow-hidden">
+<html class="overflow-y mb-0">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=0">
@@ -71,10 +71,10 @@ if($user) {
 
         <!-- Content -->
         <div id="container">
-            <div class="content overflow-hidden">
+            <div class="content">
                 <form action="./api/index_global/create_intervention.php" method="POST">
                     <div class="m-auto p-3">
-                        <h6 class="text-center w-75 mr-auto ml-auto"><input class="w-50 text-right" type="date" id="up_inter" name="up_inter"  placeholder="<?//php echo $date_now; ?>" required="required"></h6>
+                        <h6 class="text-center w-75 mr-auto ml-auto"><input class="col-5 m-0 p-0 text-right" type="date" id="up_inter" name="up_inter"  placeholder="<?//php echo $date_now; ?>" required="required"></h6>
                         <div class="text-center"><?php echo $_SESSION['username']; ?></div>
                         <div class="text-center"><?php 
                                                     if($_SESSION['username'] == "admin") { 
@@ -85,7 +85,7 @@ if($user) {
                     </div>
                     <?php echo "<input type='number' id='user_id' name='user_id' value='" . $_SESSION['id'] . "' style='display: none'>" ?>
                     <div class="text-center">
-                        <select name="chantier_id" size="1">
+                        <select id="chantier_name" name="chantier_name" size="1">
                             <?php
                                 $sql = 
                                 "SELECT 
@@ -100,7 +100,7 @@ if($user) {
                                             die("ERROR: Could not connect. " . mysqli_connect_error());
                                         }
                                         while ($row = $result->fetch_array()){
-                                            echo "<option value='" . $row['id'] . "'>" . $row['name'] . '</option>';
+                                            echo "<option value='" . $row['name'] . "'>" . $row['name'] . "</option>";
                                         }
                                         mysqli_free_result($result);
                                     } else {
@@ -109,53 +109,94 @@ if($user) {
                                 } else{
                                     echo "ERROR: Could not able to execute $sql. " . mysqli_error($db);
                                 }
-                                mysqli_close($db);
                             ?>
                         </select>
                     </div>
                     <div class="pt-5 w-50 m-auto text-center">
                         <label for="input_time m-auto">Heures réalisées</label>
                         <div class="w-50 m-auto pb-4">
-                            <input type="time" id="ntervention_hours" name="intervention_hours" step="120" class="form-control text-center align-middle m-auto p-1" style="line-height: 25px;" placeholder="hh:mm" />
+                            <input type="time" id="intervention_hours" name="intervention_hours" step="120" class="form-control text-center align-middle m-auto p-1" style="line-height: 25px;" placeholder="hh:mm" />
                         </div>
                     </div>
-                    <div class="m-auto d-flex flex-column border-top pt-4 pb-3 w-75">
-                        <div class="border-bottom pt-1 pb-3">
-                            <div class="form mb-2">
-                                <input type="checkbox" id="panier_repas" name="panier_repas" value="1" class="form-check-input align-middle">
-                                <label class="mt-1 ml-5 mb-auto" for="">Panier repas</label>
+                    <div class="m-auto d-flex flex-column border-top pt-4 w-75">
+                        <div class="pt-1 pb-3">
+                            <div class="col-5 mb-2 p-0 position-relative">
+                                <input type="checkbox" id="panier_repas" name="panier_repas" value="1" class="form-check-input align-middle mt-1 mb-auto">
+                                <label class="mb-auto mt-auto ml-4 pl-1 text-center" for="">Panier repas</label>
                             </div>
-                            <div class="d-inline-flex h-25 w-100 mw-100">
-                                <div class="mt-auto mb-auto pt-1">
-                                    <input type="checkbox" class="form-check-input align-middle">
-                                    <label class="col-8 mb-0 mt-1 ml-5 p-0 text-center" for="">Dont :</label>
+                            <div class="d-inline-flex h-25 w-100">
+                                <div class="col-3 mt-auto pl-0 mb-auto pr-0 position-relative">
+                                    <div class="form-check-input mt-auto mb-auto ml-0">
+                                        <input type="checkbox" name="coch_night" class="m-0">
+                                    </div>
+                                    <label class="mt-auto mb-auto ml-4 pl-1 text-center" for="">Dont :</label>
                                 </div>
-                                <div class="col-10 d-inline-flex pr-0 pl-4 mt-auto mb-auto">
-                                    <input type="time" id="night_hours" name="night_hours" class="col-7 form-control p-1 mt-auto mb-auto text-center" style="line-height: 25px;" placeholder="minutes/heures">
-                                    <label class="mt-1 ml-3 mb-auto text-wrap mw-50">heures de nuit</label>
+                                <div class="col-8 d-inline-flex pr-0 pl-0 ml-auto">
+                                    <input type="time" id="night_hours" name="night_hours" class="col-6 form-control text-center align-middle m-auto p-1 " style="line-height: 25px;" placeholder="minutes/heures">
+                                    <label class="mt-auto ml-3 mb-auto text-wrap">heures de nuit</label>
                                 </div>
                             </div>
-                            <div class="form mt-2 mb-2 pt-2 pb-2">
+                            <div class="mt-2 mb-2 pt-5 pb-2">
                                 <textarea class="form-control" id="commit" name="commit" placeholder="Informations ?"></textarea>
                             </div>
                         </div>
                     </div>
-                    <div class="mt-4 w-75 mr-auto ml-auto">
-                        <input type="submit" value="Soumettre" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">
-                        <a href="#" type="submit" value="Clotûrer le chantier" class="btn finish border-0 bg-white z-depth-1a mt-3 mb-1 text-dark">Clôturer le chantier</a>
+                    <?php
+                        echo '<div class="collapse" id="preview">
+                            <p class="pl-2 text-dark bg-white border rounded w-75 m-auto">
+                                Nom du chantier :  <input id="chant_name" class="border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50"><br />
+                                Total des heures :  <input id="inter_h" class="border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50"><br />
+                                Commentaires :  <input id="com" class="border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50"><br />
+                                Panier repas :  <input id="pan_rep"class="border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50"><br />
+                                Horaires de nuit :  <input id="h_night"class="border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50"><br />
+                            </p>';
+                        echo '<div class="w-75 ml-auto mr-auto">
+                            <input type="submit" value="Soumettre" class="btn send border-0 bg-white z-depth-1a mt-3 mb-0 align-middle text-dark">
+                        </div>';
+                        ?>
+                    </div>
+                    <div class="mt-4 w-75 pt-3 mr-auto ml-auto">
+                        <a data-toggle="collapse" href="#preview" role="button" aria-expanded="false" aria-controls="preview" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark" onClick="preview()">Prévisualiser</a>
+                        <!--<a href="#" type="submit" value="Clotûrer le chantier" class="btn finish border-0 bg-white z-depth-1a mt-3 mb-1 text-dark">Clôturer le chantier</a>-->
                     </div>
                 </form>
-                
-                <footer>
-                </footer>
             </div>
         </div>
-
-        <footer>
-        </footer>
-        
+        <?php
+            
+        ?>
+        <script type="text/javascript">
+            function preview() {
+                var chant_name = document.getElementById("chant_name");
+                chant_name.value = document.getElementById("chantier_name").value;
+                var inter_h = document.getElementById("inter_h");
+                inter_h.value = document.getElementById("intervention_hours").value;
+                var pan_rep = document.getElementById("pan_rep");
+                pan_rep.value = document.getElementById("panier_repas").value;
+                var pan_rep = document.getElementById("pan_rep");
+                if ($("input[name='panier_repas']").is(":checked")) {
+                    pan_rep.value = document.getElementById("panier_repas").value;
+                } else {
+                    pan_rep.value = 0;
+                }
+                var h_night = document.getElementById("h_night");
+                if ($("input[name='coch_night']").is(":checked")) {
+                    h_night.value = document.getElementById("night_hours").value;
+                } else {
+                    h_night.value = 0;
+                }
+                var com = document.getElementById("com");
+                com.value = document.getElementById("commit").value;
+                <?php $flag = 0; ?>
+            }
+        </script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script src="js/script.js"></script>
         <script src="js/bootstrap.js"></script>
+        <?php
+            mysqli_close($db);
+        ?>
     </body>
+    <footer>
+    </footer>
 </html>

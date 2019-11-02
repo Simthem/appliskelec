@@ -72,6 +72,7 @@ function checkForm(){
         return false;
     } else if (document.getElementById('contact_name').value == "") {
         alert('Vous devez indiquer un nom de contact obligatoirement !')
+        return false;
     } else {
     document.getElementById('add_trouble').submit();
     }
