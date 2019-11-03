@@ -142,16 +142,18 @@ $sql = "SELECT
                                                 $total = $row['totalheure'];
                                                 $hours = (int)($total / 10000);
                                                 $minutes = (int)($total - ($hours * 10000)) / 100;
-                                                echo $hours;
-                                                echo ":";
-                                                if ($minutes > 10) {
-                                                    echo $minutes;
-                                                } elseif ($minutes < 10 and $minutes > 0) {
-                                                    echo "0";
-                                                    echo $minutes;
-                                                } else {
-                                                    echo "00";
+                                                if ($minutes > 59) {
+                                                    $hours += 1;
+                                                    $minutes -= 60;
                                                 }
+                                                if ($minutes > 10) {
+                                                    $minutes = $minutes;
+                                                } elseif ($minutes < 10 and $minutes > 0) {
+                                                    $minutes = "0" . $minutes;
+                                                } else {
+                                                    $minutes = "00";
+                                                }
+                                                echo $hours . ':' . $minutes;
                                                 echo "</td>
                                             </tr>
                                         </tbody>
@@ -194,7 +196,7 @@ $sql = "SELECT
                                         </table>";
                                         echo "<div class='h6 m-auto text-center w-75'>Chantier programmé pour des horaires à venir.</div>";
                                         echo "<div class='ml-auto mr-auto mt-5 w-75'>
-                                            <a href='modif_troubleshooting.php?id='" . $chant['chantier_id'] . "' class='btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark'>Modifier</a>
+                                            <a href='modif_troubleshooting.php?id=" . $chant['id'] . "' class='btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark'>Modifier</a>
                                             <a href='troubleshooting_list.php' type='submit' value='return' class='btn finish border-0 bg-white z-depth-1a mt-1 mb-4'>Précédent</a>
                                         </div>";
                                     }
@@ -233,16 +235,18 @@ $sql = "SELECT
                                                         $total = $row['totalheure'];
                                                         $hours = (int)($total / 10000);
                                                         $minutes = (int)($total - ($hours * 10000)) / 100;
-                                                        echo $hours;
-                                                        echo ":";
-                                                        if ($minutes > 10) {
-                                                            echo $minutes;
-                                                        } elseif ($minutes < 10 and $minutes > 0) {
-                                                            echo "0";
-                                                            echo $minutes;
-                                                        } else {
-                                                            echo "00";
+                                                        if ($minutes > 59) {
+                                                            $hours += 1;
+                                                            $minutes -= 60;
                                                         }
+                                                        if ($minutes > 10) {
+                                                            $minutes = $minutes;
+                                                        } elseif ($minutes < 10 and $minutes > 0) {
+                                                            $minutes = "0" . $minutes;
+                                                        } else {
+                                                            $minutes = "00";
+                                                        }
+                                                        echo $hours . ':' . $minutes;
                                                     echo "</td>";
                                                     echo "<td class='align-middle p-1 w-25'><a href='modif_profil.php?id=" . $id_user . "'><i class='fas fa-tools align-middle'></i></a></td>";
                                                     

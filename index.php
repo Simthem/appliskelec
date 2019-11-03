@@ -89,9 +89,11 @@ if($user) {
                             <?php
                                 $sql = 
                                 "SELECT 
-                                    id, `name` 
+                                    id, `name`, `state`
                                 FROM 
-                                    chantiers 
+                                    chantiers
+                                WHERE
+                                    `state`
                                 ORDER BY 
                                     id DESC";
                                 if ($result = mysqli_query($db, $sql)) {
