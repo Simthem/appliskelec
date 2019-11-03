@@ -86,8 +86,8 @@ if($user) {
                 u.id AS user_id,
                 SUM(intervention_hours) AS totalheure,
                 if (SUM(intervention_hours) - 350000 > 0, if( SUM(intervention_hours) - 350000 > 80000, 80000, SUM(intervention_hours) - 350000), NULL) AS maj25,
-                if (SUM(intervention_hours) > 430000, SUM(intervention_hours) - 430000, NULL) AS maj50
-                #SUM(night_hours) AS maj50
+                if (SUM(intervention_hours) > 430000, SUM(intervention_hours) - 430000, NULL) AS maj50,
+                SUM(night_hours) AS h_night
             FROM
                 chantiers AS c
                 JOIN
@@ -105,6 +105,7 @@ if($user) {
                     $total['totalheure'] = $total_user['totalheure'];
                     $m25['maj25'] = $total_user['maj25'];
                     $m50['maj50'] = $total_user['maj50'];
+                    $mnight = $total_user['h_night'];
                 } 
             }
 
@@ -113,7 +114,7 @@ if($user) {
         <!-- Content -->
                 <div id="container">
                     <div class="content">
-                        <h3 class="text-center mt-0 mb-3 pt-5">Modification du compte</h3>
+                        <h3 class="text-center mt-0 mb-3 pt-5">Édition du compte</h3>
                         <form class="w-100 pt-2 pl-4 pb-0 pr-4" action="api/user/edit_profil.php" method="POST">
                             <?php
                                 $stmt = $bdd->prepare("SELECT * FROM users WHERE id = '". $_GET['id'] ."'");
@@ -181,7 +182,9 @@ if($user) {
                                                 $m50 = $m50['maj50'];
                                                 $hours = (int)($m50 / 10000);
                                                 $minutes = ((int)($m50 - ($hours * 10000)) / 100) / 60;
-                                                $m50 = $hours + $minutes;
+                                                $hnight = (int)($mnight / 10000);
+                                                $min_night = ((int)($mnight - ($hnight * 10000)) / 100) / 60;
+                                                $m50 = $hours + $hnight + $minutes + $min_night;
                                                 echo $m50;?>"
                                             id="total_hours" name="total_hours" class="form-control" placeholder="<?php
                                                 echo $m50;?>" step=".01"
@@ -213,8 +216,8 @@ if($user) {
                                         a.id AS admin_id,
                                         SUM(intervention_hours) AS totalheure,
                                         if (SUM(intervention_hours) - 350000 > 0, if( SUM(intervention_hours) - 350000 > 430000, 80000, SUM(intervention_hours) - 350000), NULL) AS maj25,
-                                        if (SUM(intervention_hours) > 430000, SUM(intervention_hours) - 430000, NULL) AS maj50
-                                        #SUM(night_hours) AS maj50
+                                        if (SUM(intervention_hours) > 430000, SUM(intervention_hours) - 430000, NULL) AS maj50,
+                                        SUM(night_hours) AS h_night
                                     FROM
                                         chantiers AS c
                                         JOIN
@@ -230,8 +233,9 @@ if($user) {
                                     while ($total_admin = $admin_sql->fetch()) {
                                         if ($total_admin['chantier_id'] == NULL) {
                                             $total['totalheure'] = $total_admin['totalheure'];
-                                            $m25['maj25'] = $total_user['maj25'];
-                                            $m50['maj50'] = $total_user['maj50'];
+                                            $m25['maj25'] = $total_admin['maj25'];
+                                            $m50['maj50'] = $total_admin['maj50'];
+                                            $mnight = $total_admin['h_night'];
                                         } 
                                     }
                                     
@@ -299,7 +303,9 @@ if($user) {
                                                     $m50 = $m50['maj50'];
                                                     $hours = (int)($m50 / 10000);
                                                     $minutes = ((int)($m50 - ($hours * 10000)) / 100) / 60;
-                                                    $m50 = $hours + $minutes;
+                                                    $hnight = (int)($mnight / 10000);
+                                                    $min_night = ((int)($mnight - ($hnight * 10000)) / 100) / 60;
+                                                    $m50 = $hours + $hnight + $minutes + $min_night;
                                                     echo $m50;?>"
                                                 id="total_hours" name="total_hours" class="form-control" placeholder="<?php
                                                     echo $m50;?>" step=".01"
@@ -401,7 +407,9 @@ if($user) {
                                             $m50 = $m50['maj50'];
                                             $hours = (int)($m50 / 10000);
                                             $minutes = ((int)($m50 - ($hours * 10000)) / 100) / 60;
-                                            $m50 = $hours + $minutes;
+                                            $hnight = (int)($mnight / 10000);
+                                            $min_night = ((int)($mnight - ($hnight * 10000)) / 100) / 60;
+                                            $m50 = $hours + $hnight + $minutes + $min_night;
                                             echo $m50;?>"
                                         id="total_hours" name="total_hours" class="form-control" placeholder="<?php
                                             echo $m50;?>" step=".01"

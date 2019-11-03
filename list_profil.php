@@ -178,6 +178,10 @@ if($user) {
                                                         $total = $row_hours['totalheure'];
                                                         $hours = (int)($total / 10000);
                                                         $minutes = ((int)($total - ($hours * 10000)) / 100);
+                                                        if ($minutes > 59) {
+                                                            $hours += 1;
+                                                            $minutes -= 60;
+                                                        }
                                                         if ($minutes > 10) {
                                                             $minutes = $minutes;
                                                         } elseif ($minutes < 10 and $minutes > 0) {

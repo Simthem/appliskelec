@@ -80,12 +80,33 @@ $cur_chant = $sql->fetch();
                         if ($_SESSION['id'] == $admin['id']) {
                             if ($cur_chant['state']) {
                                 echo '<button type="submit" id="state" name="state" value="0" class="bg-danger text-white float-right">Clôturer le chantier</button>';
+                                echo "<input type='number' value='" . $cur_chant['id'] . "' id='id' name='id' style='display: none;'>";
+                                echo "<input type='number' value='" . $cur_chant['num_chantier'] . "' id='num_chantier' name='num_chantier' style='display: none;'>";
+                                echo "<input type='text' value='" . $cur_chant['name'] . "' id='name' name='name' style='display: none;'>";
+                                echo "<input type='text' value='" . $cur_chant['contact_name'] . "' id='contact_name' name='contact_name' style='display: none;'>";
+                                echo "<input type='text' value='" . $cur_chant['contact_phone'] . "' id='contact_phone' name='contact_phone' style='display: none;'>";
+                                echo "<input type='text' value='" . $cur_chant['contact_address'] . "' id='contact_address' name='contact_address' style='display: none;'>";
+                                echo "<input type='text' value='" . $cur_chant['commit'] . "' id='commit' name='commit' style='display: none;'>";
                             } else {
                                 echo '<button type="submit" id="state" name="state" value="1" class="bg-success text-white float-right">Réouvrir le chantier</button>';
+                                echo "<input type='number' value='" . $cur_chant['id'] . "' id='id' name='id' style='display: none;'>";
+                                echo "<input type='number' value='" . $cur_chant['num_chantier'] . "' id='num_chantier' name='num_chantier' style='display: none;'>";
+                                echo "<input type='text' value='" . $cur_chant['name'] . "' id='name' name='name' style='display: none;'>";
+                                echo "<input type='text' value='" . $cur_chant['contact_name'] . "' id='contact_name' name='contact_name' style='display: none;'>";
+                                echo "<input type='text' value='" . $cur_chant['contact_phone'] . "' id='contact_phone' name='contact_phone' style='display: none;'>";
+                                echo "<input type='text' value='" . $cur_chant['contact_address'] . "' id='contact_address' name='contact_address' style='display: none;'>";
+                                echo "<input type='text' value='" . $cur_chant['commit'] . "' id='commit' name='commit' style='display: none;'>";
                             }
+                        }
+                    ?>
+                </form>
+                <form class="w-100 pt-3 pl-4 pb-0 pr-4" action="./api/troubleshooting/edit_site.php" method="POST">
+                    <?php
+                        if ($_SESSION['id'] == $admin['id']) {
                             echo "<div class='md-form mt-1'>
                                 <div class='md-form mt-2'>
                                     <label for='num_chantier'>ID de chantier</label>
+                                    <input type='number' value='" . $cur_chant['state'] . "' id='state' name='state' style='display: none;'>
                                     <input type='number' value='" . $cur_chant['id'] . "' id='id' name='id' style='display: none;'>
                                     <input type='number' value='" . $cur_chant['num_chantier'] . "' id='num_chantier' name='num_chantier' class='form-control'>
                                 </div>
@@ -139,10 +160,10 @@ $cur_chant = $sql->fetch();
                             </div>";
                         }
                     ?>
-                    <input type="text" id="type" name="type" value="<?php echo $cur_chant['type']; ?>" style="display: none;">
+                    <!--<input type="text" id="type" name="type" value="<?php// echo $cur_chant['type']; ?>" style="display: none;">-->
                     <div class="pt-5 w-75 m-auto">
                         <input type="submit" value="Valider" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">
-                        <a href="troubleshooting_details.php?id=<?php echo $_GET['id'] ?>" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4 text-dark">Précédent</a>
+                        <a href="troubleshooting_list.php" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4 text-dark">Précédent</a>
                     </div>
                 </form>
             </div>
