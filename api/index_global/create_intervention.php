@@ -39,7 +39,11 @@ if(isset($_POST['panier_repas'])) {
     $intervention->panier_repas = 0;
 }
 $intervention->night_hours = $_POST['night_hours'];
-$intervention->commit = $_POST['commit'];
+if (!empty($_POST['commit'])) {
+    $intervention->commit = $_POST['commit'];
+} else {
+    $intervention->commit = NULL;
+}
 $intervention->created = $created;
 $intervention->updated = $_POST['up_inter'];
 

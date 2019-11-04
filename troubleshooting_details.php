@@ -95,8 +95,6 @@ $sql = "SELECT
         <div id="container">
             <div class="content pt-0 overflow-hidden">
                 <?php
-                    
-                    
                     if($result = mysqli_query($db, $sql)) {
                         if (mysqli_num_rows($result) > 0) {
 
@@ -114,11 +112,10 @@ $sql = "SELECT
                                 }
 
                                 if ($flag == 1 and !empty($row['name_chantier'])) {
-                                    echo '<div class="w-50 text-center m-auto">';
-                                        echo "<h5 class='text-center mt-2 ml-auto mr-auto'>" . $row['name_chantier'] . "</h5>";
-                                    echo '</div>';
+                                    echo "<h5 scope='col' class='align-middle text-center'>" . $row['name_chantier'] . "</h5>";
+                                    echo '<a href="commit_list.php?id=' . $_GET['id'] . '" scope="col" class="btn send border-0 bg-white z-depth-1a text-dark float-right mr-5 mr-5 pt-1 pr-2 pb-1 pl-2" style="width: 110px;">Commentaires</a>';
                                     if (!empty($row['num_chantier'])) {
-                                        echo '<div class="w-25 text-center m-auto">';
+                                        echo '<div class="w-25 text-center mt-4 ml-auto mb-4 mr-auto">';
                                             echo "<h5 class='w-50 text-center mt-2 ml-auto mr-auto'>" . $row['num_chantier'] . "</h5>";
                                         echo '</div>';
                                     }
@@ -126,7 +123,7 @@ $sql = "SELECT
                                 } else {
                                     $flag = 0;
                                 }
-
+                                
                                 if (empty($row['user_id']) and empty($row['chantier_id']) and empty($row['name_chantier']) and $flag == 0) {
                                     echo '<table class="table table-striped mt-4 ml-auto mb-5 mr-auto w-75 text-center">';
                                     echo "<thead>
@@ -197,7 +194,7 @@ $sql = "SELECT
                                         echo "<div class='h6 m-auto text-center w-75'>Chantier programmé pour des horaires à venir.</div>";
                                         echo "<div class='ml-auto mr-auto mt-5 w-75'>
                                             <a href='modif_troubleshooting.php?id=" . $chant['id'] . "' class='btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark'>Modifier</a>
-                                            <a href='troubleshooting_list.php' type='submit' value='return' class='btn finish border-0 bg-white z-depth-1a mt-1 mb-4'>Précédent</a>
+                                            <a href='troubleshooting_list.php' value='return' class='btn finish border-0 bg-white z-depth-1a mt-1 mb-4'>Précédent</a>
                                         </div>";
                                     }
                                     mysqli_free_result($reponse);
@@ -262,7 +259,7 @@ $sql = "SELECT
                 </div>
                 <div class="ml-auto mr-auto mt-2 w-75">
                     <a href="modif_troubleshooting.php?id=<?php echo $_GET['id']; ?>" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">Modifier</a>
-                    <a href="troubleshooting_list.php" type="submit" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-1">Précédent</a>
+                    <a href="troubleshooting_list.php" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-1">Précédent</a>
                 </div>
                             <?php
                                 }
