@@ -49,7 +49,12 @@ class Troubles{
         $this->contact_phone=htmlspecialchars(strip_tags($this->contact_phone));
         $this->contact_address=htmlspecialchars(strip_tags($this->contact_address));
         $this->type=htmlspecialchars(strip_tags($this->type));
-        $this->commit=htmlspecialchars(strip_tags($this->commit));
+        if(isset($this->commit) and !empty($this->commit)) {
+            $this->commit=htmlspecialchars(strip_tags($this->commit));
+        } else {
+            $this->commit=NULL;
+        }
+        //$this->commit=htmlspecialchars(strip_tags($this->commit));
         $this->state=htmlspecialchars(strip_tags($this->state));
     
         // bind values

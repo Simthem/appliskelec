@@ -38,7 +38,12 @@ class Intervention{
         $this->intervention_hours=htmlspecialchars(strip_tags($this->intervention_hours));
         $this->panier_repas=htmlspecialchars(strip_tags($this->panier_repas));
         $this->night_hours=htmlspecialchars(strip_tags($this->night_hours));
-        $this->commit=htmlspecialchars(strip_tags($this->commit));
+        if(isset($this->commit) and !empty($this->commit)) {
+            $this->commit=htmlspecialchars(strip_tags($this->commit));
+        } else {
+            $this->commit=NULL;
+        }
+        //$this->commit=htmlspecialchars(strip_tags($this->commit));
         $this->created=htmlspecialchars(strip_tags($this->created));
         $this->updated=htmlspecialchars(strip_tags($this->updated));
     
