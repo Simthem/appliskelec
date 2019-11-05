@@ -74,10 +74,14 @@ if($user) {
             <div class="content">
                 <form id="inter" action="./api/index_global/create_intervention.php" method="POST">
                     <div class="m-auto p-3">
-                        <div class="text-center w-75 mr-auto ml-auto pb-4"><input class="col-5 m-0 p-0 text-right" type="date" id="up_inter" name="up_inter"  placeholder="<?php if (!empty($_GET['store']) && isset($date) && !empty($date)) {
-                                                                                                                                                                                    date_format($date, 'd-m-Y');
-                                                                                                                                                                                }
-                                                                                                                                                                            ?>" onChange="preview1(this.form)" onfocus="(this.type='date')" onblur="if(this.value==''){this.type='text'} required="required"></div>
+                        <?php
+                            if (isset($_GET['store']) && !empty($_GET['store'])) {
+                                $date = date_create($_GET['store']);
+                                echo '<div class="text-center w-75 mr-auto ml-auto pb-4"><input class="bg-white col-5 m-0 p-0 text-right" type="date" id="up_inter" name="up_inter" value="' . $_GET['store'] . '" placeholder="' . date_format($date, "d-m-Y") . '" onChange="preview1(this.form)" onfocus="(this.type=\'date\')" onblur="if(this.value==\'\'){this.type=\'text\'}" required="required"></div>';
+                            } else {
+                                echo '<div class="text-center w-75 mr-auto ml-auto pb-4"><input class="bg-white col-5 m-0 p-0 text-right" type="date" id="up_inter" name="up_inter"  placeholder="" onChange="preview1(this.form)" required="required"></div>';
+                            }
+                        ?>
                         <div class="text-center pt-2"><?php echo $_SESSION['username']; ?></div>
                         <div class="text-center"><?php 
                                                     if($_SESSION['username'] == "admin") { 
@@ -90,7 +94,7 @@ if($user) {
                     <div class="text-center">
                         <div class="bg-white border rounded m-auto" style="width: max-content">
                             <?php
-                            echo '<select id="chantier_name" name="chantier_name" class="border-white" size="1" required>';
+                            echo '<select id="chantier_name" name="chantier_name" class="bg-white border-white" size="1" required>';
 
                                 $sql = 
                                 "SELECT 
@@ -101,6 +105,7 @@ if($user) {
                                     `state`
                                 ORDER BY 
                                     id DESC";
+
                                 if ($result = mysqli_query($db, $sql)) {
                                     if (mysqli_num_rows($result) > 0) {
                                         if ($db === false){
@@ -153,12 +158,12 @@ if($user) {
                     <?php
                         echo '<div class="collapse" id="preview">
                             <fieldset class="pl-2 text-dark bg-white border rounded w-75 m-auto" disabled>
-                                Date du jour :   <input id="date" class="border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50" value="' . date_format($date, 'd-m-Y') . '"><br />
-                                Nom du chantier :  <input id="chant_name" class="border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50"><br />
-                                Total des heures :  <input id="inter_h" class="border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50"><br />
-                                Commentaires :  <input id="com" class="border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50"><br />
-                                Panier repas :  <input id="pan_rep"class="border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50"><br />
-                                Horaires de nuit :  <input id="h_night"class="border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50"><br />
+                                Date du jour :   <input id="date" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50" value="' . date_format($date, 'd-m-Y') . '"><br />
+                                Nom du chantier :  <input id="chant_name" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50"><br />
+                                Total des heures :  <input id="inter_h" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50"><br />
+                                Commentaires :  <input id="com" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50"><br />
+                                Panier repas :  <input id="pan_rep"class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50"><br />
+                                Horaires de nuit :  <input id="h_night" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50"><br />
                             </fieldset>';
                         echo '<div class="w-75 ml-auto mr-auto">
                             <input type="submit" value="Soumettre" class="btn send border-0 bg-white z-depth-1a mt-3 mb-0 align-middle text-dark">
@@ -166,51 +171,17 @@ if($user) {
                         ?>
                     </div>
                     <div class="mt-4 w-75 pt-3 mr-auto ml-auto">
-                        <a data-toggle="collapse" href="#preview" role="button" aria-expanded="false" aria-controls="preview" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark" onClick="preview1()">Prévisualiser</a>
+                        <a data-toggle="collapse" href="#preview" role="button" aria-expanded="false" aria-controls="preview" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark" onClick="preview2()">Prévisualiser</a>
                     </div>
                 </form>
             </div>
         </div>
         <?php
-            
+            mysqli_close($db);
         ?>
-        <script type="text/javascript">
-            function preview1(form) {
-                var calen = document.forms['inter'].elements['up_inter'].value;
-                document.location.href = 'index.php?store='+calen;
-            }
-
-            function preview2() {
-                var date = document.getElementById("name");
-                date = <?php echo json_encode($_GET['store']) ?>;
-                var chant_name = document.getElementById("chant_name");
-                chant_name.value = document.getElementById("chantier_name").value;
-                var inter_h = document.getElementById("inter_h");
-                inter_h.value = document.getElementById("intervention_hours").value;
-                var pan_rep = document.getElementById("pan_rep");
-                pan_rep.value = document.getElementById("panier_repas").value;
-                var pan_rep = document.getElementById("pan_rep");
-                if ($("input[name='panier_repas']").is(":checked")) {
-                    pan_rep.value = document.getElementById("panier_repas").value;
-                } else {
-                    pan_rep.value = 0;
-                }
-                var h_night = document.getElementById("h_night");
-                if ($("input[name='coch_night']").is(":checked")) {
-                    h_night.value = document.getElementById("night_hours").value;
-                } else {
-                    h_night.value = 0;
-                }
-                var com = document.getElementById("com");
-                com.value = document.getElementById("commit").value;
-            }
-        </script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script src="js/script.js"></script>
         <script src="js/bootstrap.js"></script>
-        <?php
-            mysqli_close($db);
-        ?>
     </body>
     <footer>
     </footer>
