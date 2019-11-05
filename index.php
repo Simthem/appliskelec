@@ -151,26 +151,29 @@ if($user) {
                                 </div>
                             </div>
                             <div class="mt-2 mb-2 pt-5 pb-2">
-                                <textarea class="form-control" id="commit" name="commit" placeholder="Informations ?"></textarea>
+                                <textarea class="form-control textarea" id="commit" name="commit" placeholder="Informations ?" maxlength="450"></textarea>
                             </div>
                         </div>
                     </div>
                     <?php
                         echo '<div class="collapse" id="preview">
-                            <fieldset class="pl-2 text-dark bg-white border rounded w-75 m-auto" disabled>
+                            <h4 class="w-75 mt-2 ml-auto mb-3 mr-auto text-center">Récapitulatif</h4>
+                            <fieldset class="pl-3 text-dark bg-white border rounded w-75 m-auto" disabled>
+                                <br />
                                 Date du jour :   <input id="date" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50" value="' . date_format($date, 'd-m-Y') . '"><br />
                                 Nom du chantier :  <input id="chant_name" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50"><br />
                                 Total des heures :  <input id="inter_h" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50"><br />
-                                Commentaires :  <input id="com" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50"><br />
                                 Panier repas :  <input id="pan_rep"class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50"><br />
                                 Horaires de nuit :  <input id="h_night" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50"><br />
+                                <div class="d-inline-flex">
+                                Commentaires :  <textarea id="com" class="bg-white border-0 pt-0 pl-2 mt-0 ml-auto mb-0" cols="18" rows="2" style="resize: none;"></textarea></div><br />
                             </fieldset>';
-                        echo '<div class="w-75 ml-auto mr-auto">
+                        echo '<div class="w-75 mt-3 ml-auto mr-auto">
                             <input type="submit" value="Soumettre" class="btn send border-0 bg-white z-depth-1a mt-3 mb-0 align-middle text-dark">
                         </div>';
                         ?>
                     </div>
-                    <div class="mt-4 w-75 pt-3 mr-auto ml-auto">
+                    <div class="mt-4 w-75 pt-2 mr-auto ml-auto">
                         <a data-toggle="collapse" href="#preview" role="button" aria-expanded="false" aria-controls="preview" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark" onClick="preview2()">Prévisualiser</a>
                     </div>
                 </form>
