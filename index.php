@@ -160,7 +160,7 @@ if (isset($_COOKIE['id'])) {
                                     <label class="mt-auto mb-auto ml-4 pl-1 text-center" for="">Dont :</label>
                                 </div>
                                 <div class="col-7 d-inline-flex m-auto text-center pr-0 pl-0 mt-auto mb-auto">
-                                    <input type="time" id="night_hours" name="night_hours" class="col-7 form-control text-center align-middle p-0 mt-auto mb-auto" style="line-height: 25px;" placeholder="minutes/heures">
+                                    <input type="time" id="night_hours" name="night_hours" class="col-7 form-control text-center align-middle m-auto p-1" style="line-height: 25px;" placeholder="minutes/heures">
                                     <label class="col-6 mt-auto ml-5 mb-auto text-wrap text-left">heures de nuit</label>
                                 </div>
                             </div>
