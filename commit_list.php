@@ -114,7 +114,12 @@ ORDER BY
                                         echo '</tbody>';
                                     echo '</table>';
                                 }
-                            }
+                                mysqli_free_result($result);
+                            } else {
+                                echo "No records matching your query were found.";
+                            } 
+                        } else {
+                            echo "ERROR: Could not able to execute $sql. " . mysqli_error($db);
                         }
                     ?>
                 </div>
