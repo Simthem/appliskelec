@@ -134,8 +134,8 @@ $sql = "SELECT
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td class='align-middle bg-white p-1'>" . date_format($created, 'd-M-Y') . "</td>
-                                                <td class='align-middle bg-white p-1'>";
+                                                <td class='align-middle p-1'>" . date_format($created, 'd-M-Y') . "</td>
+                                                <td class='align-middle p-1'>";
                                                 $total = $row['totalheure'];
                                                 $hours = (int)($total / 10000);
                                                 $minutes = (int)($total - ($hours * 10000)) / 100;
