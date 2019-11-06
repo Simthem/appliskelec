@@ -13,6 +13,11 @@ $db = $database->getConnection();
 
 $user = new User($db);
 
+// set ID property of user to be edited
+$user->username = isset($_POST['username']) ? $_POST['username'] : die();
+$user->password = md5(isset($_POST['password']) ? $_POST['password'] : die());
+
+$stmt = $user->login();
 //verify admin
 $reponse = $db->query('SELECT admin_name FROM `admin` WHERE admin_name = "' . $_POST['username'] . '" ');
 $admin = $reponse->fetch();
@@ -25,14 +30,13 @@ if ($admin) {
 }
 
 
-if($user) {
-    $_SESSION['username'] = $_POST['username'];//here session is used and value of 'username' store in $_SESSION.
-}
-
 $pdo_user = $bdd->prepare("SELECT id, `password`, username FROM users WHERE username = '". $_SESSION['username'] ."'");
 $pdo_user->execute();
 $auth = $pdo_user->fetch();
 
+if($user) {
+    $_SESSION['username'] = $_POST['username'];//here session is used and value of 'username' store in $_SESSION.
+}
 
 //echo $_COOKIE['id'] . "<br />";
 
@@ -45,12 +49,7 @@ if ($pdo_user->rowCount() > 0){
         echo "ERROR: Username non reconnu ..";
     }
 
-    // set ID property of user to be edited
-    $user->username = isset($_POST['username']) ? $_POST['username'] : die();
-    $user->password = md5(isset($_POST['password']) ? $_POST['password'] : die());
-
     // read the details of user to be edited  
-    $stmt = $user->login();
     if ($stmt->rowCount() > 0) {
         header("Location:../../index.php");
         exit();
@@ -78,7 +77,7 @@ if ($pdo_user->rowCount() > 0){
     $stmt_admin = $bdd->prepare("SELECT id, admin_name, admin_pass FROM `admin` WHERE admin_name = '". $_SESSION['admin_name'] ."'");
     $stmt_admin->execute();
     $admin = $stmt_admin->fetch();
-    print_r($admin);
+
     if ($admin) {
         $value = $admin['id'].'---'.hash('sha512', $admin['admin_name'].'---'.$admin['admin_pass']);
         setcookie('auth', $value, time() + (7 * 24 * 3600) , null, null, false, true);

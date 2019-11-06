@@ -3,9 +3,9 @@ session_start();
 include './api/config/db_connexion.php';
 //require './api/troubleshooting/add_site.php';
 
-if(!($_SESSION['username'])) {  
-  
-    header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
+if (!($_SESSION['username'])) {
+
+    header("Location: signin.php");//redirect to login page to secure the welcome page without login access.
 }
 
 $stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");

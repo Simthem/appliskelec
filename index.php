@@ -4,11 +4,11 @@ session_start();
 
 include 'api/config/db_connexion.php';
 //include 'api/user/login.php';
-
+/*
 if(!($_SESSION['username'])) {  
   
     header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
-}
+}*/
 
 if (isset($_COOKIE['id'])) {
     $auth = explode('---', $_COOKIE['id']);
@@ -21,6 +21,8 @@ if (isset($_COOKIE['id'])) {
         if ($user && $auth[1] === hash('sha512', $user['username'].'---'.$user['password'])) {
             // Ce que tu avais mis pour ta session à la connection
             $_SESSION['id'] = $user['id'];
+        } else {
+            header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
         }
     }
 } elseif (isset($_COOKIE['auth'])) {
@@ -33,10 +35,28 @@ if (isset($_COOKIE['id'])) {
          
         if ($admin && $auth[1] === hash('sha512', $admin['admin_name'].'---'.$user['admin_pass'])) {
             // Ce que tu avais mis pour ta session à la connection
-            $_SESSION['auth'] = $admin['id'];
+            $_SESSION['id'] = $admin['id'];
+            $_SESSION['username'] = "admin";
+        } else {
+            header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
         }
     }
 }
+
+$stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");
+$stmt->execute();
+$user = $stmt->fetch();
+$stmt_admin = $bdd->prepare("SELECT id FROM `admin` WHERE admin_name = '". $_SESSION['admin_name'] ."'");
+$stmt_admin->execute();
+$admin = $stmt_admin->fetch();
+if($user) {
+    $_SESSION['id'] = $user['id'];
+} elseif ($admin) {
+    $_SESSION['id'] = $admin['id'];
+} else {
+    echo "ERROR: Could not get 'id' of current user [first_method]";
+}
+
 //$date_now = date('Y-m-d');
 ?>
 

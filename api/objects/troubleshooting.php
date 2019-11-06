@@ -67,7 +67,7 @@ class Troubles{
         $stmt->bindParam(":type", $this->type);
         $stmt->bindParam(":commit", $this->commit);
         $stmt->bindParam(":state", $this->state);
-    
+        
         // execute query
         if($stmt->execute()){
             $this->id = $this->conn->lastInsertId();
