@@ -44,9 +44,11 @@ if (isset($_COOKIE['id'])) {
 $stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");
 $stmt->execute();
 $user = $stmt->fetch();
+
 $stmt_admin = $bdd->prepare("SELECT * FROM `admin` WHERE admin_name = '". $_SESSION['admin_name'] ."'");
 $stmt_admin->execute();
 $admin = $stmt_admin->fetch();
+
 if($user) {
     $_SESSION['id'] = $user['id'];
 } elseif ($admin and empty($user)) {

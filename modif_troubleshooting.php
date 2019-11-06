@@ -50,7 +50,6 @@ if($user) {
     echo "ERROR: Could not get 'id' of current user [first_method]";
 }
 
-
 $sql = $bdd->prepare("SELECT * FROM chantiers WHERE id =" . $_GET['id']);
 $sql->execute();
 $cur_chant = $sql->fetch();

@@ -1,5 +1,9 @@
 <?php
 include './api/config/database.php';
+
+if($_POST['username'] and $_POST['password']) {
+  $_SESSION['username'] = $_POST['username'];
+}
 ?>
 
 <!DOCTYPE html>
