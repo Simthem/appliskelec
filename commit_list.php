@@ -122,7 +122,7 @@ ORDER BY
                 <div class="icons-navbar">
                     <div class="menu-btn-bars text-white"><button class="menu-btn fas fa-bars text-warning w-100 fa-3x p-0"></button></div>
                     <a href="index.php" class="text-warning m-auto"><h2 class="m-0">S.K.elec</h2></a>
-                    <a href="#" class="text-white pl-3"><i class="menu-btn-plus fas fa-search text-warning fa-3x rounded-circle"></i></a>
+                    <a href="troubleshooting_list.php" class="text-white pl-3"><i class="menu-btn-plus fas fa-search text-warning fa-3x rounded-circle"></i></a>
                 </div>
             </div>
         </header>
@@ -155,7 +155,7 @@ ORDER BY
                                 }
                                 mysqli_free_result($result);
                             } else {
-                                echo "No records matching your query were found.";
+                                echo "Pas de commentaires à l'heure actuelle pour ce chantier";
                             } 
                         } else {
                             echo "ERROR: Could not able to execute $sql. " . mysqli_error($db);

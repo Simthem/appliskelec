@@ -134,7 +134,7 @@ $sql = "SELECT
         <div id="container">
             <div class="content pt-0 overflow-hidden">
                 <?php
-                    if($result = mysqli_query($db, $sql)) {
+                    if ($result = mysqli_query($db, $sql)) {
                         if (mysqli_num_rows($result) > 0) {
 
                             $flag = 1;

@@ -17,17 +17,6 @@ $user->password = md5(isset($_POST['password']) ? $_POST['password'] : die());
 
 // read the details of user to be edited  
 $stmt = $user->login();
-/*
-//verify admin
-$reponse = $db->query('SELECT admin_name FROM `admin` WHERE admin_name = "' . $_POST['username'] . '" ');
-$admin = $reponse->fetch();
-if ($admin) {
-    if ($_POST['username'] == $admin['admin_name']) {
-        $_SESSION['username'] = "admin";
-        $_SESSION['admin_name'] = $_POST['username'];
-    }
-}*/
-
 
 if ($stmt->rowCount() > 0){
     

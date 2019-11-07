@@ -20,13 +20,13 @@ class User{
         $this->conn = $db;
     }
 
-
     // signup user
     function signup(){
     
         if($this->isAlreadyExist()){
             return false;
         }
+
         // query to insert record
         $query = "INSERT INTO
                     " . $this->table_name . "
@@ -59,15 +59,15 @@ class User{
             $this->id = $this->conn->lastInsertId();
             return true;
         }
-    
         return false;
-        
     }
+
 
 
     // login user
 
     function login(){
+
         // select query
         $query = "SELECT
                     `id`, `username`, `password`, `created`
@@ -75,12 +75,15 @@ class User{
                     " . $this->table_name . " 
                 WHERE
                     username='" . $this->username . "' AND password='" . $this->password . "'";
+
         // prepare query statement
         $stmt = $this->conn->prepare($query);
+
         // execute query
         $stmt->execute();
         return $stmt;
     }
+
 
 
     function isAlreadyExist(){
@@ -102,7 +105,10 @@ class User{
     }
 }
 
+
+
 class Admin{
+
     // database connection and table name
     private $conn;
     private $table_name = "admin";
@@ -135,6 +141,7 @@ class Admin{
 }
 
 
+
 class DeleteUser{
 
     // database connection and table name
@@ -150,3 +157,4 @@ class DeleteUser{
         return $result;
     }
 }
+?>

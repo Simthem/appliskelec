@@ -153,8 +153,10 @@ if($user) {
                     <?php
 
                     $sql = 
-                    "SELECT id, username, phone 
-                    FROM users";
+                    "SELECT 
+                        id, username, phone 
+                    FROM 
+                        users";
 
                     if ($result = mysqli_query($db, $sql)){
                         if (mysqli_num_rows($result) > 0){
