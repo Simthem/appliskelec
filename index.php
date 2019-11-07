@@ -46,9 +46,10 @@ $stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['user
 $stmt->execute();
 $user = $stmt->fetch();
 
-$stmt_admin = $bdd->prepare("SELECT id FROM `admin` WHERE admin_name = '". $_SESSION['username'] ."'");
+$stmt_admin = $bdd->prepare("SELECT id FROM `admin` WHERE admin_name = '". $_SESSION['admin_name'] ."'");
 $stmt_admin->execute();
 $admin = $stmt_admin->fetch();
+
 if($user) {
     $_SESSION['id'] = $user['id'];
 } elseif ($admin) {
@@ -116,7 +117,7 @@ if($user) {
                         ?>
                         <div class="text-center pt-2"><?php echo $_SESSION['username']; ?></div>
                         <div class="text-center"><?php 
-                                                    if($_SESSION['username'] == "admin") { 
+                                                    if ($_SESSION['username'] == "admin") { 
                                                         echo "Administrateur de S.K.elec_app ;)";
                                                     }
                                                 ?>
