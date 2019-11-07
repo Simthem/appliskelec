@@ -2,12 +2,12 @@
 session_start();
 include 'api/config/db_connexion.php';
 //require_once 'api/user/edit_profil.php';
-/*
+
 if(!($_SESSION['username'])) {  
   
     header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
-}*/
-
+}
+/*
 if (isset($_COOKIE['id'])) {
     $auth = explode('---', $_COOKIE['id']);
  
@@ -20,7 +20,7 @@ if (isset($_COOKIE['id'])) {
             // Ce que tu avais mis pour ta session à la connection
             $_SESSION['id'] = $user['id'];
         } else {
-            header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
+            //header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
         }
     }
 } elseif (isset($_COOKIE['auth'])) {
@@ -36,10 +36,10 @@ if (isset($_COOKIE['id'])) {
             $_SESSION['id'] = $admin['id'];
             $_SESSION['username'] = "admin";
         } else {
-            header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
+            //header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
         }
     }
-}
+}*/
 
 $stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");
 $stmt->execute();

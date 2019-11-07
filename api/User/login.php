@@ -41,7 +41,8 @@ if ($stmt->rowCount() > 0){
         
         if($auth) {
             $value = $auth['id'].'---'.hash('sha512', $auth['username'].'---'.$auth['password']);
-            setcookie('id', $value, time() + (7 * 24 * 3600) , '/', '192.168.1.16:8888', 'sameSite:lax', true);
+            setcookie('id', $value, time() + (7 * 24 * 3600) , '/', null, false, true);
+            session_start();
             header("Location:../../index.php");
             exit();
         } else {
@@ -74,16 +75,12 @@ if ($stmt->rowCount() > 0){
             print_r($stmt_admin);
             if ($admin) {
                 $value = $admin['id'].'---'.hash('sha512', $admin['admin_name'].'---'.$admin['admin_pass']);
-                echo '<br />';
-                echo $value;
-                setcookie('id_first', $value, time() + (7 * 24 * 3600) , '/', '192.168.1.16:8888', true, true);
-                echo '<br />';
-                echo $value;
-                print_r($_COOKIE['id_first']);
+                setcookie('auth', $value, time() + (7 * 24 * 3600) , '/', null, false, true);
+                session_start();
                 header("Location:../../index.php");
                 exit();
             } else {
-                echo "ERROR: Username non reconnu ..";
+                echo "ERROR: Username/mot de passe non reconnu ..";
             }
         }
     } else {

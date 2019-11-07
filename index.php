@@ -1,5 +1,6 @@
 <?php
 session_start();
+//print_r(session_get_cookie_params());
 
 include 'api/config/db_connexion.php';
 
@@ -19,9 +20,9 @@ if (isset($_COOKIE['id'])) {
             header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
         }
     }
-} elseif (isset($_COOKIE['id_first'])) {
+} elseif (isset($_COOKIE['auth'])) {
 
-    $auth = explode('---', $_COOKIE['id_first']);
+    $auth = explode('---', $_COOKIE['auth']);
  
     if (count($auth) === 2) {
         $req = $bdd->prepare('SELECT id, admin_name, admin_pass FROM `admin` WHERE id = :id');
@@ -37,7 +38,7 @@ if (isset($_COOKIE['id'])) {
     }
 }
 
-if(!($_SESSION['username'])) {  
+if(!($_SESSION['username'])){// or !($_SESSION['admin_name'])) {  
   
     header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
 }

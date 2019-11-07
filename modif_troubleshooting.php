@@ -1,24 +1,27 @@
 <?php
 session_start();
-include './api/config/db_connexion.php';
-//require './api/troubleshooting/add_site.php';
+//print_r(session_get_cookie_params());
+
+include 'api/config/db_connexion.php';
 
 if (isset($_COOKIE['id'])) {
+
     $auth = explode('---', $_COOKIE['id']);
- 
+
     if (count($auth) === 2) {
         $req = $bdd->prepare('SELECT id, username, `password` FROM users WHERE id = :id');
         $req->execute([ ':id' => $auth[0] ]);
         $user = $req->fetch(PDO::FETCH_ASSOC);
          
         if ($user && $auth[1] === hash('sha512', $user['username'].'---'.$user['password'])) {
-            // Ce que tu avais mis pour ta session à la connection
             $_SESSION['id'] = $user['id'];
+            $_SESSION['username'] = $user['username'];
         } else {
             header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
         }
     }
 } elseif (isset($_COOKIE['auth'])) {
+
     $auth = explode('---', $_COOKIE['auth']);
  
     if (count($auth) === 2) {
@@ -26,8 +29,7 @@ if (isset($_COOKIE['id'])) {
         $req->execute([ ':id' => $auth[0] ]);
         $admin = $req->fetch(PDO::FETCH_ASSOC);
          
-        if ($admin && $auth[1] === hash('sha512', $admin['admin_name'].'---'.$user['admin_pass'])) {
-            // Ce que tu avais mis pour ta session à la connection
+        if ($admin && $auth[1] === hash('sha512', $admin['admin_name'].'---'.$admin['admin_pass'])) {
             $_SESSION['id'] = $admin['id'];
             $_SESSION['username'] = "admin";
         } else {
@@ -36,15 +38,22 @@ if (isset($_COOKIE['id'])) {
     }
 }
 
+if(!($_SESSION['username'])) {  
+  
+    header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
+}
+
 $stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");
 $stmt->execute();
 $user = $stmt->fetch();
+
 $stmt_admin = $bdd->prepare("SELECT id FROM `admin` WHERE admin_name = '". $_SESSION['admin_name'] ."'");
 $stmt_admin->execute();
 $admin = $stmt_admin->fetch();
+
 if($user) {
     $_SESSION['id'] = $user['id'];
-} elseif ($admin and empty($user)) {
+} elseif ($admin) {
     $_SESSION['id'] = $admin['id'];
 } else {
     echo "ERROR: Could not get 'id' of current user [first_method]";
