@@ -32,6 +32,7 @@ if (isset($_COOKIE['id'])) {
         if ($admin && $auth[1] === hash('sha512', $admin['admin_name'].'---'.$admin['admin_pass'])) {
             $_SESSION['id'] = $admin['id'];
             $_SESSION['username'] = "admin";
+            $_SESSION['admin_name'] = $admin['admin_name'];
         } else {
             header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
         }

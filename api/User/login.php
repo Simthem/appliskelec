@@ -68,8 +68,7 @@ if ($stmt->rowCount() > 0){
         $stmt_admin = $bdd->prepare("SELECT id, admin_name, admin_pass FROM `admin` WHERE admin_name = '". $_SESSION['admin_name'] ."'");
         $stmt_admin->execute();
         $admin = $stmt_admin->fetch();
-        echo "first<br />";
-        print_r($admin);
+        
         if ($stmt_admin->rowCount() > 0) {
             echo "<br />";
             print_r($stmt_admin);
