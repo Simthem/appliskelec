@@ -1,11 +1,45 @@
 <?php
 session_start();
-
+//print_r(session_get_cookie_params());
 
 include 'api/config/db_connexion.php';
-//include 'api/user/login.php';
 
-if(!($_SESSION['username'])) {  
+if (isset($_COOKIE['id'])) {
+
+    $auth = explode('---', $_COOKIE['id']);
+
+    if (count($auth) === 2) {
+        $req = $bdd->prepare('SELECT id, username, `password` FROM users WHERE id = :id');
+        $req->execute([ ':id' => $auth[0] ]);
+        $user = $req->fetch(PDO::FETCH_ASSOC);
+         
+        if ($user && $auth[1] === hash('sha512', $user['username'].'---'.$user['password'])) {
+            $_SESSION['id'] = $user['id'];
+            $_SESSION['username'] = $user['username'];
+        } else {
+            header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
+        }
+    }
+} elseif (isset($_COOKIE['auth'])) {
+
+    $auth = explode('---', $_COOKIE['auth']);
+ 
+    if (count($auth) === 2) {
+        $req = $bdd->prepare('SELECT id, admin_name, admin_pass FROM `admin` WHERE id = :id');
+        $req->execute([ ':id' => $auth[0] ]);
+        $admin = $req->fetch(PDO::FETCH_ASSOC);
+         
+        if ($admin && $auth[1] === hash('sha512', $admin['admin_name'].'---'.$admin['admin_pass'])) {
+            $_SESSION['id'] = $admin['id'];
+            $_SESSION['username'] = "admin";
+            $_SESSION['admin_name'] = $admin['admin_name'];
+        } else {
+            header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
+        }
+    }
+}
+
+if(!($_SESSION['username'])){// or !($_SESSION['admin_name'])) {  
   
     header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
 }
@@ -13,17 +47,19 @@ if(!($_SESSION['username'])) {
 $stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");
 $stmt->execute();
 $user = $stmt->fetch();
+
 $stmt_admin = $bdd->prepare("SELECT id FROM `admin` WHERE admin_name = '". $_SESSION['admin_name'] ."'");
 $stmt_admin->execute();
 $admin = $stmt_admin->fetch();
+
 if($user) {
     $_SESSION['id'] = $user['id'];
 } elseif ($admin) {
     $_SESSION['id'] = $admin['id'];
 } else {
-    echo "ERROR: Could not get 'id' of current user [first_method]";
+    //echo "ERROR: Could not get 'id' of current user [first_method]";
+    header("Location: signin.php");
 }
-//$date_now = date('Y-m-d');
 ?>
 
 <!DOCTYPE html>
@@ -84,7 +120,7 @@ if($user) {
                         ?>
                         <div class="text-center pt-2"><?php echo $_SESSION['username']; ?></div>
                         <div class="text-center"><?php 
-                                                    if($_SESSION['username'] == "admin") { 
+                                                    if ($_SESSION['username'] == "admin") { 
                                                         echo "Administrateur de S.K.elec_app ;)";
                                                     }
                                                 ?>
@@ -146,7 +182,7 @@ if($user) {
                                     <label class="mt-auto mb-auto ml-4 pl-1 text-center" for="">Dont :</label>
                                 </div>
                                 <div class="col-7 d-inline-flex m-auto text-center pr-0 pl-0 mt-auto mb-auto">
-                                    <input type="time" id="night_hours" name="night_hours" class="col-7 form-control text-center align-middle p-0 mt-auto mb-auto" style="line-height: 25px;" placeholder="minutes/heures">
+                                    <input type="time" id="night_hours" name="night_hours" class="col-7 form-control text-center align-middle m-auto p-1" style="line-height: 25px;" placeholder="minutes/heures">
                                     <label class="col-6 mt-auto ml-5 mb-auto text-wrap text-left">heures de nuit</label>
                                 </div>
                             </div>

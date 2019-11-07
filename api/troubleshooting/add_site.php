@@ -2,14 +2,14 @@
 session_start();
 
 // get database connection
-include_once '../config/database.php';
+include '../config/database.php';
  
 // instantiate troubles object
-include_once '../objects/troubleshooting.php';
+include '../objects/troubleshooting.php';
 
 if(!($_SESSION['username'])) {  
   
-    header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
+    header("Location:../../signin.php");//redirect to login page to secure the welcome page without login access.  
 }
 
 $database = new Database();
@@ -18,7 +18,7 @@ $db = $database->getConnection();
 $troubles = new Troubles($db);
  
 // set troubles property values
-if ($_POST['session'] != NULL) {
+if (isset($_POST['session']) && !empty($_POST['session'])) {
     $troubles->num_chantier = $_POST['num_chantier'];
 } else {
     $_POST['num_chantier'] = NULL;
@@ -75,6 +75,7 @@ if(empty($_POST['name'])) {
 } else {
     echo "Success !! :)";
     $troubles->create_troubles();
+    print_r($troubles);
     header("refresh:2; url=../../troubleshooting_list.php");
     exit();
 }
