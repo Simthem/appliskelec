@@ -69,6 +69,7 @@ if($user) {
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=0">
         <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <meta name="apple-mobile-web-app-title" content="S.K.elec">
         <link  rel="stylesheet" href="assets/css/bootstrap.css">
         <link rel="stylesheet" href="assets/css/style.css">
@@ -92,7 +93,52 @@ if($user) {
                         <ul class="pl-0">
                             <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="troubleshooting_list.php" class="text-warning">Chantiers</a></li>
                             <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="list_profil.php" class="text-warning">Salariés</a></li>
-                            <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="#" class="text-warning">Paramètres</a></li>
+                            
+                            <!--<li class="bg-dark border-top border-warning rounded-0 p-0 collapsed"><a id="params" data-toggle="collapse" href="#submenu" role="button" aria-expanded="true" aria-controls="#submenu" class="text-warning open-col">Paramètres<div class="mr-0 float-right" style="width: 40px;"><img src="img/fleche_menu.png" class="ml-3 mt-auto mb-auto open-col" style="width: 13px; height: 13px;"></div></a>-->
+                            <li data-toggle="collapse" href="#preview2" role="button" aria-expanded="false" aria-controls="preview2" class="bg-dark border-top border-warning rounded-0 p-0 collapsed text-warning"><a>Paramètres</a></li>
+                                <div id="preview2" class="bg-light collapse" action='api/user/edit_profil.php' method='GET'>
+                                    <?php
+                                        if ($_SESSION['id'] == $admin['id']) {
+                                            $admin_sql = "SELECT * FROM `admin`";
+                                            if ($admin_result = mysqli_query($db, $admin_sql)){
+                                                if (mysqli_num_rows($admin_result) > 0){
+                                                    if ($db === false){
+                                                        die("ERROR: Could not connect. " . mysqli_connect_error());
+                                                    }
+                                                    while($row = $admin_result->fetch_array()) {
+                                                        echo "<li class='rounded-0 p-0 menu-link' style='height: 60px;'><a href='modif_profil.php?id=" . $row['id'] . "' class='mt-auto ml-auto mb-auto mr-auto text-dark w-75'><div class='mt-auto mb-auto pr-3 float-left'> • </div>Profile</a></li>";
+                                                    }
+                                                    mysqli_free_result($admin_result);
+                                                } else {
+                                                    echo "No records matching your query were found.";
+                                                }
+                                            } else {
+                                                echo "ERROR: Could not able to execute $admin_sql. " . mysqli_error($db);
+                                            }
+                                            echo "<li class='rounded-0 p-0 menu-link border-top'><a href='extract_obj.php' class='pt-4 pr-0 pb-4 mt-auto ml-auto mb-auto mr-auto  text-dark w-75'><div class='mt-auto mb-auto pr-3 pt-3 float-left'> • </div><div class='w-100'>Extraire un compte rendu</div></a></li>";
+                                        } else {
+                                            $user_sql = "SELECT * FROM users";
+                                            if ($user_result = mysqli_query($db, $user_sql)){
+                                                if (mysqli_num_rows($user_result) > 0){
+                                                    if ($db === false) {
+                                                        die("ERROR: Could not connect. " . mysqli_connect_error());
+                                                    }
+                                                    while ($row = $user_result->fetch_array()){
+                                                        if ($row['id'] == $_SESSION['id']) {
+                                                            echo "<li><a href='modif_profil.php?id=" . $row['id'] . "' class='mt-auto ml-auto mb-auto mr-auto text-dark w-75'>Profile</a></li>";
+                                                        }
+                                                    }
+                                                    mysqli_free_result($user_result);
+                                                } else {
+                                                    echo "No records matching your query were found.";
+                                                }
+                                            } else {
+                                                echo "ERROR: Could not able to execute $admin_sql. " . mysqli_error($db);
+                                            }
+                                        }
+                                    ?>
+                                </div>
+                            </li>
                             <li class="bg-dark border-top border-bottom border-warning rounded-0 p-0 menu-link"><a href="api/User/logout.php" class="text-warning">Déconnexion</a></li>
                         </ul>
                     </div>
@@ -170,7 +216,7 @@ if($user) {
                     </div>
                     <div class="m-auto d-flex flex-column border-top pt-4 w-75">
                         <div class="pt-1 pb-3">
-                            <div class="col-5 mb-2 p-0 position-relative">
+                            <div class="col-8 mb-2 p-0 position-relative">
                                 <input type="checkbox" id="panier_repas" name="panier_repas" value="1" class="form-check-input align-middle mt-1 mb-auto">
                                 <label class="mb-auto mt-auto ml-4 pl-1 text-center" for="">Panier repas</label>
                             </div>
@@ -183,7 +229,7 @@ if($user) {
                                 </div>
                                 <div class="col-7 d-inline-flex m-auto text-center pr-0 pl-0 mt-auto mb-auto">
                                     <input type="time" id="night_hours" name="night_hours" class="col-7 form-control text-center align-middle m-auto p-1" style="line-height: 25px;" placeholder="minutes/heures">
-                                    <label class="col-6 mt-auto ml-5 mb-auto text-wrap text-left">heures de nuit</label>
+                                    <label class="col-8 mt-auto ml-3 mb-auto text-wrap text-left">heures de nuit</label>
                                 </div>
                             </div>
                             <div class="mt-2 mb-2 pt-5 pb-2">
@@ -199,7 +245,7 @@ if($user) {
                                 Date du jour :   <input id="date" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50" value="' . date_format($date, 'd-m-Y') . '"><br />
                                 Nom du chantier :  <input id="chant_name" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50"><br />
                                 Total des heures :  <input id="inter_h" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50"><br />
-                                Panier repas :  <input id="pan_rep"class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50"><br />
+                                Panier repas :  <input id="pan_rep" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50"><br />
                                 Horaires de nuit :  <input id="h_night" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50"><br />
                                 <div class="d-inline-flex">
                                 Commentaires :  <textarea id="com" class="bg-white border-0 pt-0 pl-2 mt-0 ml-auto mb-0" cols="18" rows="2" style="resize: none;"></textarea></div><br />
@@ -220,8 +266,16 @@ if($user) {
         ?>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script src="js/script.js"></script>
+        <script src="/js/jQuery.stayInWebApp-master/jquery.stayInWebApp.js"></script>
+        <script src="/js/jQuery.stayInWebApp-master/jquery.stayInWebApp.min.js"></script>
         <script src="js/bootstrap.js"></script>
-    </body>
+        <script>
+            $(function() {
+                $.stayInWebApp();
+            });
+        </script>
+
     <footer>
     </footer>
+    </body>
 </html>

@@ -93,12 +93,15 @@ $sql = "SELECT
 <html class="overflow-y mb-0">
     <head>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=0">
         <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-title" content="S.K.elec">
         <link  rel="stylesheet" href="assets/css/bootstrap.css">
         <link rel="stylesheet" href="assets/css/style.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css?family=Lato:300,400,400italic,700,700italic" rel="stylesheet">
         <script src="https://kit.fontawesome.com/f14bbc71a6.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
@@ -134,7 +137,7 @@ $sql = "SELECT
         <div id="container">
             <div class="content pt-0 overflow-hidden">
                 <?php
-                    if($result = mysqli_query($db, $sql)) {
+                    if ($result = mysqli_query($db, $sql)) {
                         if (mysqli_num_rows($result) > 0) {
 
                             $flag = 1;
@@ -312,6 +315,14 @@ $sql = "SELECT
     </body>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="js/script.js"></script>
+    <script src="/js/jQuery.stayInWebApp-master/jquery.stayInWebApp.js"></script>
+    <script src="/js/jQuery.stayInWebApp-master/jquery.stayInWebApp.min.js"></script>
     <script src="js/bootstrap.js"></script>
+    <script>
+        $(function() {
+            $.stayInWebApp();
+        });
+    </script>
 </html>

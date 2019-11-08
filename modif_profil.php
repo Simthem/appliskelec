@@ -7,39 +7,6 @@ if(!($_SESSION['username'])) {
   
     header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
 }
-/*
-if (isset($_COOKIE['id'])) {
-    $auth = explode('---', $_COOKIE['id']);
- 
-    if (count($auth) === 2) {
-        $req = $bdd->prepare('SELECT id, username, `password` FROM users WHERE id = :id');
-        $req->execute([ ':id' => $auth[0] ]);
-        $user = $req->fetch(PDO::FETCH_ASSOC);
-         
-        if ($user && $auth[1] === hash('sha512', $user['username'].'---'.$user['password'])) {
-            // Ce que tu avais mis pour ta session à la connection
-            $_SESSION['id'] = $user['id'];
-        } else {
-            //header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
-        }
-    }
-} elseif (isset($_COOKIE['auth'])) {
-    $auth = explode('---', $_COOKIE['auth']);
- 
-    if (count($auth) === 2) {
-        $req = $bdd->prepare('SELECT id, admin_name, admin_pass FROM `admin` WHERE id = :id');
-        $req->execute([ ':id' => $auth[0] ]);
-        $admin = $req->fetch(PDO::FETCH_ASSOC);
-         
-        if ($admin && $auth[1] === hash('sha512', $admin['admin_name'].'---'.$user['admin_pass'])) {
-            // Ce que tu avais mis pour ta session à la connection
-            $_SESSION['id'] = $admin['id'];
-            $_SESSION['username'] = "admin";
-        } else {
-            //header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
-        }
-    }
-}*/
 
 $stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");
 $stmt->execute();
@@ -60,21 +27,18 @@ if($user) {
 
 <!DOCTYPE html>
 
-<?php
-    if ($_SESSION['id'] != $_GET['id'] and $_SESSION['id'] != $admin['id']) {
-        echo "<html class='overflow-hidden'>";
-    } else {
-        echo "<html class='overflow-y mb-0'>";
-    }
-?>
+<html class='overflow-y mb-0'>
     <head>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=0">
         <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-title" content="S.K.elec">
         <link  rel="stylesheet" href="assets/css/bootstrap.css">
         <link rel="stylesheet" href="assets/css/style.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css?family=Lato:300,400,400italic,700,700italic" rel="stylesheet">
         <script src="https://kit.fontawesome.com/f14bbc71a6.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
@@ -107,20 +71,23 @@ if($user) {
         </header>
 
         <?php
-            $sql = $bdd->prepare(
-            "SELECT 
-                c.id AS chantier_id,
-                c.created as date_chantier,
-                concat(year(g.created),
-                month(g.created),
-                week(g.created)),
+
+            $sql = "SELECT 
+                concat(year(g.updated),
+                month(g.updated),
+                week(g.updated)),
                 c.name AS name_chantier,
+                g.updated as inter_chantier,
+                c.created as date_chantier,
+                c.id AS chantier_id,
                 username,
-                u.id AS user_id,
+                u.id AS `user_id`,
+                night_hours,
+                SUM(night_hours) AS h_night_tot,
                 SUM(intervention_hours) AS totalheure,
-                if (SUM(intervention_hours) - 350000 > 0, if( SUM(intervention_hours) - 350000 > 80000, 80000, SUM(intervention_hours) - 350000), NULL) AS maj25,
-                if (SUM(intervention_hours) > 430000, SUM(intervention_hours) - 430000, NULL) AS maj50,
-                SUM(night_hours) AS h_night
+                SUM(intervention_hours - night_hours) AS tothsnight,
+                if (SUM(intervention_hours - night_hours) - 350000 > 0, if (SUM(intervention_hours - night_hours) - 350000 > 80000, 80000, SUM(intervention_hours - night_hours) - 350000), NULL) AS maj25,
+                if (SUM(intervention_hours - night_hours) > 430000, if (SUM(night_hours) > 0, SUM(intervention_hours) - 430000, SUM(intervention_hours - night_hours) - 430000), if (SUM(intervention_hours - night_hours) < 430000, if (SUM(night_hours) > 0, SUM(night_hours), NULL), NULL)) AS maj50
             FROM
                 chantiers AS c
                 JOIN
@@ -128,19 +95,11 @@ if($user) {
                 JOIN
                 users AS u ON g.user_id = u.id
             WHERE
-                u.id = '". $_GET['id'] ."'
+                u.id = '" . $_GET['id'] . "'
                 #g.created BETWEEN \'2019-10-01\' AND \'2019-11-30\'
-            GROUP BY c.id , u.id , c.created , username , c.name , concat(year(g.created) , month(g.created), week(g.created)) with ROLLUP");
+            GROUP BY u.id , username , c.id , c.created , g.updated , c.name , night_hours , concat(year(g.updated) , month(g.updated), week(g.updated)) with ROLLUP";
+
             
-            $sql->execute();
-            while ($total_user = $sql->fetch()) {
-                if ($total_user['chantier_id'] == NULL) {
-                    $total['totalheure'] = $total_user['totalheure'];
-                    $m25['maj25'] = $total_user['maj25'];
-                    $m50['maj50'] = $total_user['maj50'];
-                    $mnight = $total_user['h_night'];
-                } 
-            }
 
             if(($_GET['id'] != $admin['id'] and $_SESSION['id'] == $_GET['id'] and $_SESSION['id'] == $user['id']) or $_SESSION['id'] == $admin['id']) {
         ?>
@@ -178,53 +137,72 @@ if($user) {
                                         echo '<label for="e_mail">E_mail</label>';
                                         echo '<input type="email" value="' . $modif_user['e_mail'] . '" id="e-mail" name="e_mail" class="form-control" placeholder="' . $modif_user['e_mail'] . '">';
                                     echo '</div>';
-                                    echo '<div class="md-form mt-4">';
+                                    echo '<div class="md-form mt-4 pb-3">';
                                         echo '<label for="phone">Téléphone</label>';
                                         echo '<input type="text" value="' . $modif_user['phone'] . '" id="phone" name="phone" class="form-control" placeholder="' . $modif_user['phone'] . '">';
                                     echo '</div>';
-                                    echo '<div class="d-inline-flex">';
-                                        echo '<div class="md-form mt-4 col-4">';
-                                            echo '<label class="w-100 text-center" for="total_hours">H/totales</label>';?>
-                                            <input type="number" value="<?php 
-                                                $total = $total['totalheure'];
-                                                $hours = (int)($total / 10000);
-                                                $minutes = ((int)($total - ($hours * 10000)) / 100) / 60;
-                                                $total = $hours + $minutes;
-                                                echo $total;?>" 
-                                            id="total_hours" name="total_hours" class="form-control" placeholder="<?php
-                                                echo $total;?>" step=".01"
-                                            disabled>
-                                        <?php 
-                                        echo '</div>';
-                                        echo '<div class="md-form mt-4 col-4">';
-                                            echo '<label class="w-100 text-center" for="total_hours">H + 25%</label>';?>
-                                            <input type="number" value="<?php
-                                                $m25 = $m25['maj25'];
-                                                $hours = (int)($m25 / 10000);
-                                                $minutes = ((int)($m25 - ($hours * 10000)) / 100) / 60;
-                                                $m25 = $hours + $minutes;
-                                                echo $m25;?>"
-                                            id="total_hours" name="total_hours" class="form-control" placeholder="<?php
-                                                echo $m25;?>" step=".01"
-                                            disabled>
-                                        <?php 
-                                        echo '</div>';
-                                        echo '<div class="md-form mt-4 col-4">';
-                                            echo '<label class="w-100 text-center" for="total_hours">H + 50%</label>';?>
-                                            <input type="number" value="<?php
-                                                $m50 = $m50['maj50'];
-                                                $hours = (int)($m50 / 10000);
-                                                $minutes = ((int)($m50 - ($hours * 10000)) / 100) / 60;
-                                                $hnight = (int)($mnight / 10000);
-                                                $min_night = ((int)($mnight - ($hnight * 10000)) / 100) / 60;
-                                                $m50 = $hours + $hnight + $minutes + $min_night;
-                                                echo $m50;?>"
-                                            id="total_hours" name="total_hours" class="form-control" placeholder="<?php
-                                                echo $m50;?>" step=".01"
-                                            disabled>
-                                        <?php 
-                                        echo '</div>';
-                                    echo '</div>';
+                                    echo "<table class='table table-striped border mt-4 ml-auto mb-3 mr-auto w-100 text-center'>";
+                                        echo "<thead>
+                                            <tr>
+                                                <th scope='col' class='text-center border-right align-middle w-25'>H/totales</th>
+                                                <th scope='col' class='text-center border-right align-middle w-25'>H + 25%</th>
+                                                <th scope='col' class='text-center align-middle w-25'>H + 50%</th>
+                                            </tr>
+                                        </thead>
+                                    </table>";
+                                    echo '<div class="container-list-details m-auto">
+                                        <table class="table table-striped border ml-auto mb-3 mr-auto w-100 text-center">';
+                                            if($result = mysqli_query($db, $sql)) {
+
+                                                if (mysqli_num_rows($result) > 0) {
+                                                    echo "<tbody>";
+                                                        while ($row = $result->fetch_array()) {
+
+                                                            if( $db === false){
+                                                                die("ERROR: Could not connect. " . mysqli_connect_error());
+                                                            }
+
+                                                            if (empty($row['date_chantier']) && empty($row['inter_chantier']) && empty($row['name_chantier']) && !empty($row['chantier_id'])) {
+                                                                
+                                                                echo '<tr>';
+                                                                    
+                                                                    echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
+                                                                        $total = $row['totalheure'];
+                                                                        $hours = (int)($total / 10000);
+                                                                        $minutes = ((int)($total - ($hours * 10000)) / 100) / 60;
+                                                                        $total = $hours + $minutes;
+                                                                    echo $total . '</td>';
+                                                                    echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
+                                                                        $m25 = $row['maj25'];
+                                                                        $hours = (int)($m25 / 10000);
+                                                                        $minutes = ((int)($m25 - ($hours * 10000)) / 100) / 60;
+                                                                        $m25 = $hours + $minutes;
+                                                                        if ($m25 > 0) {
+                                                                            echo $m25 . '<br />' . $m25 * 25 / 100 . ' majorée(s)</td>';
+                                                                        } else {
+                                                                            echo '<div class="bg-secondary w-100 h-100"></div></td>';
+                                                                        }
+                                                                    echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
+                                                                        $m50 = $row['maj50'];
+                                                                        $hours = (int)($m50 / 10000);
+                                                                        $minutes = ((int)($m50 - ($hours * 10000)) / 100) / 60;
+                                                                        $m50 = $hours + $minutes;
+                                                                        if ($m50 > 0) {
+                                                                            echo $m50 . '<br />' . $m50 * 50 / 100 . ' majorée(s)</td>';
+                                                                        } else {
+                                                                            echo '<div class="bg-secondary w-100 h-100"></div></td>';
+                                                                        }
+                                                                echo '</tr>';
+                                                            }
+                                                        }
+                                                    echo '</tbody>';
+                                                    mysqli_free_result($result);
+                                                } else {
+                                                    echo "Cette personne n'a pas encore effectué d'heure pour le moment.";
+                                                }
+                                            }
+                                    echo '</table>
+                                    </div>';
 
                                     if (($_SESSION['id'] == $admin['id']) or ($_SESSION['id'] == $user['id'] and $_GET['id'] == $user['id'])) {
                                         echo '<div class="md-form mt-4">';
@@ -238,54 +216,39 @@ if($user) {
                                     }
                                 } elseif ($admin) {
 
-                                    $admin_sql = $bdd->prepare("SELECT 
-                                        c.id AS chantier_id,
-                                        c.created as date_chantier,
-                                        concat(year(g.created),
-                                        month(g.created),
-                                        week(g.created)),
+                                    $admin_sql = "SELECT 
+                                        concat(year(g.updated),
+                                        month(g.updated),
+                                        week(g.updated)),
                                         c.name AS name_chantier,
+                                        g.updated as inter_chantier,
+                                        c.created as date_chantier,
+                                        c.id AS chantier_id,
                                         admin_name,
                                         a.id AS admin_id,
+                                        night_hours,
+                                        SUM(night_hours) AS h_night_tot,
                                         SUM(intervention_hours) AS totalheure,
-                                        if (SUM(intervention_hours) - 350000 > 0, if( SUM(intervention_hours) - 350000 > 430000, 80000, SUM(intervention_hours) - 350000), NULL) AS maj25,
-                                        if (SUM(intervention_hours) > 430000, SUM(intervention_hours) - 430000, NULL) AS maj50,
-                                        SUM(night_hours) AS h_night
+                                        SUM(intervention_hours - night_hours) AS tothsnight,
+                                        if (SUM(intervention_hours - night_hours) - 350000 > 0, if (SUM(intervention_hours - night_hours) - 350000 > 80000, 80000, SUM(intervention_hours - night_hours) - 350000), NULL) AS maj25,
+                                        if (SUM(intervention_hours - night_hours) > 430000, if (SUM(night_hours) > 0, SUM(intervention_hours) - 430000, SUM(intervention_hours - night_hours) - 430000), if (SUM(intervention_hours - night_hours) < 430000, if (SUM(night_hours) > 0, SUM(night_hours), NULL), NULL)) AS maj50
                                     FROM
                                         chantiers AS c
                                         JOIN
                                         global_reference AS g ON c.id = chantier_id
                                         JOIN
-                                        admin AS a ON g.user_id = a.id
+                                        `admin` AS a ON g.user_id = a.id
                                     WHERE
                                         a.id = '" . $admin['id'] . "'
                                         #g.created BETWEEN \'2019-10-01\' AND \'2019-11-30\'
-                                    GROUP BY c.id , a.id , c.created , admin_name , c.name , concat(year(g.created) , month(g.created), week(g.created)) with ROLLUP");
-                                    
-                                    $admin_sql->execute();
-                                    while ($total_admin = $admin_sql->fetch()) {
-                                        if ($total_admin['chantier_id'] == NULL) {
-                                            $total['totalheure'] = $total_admin['totalheure'];
-                                            $m25['maj25'] = $total_admin['maj25'];
-                                            $m50['maj50'] = $total_admin['maj50'];
-                                            $mnight = $total_admin['h_night'];
-                                        } 
-                                    }
+                                    GROUP BY a.id , admin_name , c.id , c.created , g.updated , c.name , night_hours , concat(year(g.updated) , month(g.updated), week(g.updated)) with ROLLUP";
                                     
                                     if ($_SESSION['id'] == $admin['id'] and $admin['id'] == $_GET['id']) {
-                                        /*
-                                        $_SESSION['id'] = $admin['id'];
-                                        $_SESSION['username'] = $admin['admin_name'];
-                                        $_SESSION['first_name'] = $admin['first_name'];
-                                        $_SESSION['last_name'] = $admin['last_name'];
-                                        $_SESSION['e_mail'] = $admin['e_mail'];
-                                        $_SESSION['phone'] = $admin['phone'];
-                                        $_SESSION['total_hours'] = $admin['total_hours'];*/
 
                                         echo '<input type="text" value="' . $admin['id'] . '" id="id" name="id" style="display: none;"">';
                                         echo '<div class="md-form mt-1">';
                                             echo '<label for="fusername">Username</label>';
-                                            echo '<input type="text" value="' . $admin['admin_name'] . '" id="username" name="username" class="form-control" placeholder="' . $admin['username'] . '"">';
+                                            echo '<input type="text" value="' . $admin['admin_name'] . '" id="username" name="username" class="form-control" placeholder="' . $admin['admin_name'] . '"">';
                                         echo '</div>';
                                         echo '<div class="md-form mt-4">';
                                             echo '<label for="first-name">First name</label>';
@@ -299,61 +262,82 @@ if($user) {
                                             echo '<label for="e_mail">E_mail</label>';
                                             echo '<input type="email" value="' . $admin['e_mail'] . '" id="e-mail" name="e_mail" class="form-control" placeholder="' . $admin['e_mail'] . '">';
                                         echo '</div>';
-                                        echo '<div class="md-form mt-4">';
+                                        echo '<div class="md-form mt-4 pb-3">';
                                             echo '<label for="phone">Téléphone</label>';
                                             echo '<input type="text" value="' . $admin['phone'] . '" id="phone" name="phone" class="form-control" placeholder="' . $admin['phone'] . '">';
                                         echo '</div>';
-                                        echo '<div class="d-inline-flex">';
-                                            echo '<div class="md-form mt-4 col-4">';
-                                                echo '<label class="w-100 text-center" for="total_hours">H/totales</label>';?>
-                                                <input type="number" value="<?php 
-                                                    $total = $total['totalheure'];
-                                                    $hours = (int)($total / 10000);
-                                                    $minutes = ((int)($total - ($hours * 10000)) / 100) / 60;
-                                                    $total = $hours + $minutes;
-                                                    echo $total;?>" 
-                                                id="total_hours" name="total_hours" class="form-control" placeholder="<?php 
-                                                    echo $total;?>" step=".01"
-                                                disabled>
-                                            <?php 
-                                            echo '</div>';
-                                            echo '<div class="md-form mt-4 col-4">';
-                                                echo '<label class="w-100 text-center" for="total_hours">H + 25%</label>';?>
-                                                    <input type="number" value="<?php
-                                                    $m25 = $m25['maj25'];
-                                                    $hours = (int)($m25 / 10000);
-                                                    $minutes = ((int)($m25 - ($hours * 10000)) / 100) / 60;
-                                                    $m25 = $hours + $minutes;
-                                                    echo $m25;?>"
-                                                id="total_hours" name="total_hours" class="form-control" placeholder="<?php
-                                                    echo $m25;?>" step=".01"
-                                                disabled>
-                                            <?php 
-                                            echo '</div>';
-                                            echo '<div class="md-form mt-4 col-4">';
-                                                echo '<label class="w-100 text-center" for="total_hours">H + 50%</label>';?>
-                                                <input type="number" value="<?php
-                                                    $m50 = $m50['maj50'];
-                                                    $hours = (int)($m50 / 10000);
-                                                    $minutes = ((int)($m50 - ($hours * 10000)) / 100) / 60;
-                                                    $hnight = (int)($mnight / 10000);
-                                                    $min_night = ((int)($mnight - ($hnight * 10000)) / 100) / 60;
-                                                    $m50 = $hours + $hnight + $minutes + $min_night;
-                                                    echo $m50;?>"
-                                                id="total_hours" name="total_hours" class="form-control" placeholder="<?php
-                                                    echo $m50;?>" step=".01"
-                                                disabled>
-                                            <?php 
-                                            echo '</div>';
-                                        echo '</div>';
-                                        echo '<div class="md-form mt-4">';
-                                            echo '<label for="pass1">Password</label>';
-                                            echo '<input type="password" id="pass1" name="pass1" class="form-control" data-type="password" required>';
-                                        echo '</div>';
-                                        echo '<div class="md-form mt-4">';
-                                            echo '<label for="pass2">Confirm Password</label>';
-                                            echo '<input type="password" id="pass2" name="pass2" class="form-control" data-type="password" required>';
-                                        echo '</div>';
+                                        echo "<table class='table table-striped border mt-4 ml-auto mb-3 mr-auto w-100 text-center'>";
+                                        echo "<thead>
+                                            <tr>
+                                                <th scope='col' class='text-center border-right align-middle w-25'>H/totales</th>
+                                                <th scope='col' class='text-center border-right align-middle w-25'>H + 25%</th>
+                                                <th scope='col' class='text-center align-middle w-25'>H + 50%</th>
+                                            </tr>
+                                        </thead>
+                                    </table>";
+                                    echo '<div class="container-list-details m-auto">
+                                        <table class="table table-striped border ml-auto mb-3 mr-auto w-100 text-center">';
+                                            if($result = mysqli_query($db, $admin_sql)) {
+
+                                                if (mysqli_num_rows($result) > 0) {
+                                                    echo "<tbody>";
+                                                        while ($row = $result->fetch_array()) {
+
+                                                            if( $db === false){
+                                                                die("ERROR: Could not connect. " . mysqli_connect_error());
+                                                            }
+
+                                                            if (empty($row['date_chantier']) && empty($row['inter_chantier']) && empty($row['name_chantier']) && !empty($row['chantier_id'])) {
+                                                                
+                                                                echo '<tr>';
+                                                                    
+                                                                    echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
+                                                                        $total = $row['totalheure'];
+                                                                        $hours = (int)($total / 10000);
+                                                                        $minutes = ((int)($total - ($hours * 10000)) / 100) / 60;
+                                                                        $total = $hours + $minutes;
+                                                                    echo $total . '</td>';
+                                                                    echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
+                                                                        $m25 = $row['maj25'];
+                                                                        $hours = (int)($m25 / 10000);
+                                                                        $minutes = ((int)($m25 - ($hours * 10000)) / 100) / 60;
+                                                                        $m25 = $hours + $minutes;
+                                                                        if ($m25 > 0) {
+                                                                            echo $m25 . '<br />' . $m25 * 25 / 100 . ' majorée(s)</td>';
+                                                                        } else {
+                                                                            echo '<div class="bg-secondary w-100 h-100"></div></td>';
+                                                                        }
+                                                                    echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
+                                                                        $m50 = $row['maj50'];
+                                                                        $hours = (int)($m50 / 10000);
+                                                                        $minutes = ((int)($m50 - ($hours * 10000)) / 100) / 60;
+                                                                        $m50 = $hours + $minutes;
+                                                                        if ($m50 > 0) {
+                                                                            echo $m50 . '<br />' . $m50 * 50 / 100 . ' majorée(s)</td>';
+                                                                        } else {
+                                                                            echo '<div class="bg-secondary w-100 h-100"></div></td>';
+                                                                        }
+                                                                echo '</tr>';
+                                                            }
+                                                        }
+                                                    echo '</tbody>';
+                                                    mysqli_free_result($result);
+                                                } else {
+                                                    echo "Cette personne n'a pas encore effectué d'heure pour le moment.";
+                                                }
+                                            mysqli_close($db);
+                                            }
+                                    echo '</table>
+                                    </div>';
+
+                                    echo '<div class="md-form mt-4">';
+                                        echo '<label for="pass1">Password</label>';
+                                        echo '<input type="password" id="pass1" name="pass1" class="form-control" data-type="password" required>';
+                                    echo '</div>';
+                                    echo '<div class="md-form mt-4">';
+                                        echo '<label for="pass2">Confirm Password</label>';
+                                        echo '<input type="password" id="pass2" name="pass2" class="form-control" data-type="password" required>';
+                                    echo '</div>';
                                     
                                     }
                                 } else {
@@ -404,55 +388,77 @@ if($user) {
                                     echo '<label for="e_mail" class="text-secondary">E_mail</label>';
                                     echo '<input type="email" value="' . $modif_user['e_mail'] . '" id="e-mail" name="e_mail" class="form-control" placeholder="' . $modif_user['e_mail'] . '" disabled>';
                                 echo '</div>';
-                                echo '<div class="md-form mt-4">';
+                                echo '<div class="md-form mt-4 pb-3">';
                                     echo '<label for="phone" class="text-secondary">Téléphone</label>';
                                     echo '<input type="text" value="' . $modif_user['phone'] . '" id="phone" name="phone" class="form-control" placeholder="' . $modif_user['phone'] . '" disabled>';
                                 echo '</div>';
-                                echo '<div class="d-inline-flex">';
-                                    echo '<div class="md-form mt-4 col-4">';
-                                        echo '<label class="w-100 text-center" for="total_hours">H/totales</label>';?>
-                                        <input type="number" value="<?php 
-                                            $total = $total['totalheure'];
-                                            $hours = (int)($total / 10000);
-                                            $minutes = ((int)($total - ($hours * 10000)) / 100) / 60;
-                                            $total = $hours + $minutes; 
-                                            echo $total;?>" id="total_hours" name="total_hours" class="form-control" placeholder="<?php
-                                            echo $total;?>" step=".01"
-                                        disabled>
-                                    <?php
-                                    echo '</div>';
-                                    echo '<div class="md-form mt-4 col-4">';
-                                        echo '<label class="w-100 text-center" for="total_hours">H + 25%</label>';?>
-                                        <input type="number" value="<?php
-                                            $m25 = $m25['maj25'];
-                                            $hours = (int)($m25 / 10000);
-                                            $minutes = ((int)($m25 - ($hours * 10000)) / 100) / 60;
-                                            $m25 = $hours + $minutes;
-                                            echo $m25;?>"
-                                        id="total_hours" name="total_hours" class="form-control" placeholder="<?php
-                                            echo $m25;?>" step=".01"
-                                        disabled>
-                                    <?php 
-                                    echo '</div>';
-                                    echo '<div class="md-form mt-4 col-4">';
-                                        echo '<label class="w-100 text-center" for="total_hours">H + 50%</label>';?>
-                                        <input type="number" value="<?php
-                                            $m50 = $m50['maj50'];
-                                            $hours = (int)($m50 / 10000);
-                                            $minutes = ((int)($m50 - ($hours * 10000)) / 100) / 60;
-                                            $hnight = (int)($mnight / 10000);
-                                            $min_night = ((int)($mnight - ($hnight * 10000)) / 100) / 60;
-                                            $m50 = $hours + $hnight + $minutes + $min_night;
-                                            echo $m50;?>"
-                                        id="total_hours" name="total_hours" class="form-control" placeholder="<?php
-                                            echo $m50;?>" step=".01"
-                                        disabled>
-                                    <?php 
-                                    echo '</div>';
-                                echo '</div>';
-                            } else {
-                                echo "ERROR: Could not get 'id' of current user [third_method]";
+                                echo "<table class='table table-striped border mt-4 ml-auto mb-3 mr-auto w-100 text-center'>";
+                                        echo "<thead>
+                                            <tr>
+                                                <th scope='col' class='text-center border-right align-middle w-25'>H/totales</th>
+                                                <th scope='col' class='text-center border-right align-middle w-25'>H + 25%</th>
+                                                <th scope='col' class='text-center align-middle w-25'>H + 50%</th>
+                                            </tr>
+                                        </thead>
+                                    </table>";
+                                    echo '<div class="container-list-details m-auto">
+                                        <table class="table table-striped border ml-auto mb-3 mr-auto w-100 text-center">';
+                                            if($result = mysqli_query($db, $sql)) {
+
+                                                if (mysqli_num_rows($result) > 0) {
+                                                    echo "<tbody>";
+                                                        while ($row = $result->fetch_array()) {
+
+                                                            if( $db === false){
+                                                                die("ERROR: Could not connect. " . mysqli_connect_error());
+                                                            }
+
+                                                            if (empty($row['date_chantier']) && empty($row['inter_chantier']) && empty($row['name_chantier']) && !empty($row['chantier_id'])) {
+                                                                
+                                                                echo '<tr>';
+                                                                    
+                                                                    echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
+                                                                        $total = $row['totalheure'];
+                                                                        $hours = (int)($total / 10000);
+                                                                        $minutes = ((int)($total - ($hours * 10000)) / 100) / 60;
+                                                                        $total = $hours + $minutes;
+                                                                    echo $total . '</td>';
+                                                                    echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
+                                                                        $m25 = $row['maj25'];
+                                                                        $hours = (int)($m25 / 10000);
+                                                                        $minutes = ((int)($m25 - ($hours * 10000)) / 100) / 60;
+                                                                        $m25 = $hours + $minutes;
+                                                                        if ($m25 > 0) {
+                                                                            echo $m25 . '<br />' . $m25 * 25 / 100 . ' majorée(s)</td>';
+                                                                        } else {
+                                                                            echo '<div class="bg-secondary w-100 h-100"></div></td>';
+                                                                        }
+                                                                    echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
+                                                                        $m50 = $row['maj50'];
+                                                                        $hours = (int)($m50 / 10000);
+                                                                        $minutes = ((int)($m50 - ($hours * 10000)) / 100) / 60;
+                                                                        $m50 = $hours + $minutes;
+                                                                        if ($m50 > 0) {
+                                                                            echo $m50 . '<br />' . $m50 * 50 / 100 . ' majorée(s)</td>';
+                                                                        } else {
+                                                                            echo '<div class="bg-secondary w-100 h-100"></div></td>';
+                                                                        }
+                                                                echo '</tr>';
+                                                            }
+                                                        }
+                                                    echo '</tbody>';
+                                                    mysqli_free_result($result);
+                                                } else {
+                                                    echo "Cette personne n'a pas encore effectué d'heure pour le moment.";
+                                                }
+                                            } else {
+                                                echo "ERROR: Could not get 'id' of current user [third_method]";
+                                            }
+                                    echo '</table>
+                                </div>';
+                
                             }
+                        mysqli_close($db);
                         ?>
                         <div class="pt-5 w-75 m-auto">
                             <!--<input type="submit" value="Valider" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">-->
@@ -466,6 +472,14 @@ if($user) {
     </body>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="js/script.js"></script>
+    <script src="/js/jQuery.stayInWebApp-master/jquery.stayInWebApp.js"></script>
+    <script src="/js/jQuery.stayInWebApp-master/jquery.stayInWebApp.min.js"></script>
     <script src="js/bootstrap.js"></script>
+    <script>
+        $(function() {
+            $.stayInWebApp();
+        });
+    </script>
 </html>
