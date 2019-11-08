@@ -69,6 +69,7 @@ if($user) {
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=0">
         <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <meta name="apple-mobile-web-app-title" content="S.K.elec">
         <link  rel="stylesheet" href="assets/css/bootstrap.css">
         <link rel="stylesheet" href="assets/css/style.css">
@@ -215,7 +216,7 @@ if($user) {
                     </div>
                     <div class="m-auto d-flex flex-column border-top pt-4 w-75">
                         <div class="pt-1 pb-3">
-                            <div class="col-5 mb-2 p-0 position-relative">
+                            <div class="col-8 mb-2 p-0 position-relative">
                                 <input type="checkbox" id="panier_repas" name="panier_repas" value="1" class="form-check-input align-middle mt-1 mb-auto">
                                 <label class="mb-auto mt-auto ml-4 pl-1 text-center" for="">Panier repas</label>
                             </div>
@@ -228,7 +229,7 @@ if($user) {
                                 </div>
                                 <div class="col-7 d-inline-flex m-auto text-center pr-0 pl-0 mt-auto mb-auto">
                                     <input type="time" id="night_hours" name="night_hours" class="col-7 form-control text-center align-middle m-auto p-1" style="line-height: 25px;" placeholder="minutes/heures">
-                                    <label class="col-6 mt-auto ml-5 mb-auto text-wrap text-left">heures de nuit</label>
+                                    <label class="col-8 mt-auto ml-3 mb-auto text-wrap text-left">heures de nuit</label>
                                 </div>
                             </div>
                             <div class="mt-2 mb-2 pt-5 pb-2">
