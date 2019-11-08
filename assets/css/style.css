@@ -5,11 +5,15 @@ body
     min-height: 100%;
 }
 
-html,
+html
+{
+
+    font-size: 12px;
+}
+
 body
 {
     border-radius: 2%;
-    font-size: 12px;
 }
 
 .navbar 
