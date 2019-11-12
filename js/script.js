@@ -1,3 +1,40 @@
+//function FOR EXTRACT_FILE_CSV
+
+function pre_extract(n_inp) {
+    console.log(n_inp);
+
+    if($("#username").val() != 0) {
+        document.getElementById('pre_ext').innerHTML = "";
+        var users = document.getElementById("username");
+        users.value = document.getElementById("username").value;
+        var newInput1 = document.createElement("input");
+        newInput1.id = n_inp;
+        newInput1.type = "text";
+        newInput1.name = n_inp;
+        newInput1.value = users.value;
+        newInput1.style = 'width: 33%';
+        newInput1.className = 'col-3 p-0 text-center border-0';
+        var newInput2 = document.createElement("a");
+        newInput2.name = n_inp;
+        newInput2.type = 'button';
+        newInput2.onclick = 'remove_inp(',n_inp,')';
+        newInput2.className = 'mt-auto mr-2 mb-auto ml-1 fas fa-trash-alt';
+        liste.appendChild(newInput1);
+        liste.appendChild(newInput2);
+    }
+}
+
+function remove_inp(n_inp) {
+    liste.removeChild(document.getElementById(n_inp));
+}
+
+function extract() {
+    var start = document.forms['extraction'].elements['beg_ext'].value;
+    var stop = document.forms['extraction'].elements['end_ext'].value;
+    document.location.href = 'extract_obj.php?beg='+start+'&end='+stop;
+}
+
+
 //function PREVIEW_FORM_INDEX
 
 function preview1() {

@@ -182,6 +182,7 @@ if($user) {
                                                                         } else {
                                                                             echo '<div class="bg-secondary w-100 h-100"></div></td>';
                                                                         }
+                                                                    echo '</td>';
                                                                     echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
                                                                         $m50 = $row['maj50'];
                                                                         $hours = (int)($m50 / 10000);
@@ -192,6 +193,7 @@ if($user) {
                                                                         } else {
                                                                             echo '<div class="bg-secondary w-100 h-100"></div></td>';
                                                                         }
+                                                                    echo '</td>';
                                                                 echo '</tr>';
                                                             }
                                                         }
