@@ -178,9 +178,9 @@ if($user) {
                                                                         $minutes = ((int)($m25 - ($hours * 10000)) / 100) / 60;
                                                                         $m25 = $hours + $minutes;
                                                                         if ($m25 > 0) {
-                                                                            echo $m25 . '<br />' . $m25 * 25 / 100 . ' majorée(s)</td>';
+                                                                            echo $m25 . '<br />' . $m25 * 25 / 100 . ' majorée(s)';
                                                                         } else {
-                                                                            echo '<div class="bg-secondary w-100 h-100"></div></td>';
+                                                                            echo '<div class="bg-secondary w-100 h-100"></div>';
                                                                         }
                                                                     echo '</td>';
                                                                     echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
@@ -189,9 +189,9 @@ if($user) {
                                                                         $minutes = ((int)($m50 - ($hours * 10000)) / 100) / 60;
                                                                         $m50 = $hours + $minutes;
                                                                         if ($m50 > 0) {
-                                                                            echo $m50 . '<br />' . $m50 * 50 / 100 . ' majorée(s)</td>';
+                                                                            echo $m50 . '<br />' . $m50 * 50 / 100 . ' majorée(s)';
                                                                         } else {
-                                                                            echo '<div class="bg-secondary w-100 h-100"></div></td>';
+                                                                            echo '<div class="bg-secondary w-100 h-100"></div>';
                                                                         }
                                                                     echo '</td>';
                                                                 echo '</tr>';
@@ -305,20 +305,22 @@ if($user) {
                                                                         $minutes = ((int)($m25 - ($hours * 10000)) / 100) / 60;
                                                                         $m25 = $hours + $minutes;
                                                                         if ($m25 > 0) {
-                                                                            echo $m25 . '<br />' . $m25 * 25 / 100 . ' majorée(s)</td>';
+                                                                            echo $m25 . '<br />' . $m25 * 25 / 100 . ' majorée(s)';
                                                                         } else {
-                                                                            echo '<div class="bg-secondary w-100 h-100"></div></td>';
+                                                                            echo '<div class="bg-secondary w-100 h-100"></div>';
                                                                         }
+                                                                    echo '</td>';
                                                                     echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
                                                                         $m50 = $row['maj50'];
                                                                         $hours = (int)($m50 / 10000);
                                                                         $minutes = ((int)($m50 - ($hours * 10000)) / 100) / 60;
                                                                         $m50 = $hours + $minutes;
                                                                         if ($m50 > 0) {
-                                                                            echo $m50 . '<br />' . $m50 * 50 / 100 . ' majorée(s)</td>';
+                                                                            echo $m50 . '<br />' . $m50 * 50 / 100 . ' majorée(s)';
                                                                         } else {
-                                                                            echo '<div class="bg-secondary w-100 h-100"></div></td>';
+                                                                            echo '<div class="bg-secondary w-100 h-100"></div>';
                                                                         }
+                                                                    echo '</td>';
                                                                 echo '</tr>';
                                                             }
                                                         }
@@ -431,20 +433,23 @@ if($user) {
                                                                         $minutes = ((int)($m25 - ($hours * 10000)) / 100) / 60;
                                                                         $m25 = $hours + $minutes;
                                                                         if ($m25 > 0) {
-                                                                            echo $m25 . '<br />' . $m25 * 25 / 100 . ' majorée(s)</td>';
+                                                                            echo $m25 . '<br />' . $m25 * 25 / 100 . ' majorée(s)';
                                                                         } else {
-                                                                            echo '<div class="bg-secondary w-100 h-100"></div></td>';
+                                                                            echo '<div class="bg-secondary w-100 h-100"></div>';
                                                                         }
+                                                                    echo '</td>';
                                                                     echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
                                                                         $m50 = $row['maj50'];
                                                                         $hours = (int)($m50 / 10000);
                                                                         $minutes = ((int)($m50 - ($hours * 10000)) / 100) / 60;
                                                                         $m50 = $hours + $minutes;
                                                                         if ($m50 > 0) {
-                                                                            echo $m50 . '<br />' . $m50 * 50 / 100 . ' majorée(s)</td>';
+                                                                            echo $m50 . '<br />' . $m50 * 50 / 100 . ' majorée(s)';
                                                                         } else {
-                                                                            echo '<div class="bg-secondary w-100 h-100"></div></td>';
+                                                                            echo '<div class="bg-secondary w-100 h-100"></div>';
                                                                         }
+
+                                                                    echo '</td>';
                                                                 echo '</tr>';
                                                             }
                                                         }

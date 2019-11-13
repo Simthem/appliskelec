@@ -110,7 +110,7 @@ if($user) {
         <div id="container">
             <div class="content">
                 <h3 class="text-center mt-0 mb-3 pt-5">Création d'un compte</h3>
-                <form class="w-100 pt-3 pl-4 pb-0 pr-4" action="./api/user/signup.php" method="POST">
+                <form id="add_u" class="w-100 pt-3 pl-4 pb-0 pr-4" action="./api/user/signup.php" method="POST">
                     <div class="md-form mt-1">
                         <label for="username1">Username *</label>
                         <input id="username1" name="username1" type="text" class="form-control" required>
@@ -125,10 +125,10 @@ if($user) {
                     </div>
                     <div class="md-form mt-4">
                         <label for="e_mail">Email</label>
-                        <input type="e-mail" id="e_mail" name="e_mail" class="form-control">
+                        <input type="email" id="e_mail" name="e_mail" class="form-control">
                     </div>
                     <div class="md-form mt-4">
-                        <label for="phone">Phone</label>
+                        <label for="phone">Phone *</label>
                         <input type="phone" id="phone" name="phone" class="form-control">
                     </div>
                     <div class="md-form mt-4">
@@ -140,7 +140,7 @@ if($user) {
                         <input type="password" id="pass2" name="pass2" class="form-control" required>
                     </div>
                     <div class="pt-5 w-75 m-auto">
-                        <input type="submit" value="Créer" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">
+                        <input type="" value="Créer" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark" onClick="checkFUser()">
                         <a href="list_profil.php" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4 text-dark">Précédent</a>
                     </div>
                 </form>

@@ -16,7 +16,11 @@ $user = new User($db);
 $user->first_name = $_POST['first_name'];
 $user->last_name = $_POST['last_name'];
 $user->e_mail = $_POST['e_mail'];
-$user->phone = $_POST['phone'];
+if (preg_match('/^[+0-9]{10,12}$/m', $_POST['phone']) && isset($_POST['phone']) && !empty($_POST['phone'])) {
+    $user->phone = $_POST['phone'];
+} else {
+    $user->phone = NULL;
+}
 $user->password = md5($_POST['pass1']);
 $user->username = $_POST['username1'];
 $user->created = date('Y-m-d H:i:s');
