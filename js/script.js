@@ -1,3 +1,59 @@
+//function FOR EXTRACT_FILE_CSV
+
+function pre_extract(n_inp) {
+    console.log(n_inp);
+
+    if ($("#username").val() != 0) {
+        document.getElementById('pre_ext').innerHTML = "";
+        var users = document.getElementById("username");
+        users.value = document.getElementById("username").value;
+        var newInput1 = document.createElement("input");
+        newInput1.id = n_inp;
+        newInput1.type = "text";
+        newInput1.name = n_inp;
+        newInput1.value = users.value;
+        newInput1.style = 'width: 33%';
+        newInput1.className = 'col-3 p-0 text-center border-0';
+        var newInput2 = document.createElement("a");
+        newInput2.name = n_inp;
+        newInput2.type = 'button';
+        newInput2.onclick = 'remove_inp('+n_inp+')';
+        newInput2.className = 'mt-auto mr-2 mb-auto ml-0 fas fa-trash-alt';
+        liste.appendChild(newInput1);
+        liste.appendChild(newInput2);
+    }
+}
+
+function remove_inp(n_inp) {
+    liste.removeChild(document.getElementById(n_inp));
+}
+
+function extract() {
+
+    var start = document.forms['extraction'].elements['beg_ext'].value;
+    var stop = document.forms['extraction'].elements['end_ext'].value;
+    if ($("input[name='all']").is(":checked")) {
+        var u_tot = document.forms['extraction'].elements['all'].value;
+        console.log(u_tot);
+    } else {
+        var u_tot = 0;
+    }
+    if ($("input[name='a_name']").is(":checked")) {
+        var admin = document.forms['extraction'].elements['a_name'].value;
+    } else {
+        var admin = 0;
+    }
+
+    if (start.value != '' && stop.value != '') {
+        return ext_link(start, stop, u_tot, admin);
+    }
+}
+
+function ext_link(start, stop, u_tot, admin) {
+    document.location.href = 'extract_obj.php?beg='+start+'&end='+stop+'&all='+u_tot+'&a_name='+admin;
+}
+
+
 //function PREVIEW_FORM_INDEX
 
 function preview1() {
@@ -95,17 +151,46 @@ $('.nav-pills a:first').on('click', function() {
 });
 
 
+
+//check formula in add_profil
+
+function checkFUser() {
+
+    if (document.getElementById('username1').value == "") {
+        alert('Vous devez indiquer un nom d\'utilisateur obligatoirement !');
+        return false;
+    } else if (document.getElementById('first_name').value == "") {
+        alert('Vous devez indiquer un prénom obligatoirement');
+        return false;
+    } else if (document.getElementById('phone').value == "") {
+        alert('Vous devez indiquer un téléphone obligatoirement');
+        return false;
+    } else {
+        const regex = /^[+0-9]{10,12}$/gm;
+        var str = document.getElementById('phone').value;
+        
+        if (!(str.match(regex))) {
+            alert('Le numéro de téléphone n\'est pas valide');
+            return false;
+        } else {
+            document.getElementById('add_u').submit();
+        }
+    }
+}
+
+
+
 //check formula in index
 
 function checkForm(){
-    if(document.getElementById('name').value == ""){
+    if (document.getElementById('name').value == ""){
         alert('Vous devez indiquer un libellé obligatoirement !');
         return false;
     } else if (document.getElementById('contact_name').value == "") {
-        alert('Vous devez indiquer un nom de contact obligatoirement !')
+        alert('Vous devez indiquer un nom de contact obligatoirement !');
         return false;
     } else {
-    document.getElementById('add_trouble').submit();
+        document.getElementById('add_trouble').submit();
     }
 }
 

@@ -33,17 +33,21 @@ $intervention = new Intervention($db);
 $intervention->user_id = $_POST['user_id'];
 $intervention->chantier_id = $chantier_id;
 $intervention->intervention_hours = $_POST['intervention_hours'];
+
 if(isset($_POST['panier_repas'])) {
     $intervention->panier_repas = $_POST['panier_repas'];
 } else {
     $intervention->panier_repas = 0;
 }
+
 $intervention->night_hours = $_POST['night_hours'];
+
 if (!empty($_POST['commit'])) {
     $intervention->commit = $_POST['commit'];
 } else {
     $intervention->commit = NULL;
 }
+
 $intervention->created = $created;
 $intervention->updated = $_POST['up_inter'];
 

@@ -1,10 +1,5 @@
 /* Generals */
 
-body
-{
-    min-height: 100%;
-}
-
 html
 {
 
@@ -13,6 +8,7 @@ html
 
 body
 {
+    min-height: 100%;
     border-radius: 2%;
 }
 
@@ -223,6 +219,7 @@ li a
     -ms-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
 }
+
 .left-open .menu-content,
 .right-open .menu-content,
 .left-open .menu,
@@ -230,6 +227,7 @@ li a
 {
     visibility: visible;
 }
+
 
 /* Menu Transitions */
 
@@ -256,6 +254,7 @@ li a
     -webkit-animation: fade 500ms;
     animation: fade 500ms;
 }
+
 
 /* Signin page */
 
@@ -348,10 +347,31 @@ li a
     {
         width: 80%;
     }
+
+    .sel_mult
+    {
+        display: block;
+    }
+    
+    .sel_mult_comp
+    {
+        display: none;
+    }
 }
 
 
 @media only screen and (min-width: 1080px) {
+
+
+    .sel_mult
+    {
+        display: none;
+    }
+
+    .sel_mult_comp
+    {
+        display: block;
+    }
 
     html
     {
