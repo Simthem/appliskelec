@@ -211,7 +211,7 @@ if($user) {
                     <div class="pt-5 w-50 m-auto text-center">
                         <label for="input_time m-auto">Heures réalisées</label>
                         <div class="w-50 m-auto pb-4">
-                            <input type="time" id="intervention_hours" name="intervention_hours" class="form-control text-center align-middle m-auto p-1" style="line-height: 25px;" placeholder="hh:mm" required />
+                            <input type="time" id="intervention_hours" name="intervention_hours" class="form-control text-center align-middle m-auto p-1" style="line-height: 25px;" step="900" required />
                         </div>
                     </div>
                     <div class="m-auto d-flex flex-column border-top pt-4 w-75">
@@ -228,7 +228,7 @@ if($user) {
                                     <label class="mt-auto mb-auto ml-4 pl-1 text-center" for="">Dont :</label>
                                 </div>
                                 <div class="col-7 d-inline-flex m-auto text-center pr-0 pl-0 mt-auto mb-auto">
-                                    <input type="time" id="night_hours" name="night_hours" class="col-7 form-control text-center align-middle m-auto p-1" style="line-height: 25px;" placeholder="minutes/heures">
+                                    <input type="time" id="night_hours" name="night_hours" class="col-7 form-control text-center align-middle m-auto p-1" style="line-height: 25px;" step="900">
                                     <label class="col-8 mt-auto ml-3 mb-auto text-wrap text-left">heures de nuit</label>
                                 </div>
                             </div>
@@ -264,18 +264,20 @@ if($user) {
         <?php
             mysqli_close($db);
         ?>
+
+        <footer>
+        </footer>
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-        <script src="js/script.js"></script>
+        <script src="/js/script.js"></script>
         <script src="/js/jQuery.stayInWebApp-master/jquery.stayInWebApp.js"></script>
         <script src="/js/jQuery.stayInWebApp-master/jquery.stayInWebApp.min.js"></script>
-        <script src="js/bootstrap.js"></script>
+        <script src="/js/bootstrap.js"></script>
         <script>
             $(function() {
                 $.stayInWebApp();
             });
         </script>
-
-    <footer>
-    </footer>
+        
     </body>
 </html>

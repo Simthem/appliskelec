@@ -124,7 +124,7 @@ class Admin{
         $this->conn = $db;
     }
 
-    function login_ad(){
+    function log_admin(){
         // select query
         $query = "SELECT
                     `id`, `admin_name`, `admin_pass`, `created`

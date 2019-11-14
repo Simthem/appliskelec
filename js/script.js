@@ -155,7 +155,7 @@ $('.nav-pills a:first').on('click', function() {
 //check formula in add_profil
 
 function checkFUser() {
-    
+
     if (document.getElementById('username1').value == "") {
         alert('Vous devez indiquer un nom d\'utilisateur obligatoirement !');
         return false;
@@ -175,21 +175,6 @@ function checkFUser() {
         } else {
             document.getElementById('add_u').submit();
         }
-        /*let m;
-        console.log("ta race");
-        while ((m = regex.exec(str)) != null) {
-            console.log("ah ca passe?");
-            if (m.index === regex.lastIndex) {
-                regex.lastIndex++;
-                console.log("on y presque");
-            }
-            
-            m.forEach((match, groupIndex) => {
-                console.log(`Found match, group ${groupIndex}: ${match}`);
-                console.log("alors ???");
-                //document.getElementById('add_u').submit();
-            });
-        }*/
     }
 }
 
@@ -202,7 +187,7 @@ function checkForm(){
         alert('Vous devez indiquer un libellé obligatoirement !');
         return false;
     } else if (document.getElementById('contact_name').value == "") {
-        alert('Vous devez indiquer un nom de contact obligatoirement !')
+        alert('Vous devez indiquer un nom de contact obligatoirement !');
         return false;
     } else {
         document.getElementById('add_trouble').submit();

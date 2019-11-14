@@ -10,7 +10,7 @@ if (isset($_COOKIE['id'])) {
 }
 
 session_destroy();
-echo "Vous allez être déconnecté(é)";
-header("refresh:2; url= ../../signin.php");
-exit;
+echo '<script type="text/javascript">alert("Vous allez être déconnecté(é)")</script>';
+header("refresh:0; url= ../../signin.php");
+exit();
 ?>

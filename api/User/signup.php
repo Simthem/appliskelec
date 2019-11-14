@@ -6,6 +6,9 @@ include_once '../config/database.php';
  
 // instantiate user object
 include_once '../objects/user.php';
+
+//api_pass
+include_once '/m_p/password_compat-master/lib/password.php';
  
 $database = new Database();
 $db = $database->getConnection();
@@ -16,12 +19,15 @@ $user = new User($db);
 $user->first_name = $_POST['first_name'];
 $user->last_name = $_POST['last_name'];
 $user->e_mail = $_POST['e_mail'];
+
 if (preg_match('/^[+0-9]{10,12}$/m', $_POST['phone']) && isset($_POST['phone']) && !empty($_POST['phone'])) {
     $user->phone = $_POST['phone'];
 } else {
     $user->phone = NULL;
 }
-$user->password = md5($_POST['pass1']);
+
+//$user->password = md5($_POST['pass1']);
+$user->password = password_hash($_POST['pass1'], PASSWORD_BCRYPT, array("cost" => 10));
 $user->username = $_POST['username1'];
 $user->created = date('Y-m-d H:i:s');
 $pass1 = $_POST['pass1'];
@@ -54,9 +60,11 @@ if(empty($_POST['first_name'])) {
     header("refresh:2; url=../../add_profil.php");
     exit();
 } else {
-    echo "Success !! :)";
+    echo "<script>
+            alert('Success !! :)')
+    </script>";
     $user->signup();
-    header("refresh:2; url=../../list_profil.php");
+    header("refresh:3; url=../../list_profil.php");
     exit();
 }
 ?>
