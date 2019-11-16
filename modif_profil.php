@@ -1,7 +1,6 @@
 <?php
 session_start();
 include 'api/config/db_connexion.php';
-//require_once 'api/user/edit_profil.php';
 
 if(!($_SESSION['username'])) {  
   
@@ -75,7 +74,7 @@ if($user) {
             $sql = "SELECT 
                 concat(year(g.updated),
                 month(g.updated),
-                week(g.updated)),
+                week(g.updated)) AS `concat`,
                 c.name AS name_chantier,
                 g.updated as inter_chantier,
                 c.created as date_chantier,
@@ -96,11 +95,9 @@ if($user) {
                 users AS u ON g.user_id = u.id
             WHERE
                 u.id = '" . $_GET['id'] . "'
-                #g.created BETWEEN \'2019-10-01\' AND \'2019-11-30\'
-            GROUP BY u.id , username , c.id , c.created , g.updated , c.name , night_hours , concat(year(g.updated) , month(g.updated), week(g.updated)) with ROLLUP";
+            GROUP BY concat(year(g.updated) , month(g.updated), week(g.updated)) DESC , g.updated DESC, u.id , username , c.id , c.created , c.name , night_hours with ROLLUP #//u.id , //username , c//.id , //c.created , //g.updated , //c.name , //night_hours , //concat(year(g.updated) , month(g.updated), week(g.updated)) with ROLLUP";
 
             
-
             if(($_GET['id'] != $admin['id'] and $_SESSION['id'] == $_GET['id'] and $_SESSION['id'] == $user['id']) or $_SESSION['id'] == $admin['id']) {
         ?>
         <!-- Content -->
@@ -155,30 +152,36 @@ if($user) {
                                             if($result = mysqli_query($db, $sql)) {
 
                                                 if (mysqli_num_rows($result) > 0) {
+
+                                                    $flag = 1;
+
                                                     echo "<tbody>";
+
                                                         while ($row = $result->fetch_array()) {
 
                                                             if( $db === false){
                                                                 die("ERROR: Could not connect. " . mysqli_connect_error());
                                                             }
 
-                                                            if (empty($row['date_chantier']) && empty($row['inter_chantier']) && empty($row['name_chantier']) && !empty($row['chantier_id'])) {
+                                                            if (empty($row['date_chantier']) && empty($row['inter_chantier']) && empty($row['name_chantier']) && !empty($row['concat'])/*&& !empty($row['chantier_id'])*/ && $flag <= 4) {
+                                                                
+                                                                $flag += 1;
                                                                 
                                                                 echo '<tr>';
                                                                     
                                                                     echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
-                                                                        $total = $row['totalheure'];
+                                                                        $total = $row['tothsnight'];
                                                                         $hours = (int)($total / 10000);
                                                                         $minutes = ((int)($total - ($hours * 10000)) / 100) / 60;
                                                                         $total = $hours + $minutes;
                                                                     echo $total . '</td>';
-                                                                    echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
+                                                                    echo '<td class="align-middle border-left border-right p-1 w-25" style="word-wrap: break-word;">';
                                                                         $m25 = $row['maj25'];
                                                                         $hours = (int)($m25 / 10000);
                                                                         $minutes = ((int)($m25 - ($hours * 10000)) / 100) / 60;
                                                                         $m25 = $hours + $minutes;
                                                                         if ($m25 > 0) {
-                                                                            echo $m25 . '<br />' . $m25 * 25 / 100 . ' majorée(s)';
+                                                                            echo $m25 . '<br />' . $m25 * 25 / 100 . ' maj.';
                                                                         } else {
                                                                             echo '<div class="bg-secondary w-100 h-100"></div>';
                                                                         }
@@ -189,11 +192,20 @@ if($user) {
                                                                         $minutes = ((int)($m50 - ($hours * 10000)) / 100) / 60;
                                                                         $m50 = $hours + $minutes;
                                                                         if ($m50 > 0) {
-                                                                            echo $m50 . '<br />' . $m50 * 50 / 100 . ' majorée(s)';
+                                                                            echo $m50;
+                                                                            if ($row['h_night_tot'] != 0) {
+                                                                                $hnight = $row['h_night_tot'];
+                                                                                $hours = (int)($hnight / 10000);
+                                                                                $minutes = ((int)($hnight - ($hours * 10000)) / 100) / 60;
+                                                                                $hnight = $hours + $minutes;
+                                                                                echo '<div class="d-inline small text-success">&nbsp;&nbsp;&nbsp;[nuit =&nbsp;' . $hnight . ']</div>';
+                                                                            } 
+                                                                            echo '<br />' . $m50 * 50 / 100 . ' maj.';
                                                                         } else {
                                                                             echo '<div class="bg-secondary w-100 h-100"></div>';
                                                                         }
                                                                     echo '</td>';
+
                                                                 echo '</tr>';
                                                             }
                                                         }
@@ -221,7 +233,7 @@ if($user) {
                                     $admin_sql = "SELECT 
                                         concat(year(g.updated),
                                         month(g.updated),
-                                        week(g.updated)),
+                                        week(g.updated)) AS `concat`,
                                         c.name AS name_chantier,
                                         g.updated as inter_chantier,
                                         c.created as date_chantier,
@@ -242,8 +254,8 @@ if($user) {
                                         `admin` AS a ON g.user_id = a.id
                                     WHERE
                                         a.id = '" . $admin['id'] . "'
-                                        #g.created BETWEEN \'2019-10-01\' AND \'2019-11-30\'
-                                    GROUP BY a.id , admin_name , c.id , c.created , g.updated , c.name , night_hours , concat(year(g.updated) , month(g.updated), week(g.updated)) with ROLLUP";
+                                    GROUP BY concat(year(g.updated) , month(g.updated), week(g.updated)), g.updated , a.id , admin_name , c.id , c.created , c.name , night_hours with ROLLUP";
+
                                     
                                     if ($_SESSION['id'] == $admin['id'] and $admin['id'] == $_GET['id']) {
 
@@ -282,30 +294,36 @@ if($user) {
                                             if($result = mysqli_query($db, $admin_sql)) {
 
                                                 if (mysqli_num_rows($result) > 0) {
+                                                    
+                                                    $flag = 1;
+
                                                     echo "<tbody>";
+                                                    
                                                         while ($row = $result->fetch_array()) {
 
                                                             if( $db === false){
                                                                 die("ERROR: Could not connect. " . mysqli_connect_error());
                                                             }
 
-                                                            if (empty($row['date_chantier']) && empty($row['inter_chantier']) && empty($row['name_chantier']) && !empty($row['chantier_id'])) {
+                                                            if (empty($row['date_chantier']) && empty($row['inter_chantier']) && empty($row['name_chantier']) /*&& !empty($row['chantier_id'])*/ && $flag <= 4) {
+                                                                
+                                                                $flag += 1;
                                                                 
                                                                 echo '<tr>';
                                                                     
                                                                     echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
-                                                                        $total = $row['totalheure'];
+                                                                        $total = $row['tothsnight'];
                                                                         $hours = (int)($total / 10000);
                                                                         $minutes = ((int)($total - ($hours * 10000)) / 100) / 60;
                                                                         $total = $hours + $minutes;
                                                                     echo $total . '</td>';
-                                                                    echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
+                                                                    echo '<td class="align-middle border-left border-right p-1 w-25" style="word-wrap: break-word;">';
                                                                         $m25 = $row['maj25'];
                                                                         $hours = (int)($m25 / 10000);
                                                                         $minutes = ((int)($m25 - ($hours * 10000)) / 100) / 60;
                                                                         $m25 = $hours + $minutes;
                                                                         if ($m25 > 0) {
-                                                                            echo $m25 . '<br />' . $m25 * 25 / 100 . ' majorée(s)';
+                                                                            echo $m25 . '<br />' . $m25 * 25 / 100 . ' maj.';
                                                                         } else {
                                                                             echo '<div class="bg-secondary w-100 h-100"></div>';
                                                                         }
@@ -316,11 +334,20 @@ if($user) {
                                                                         $minutes = ((int)($m50 - ($hours * 10000)) / 100) / 60;
                                                                         $m50 = $hours + $minutes;
                                                                         if ($m50 > 0) {
-                                                                            echo $m50 . '<br />' . $m50 * 50 / 100 . ' majorée(s)';
+                                                                            echo $m50;
+                                                                            if ($row['h_night_tot'] != 0) {
+                                                                                $hnight = $row['h_night_tot'];
+                                                                                $hours = (int)($hnight / 10000);
+                                                                                $minutes = ((int)($hnight - ($hours * 10000)) / 100) / 60;
+                                                                                $hnight = $hours + $minutes;
+                                                                                echo '<div class="d-inline small text-success">&nbsp;&nbsp;&nbsp;[nuit =&nbsp;' . $hnight . ']</div>';
+                                                                            } 
+                                                                            echo '<br />' . $m50 * 50 / 100 . ' maj.';
                                                                         } else {
                                                                             echo '<div class="bg-secondary w-100 h-100"></div>';
                                                                         }
                                                                     echo '</td>';
+                                                                    
                                                                 echo '</tr>';
                                                             }
                                                         }
@@ -367,15 +394,14 @@ if($user) {
                             $stmt = $bdd->prepare("SELECT * FROM users WHERE id = '". $_GET['id'] ."'");
                             $stmt->execute();
                             $user = $stmt->fetch();
+
                             if($user) {
-                                //$modif_user['id'] = $user['id'];
                                 $modif_user['username'] = $user['username'];
                                 $modif_user['first_name'] = $user['first_name'];
                                 $modif_user['last_name'] = $user['last_name'];
                                 $modif_user['e_mail'] = $user['e_mail'];
                                 $modif_user['phone'] = $user['phone'];
 
-                                //echo '<input type="text" value="' . $modif_user['id'] . '" id="id" name="id" style="display: none;"">';
                                 echo '<div class="md-form mt-1">';
                                     echo '<label for="fusername" class="text-secondary">Username</label>';
                                     echo '<input type="text" value="' . $modif_user['username'] . '" id="username" name="username" class="form-control" placeholder="' . $modif_user['username'] . '"" disabled>';
@@ -410,30 +436,36 @@ if($user) {
                                             if($result = mysqli_query($db, $sql)) {
 
                                                 if (mysqli_num_rows($result) > 0) {
-                                                    echo "<tbody>";
-                                                        while ($row = $result->fetch_array()) {
 
+                                                    echo "<tbody>";
+
+                                                        $flag = 1;
+                                                        
+                                                        while ($row = $result->fetch_array()) {
+                                                            
                                                             if( $db === false){
                                                                 die("ERROR: Could not connect. " . mysqli_connect_error());
                                                             }
 
-                                                            if (empty($row['date_chantier']) && empty($row['inter_chantier']) && empty($row['name_chantier']) && !empty($row['chantier_id'])) {
+                                                            if (empty($row['date_chantier']) && empty($row['inter_chantier']) && empty($row['name_chantier']) && !empty($row['concat'])/*&& !empty($row['chantier_id'])*/ && $flag <= 4) {
                                                                 
+                                                                $flag += 1;
+
                                                                 echo '<tr>';
-                                                                    
+
                                                                     echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
-                                                                        $total = $row['totalheure'];
+                                                                        $total = $row['tothsnight'];
                                                                         $hours = (int)($total / 10000);
                                                                         $minutes = ((int)($total - ($hours * 10000)) / 100) / 60;
                                                                         $total = $hours + $minutes;
                                                                     echo $total . '</td>';
-                                                                    echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
+                                                                    echo '<td class="align-middle border-left border-right p-1 w-25" style="word-wrap: break-word;">';
                                                                         $m25 = $row['maj25'];
                                                                         $hours = (int)($m25 / 10000);
                                                                         $minutes = ((int)($m25 - ($hours * 10000)) / 100) / 60;
                                                                         $m25 = $hours + $minutes;
                                                                         if ($m25 > 0) {
-                                                                            echo $m25 . '<br />' . $m25 * 25 / 100 . ' majorée(s)';
+                                                                            echo $m25 . '<br />' . $m25 * 25 / 100 . ' maj.';
                                                                         } else {
                                                                             echo '<div class="bg-secondary w-100 h-100"></div>';
                                                                         }
@@ -444,12 +476,20 @@ if($user) {
                                                                         $minutes = ((int)($m50 - ($hours * 10000)) / 100) / 60;
                                                                         $m50 = $hours + $minutes;
                                                                         if ($m50 > 0) {
-                                                                            echo $m50 . '<br />' . $m50 * 50 / 100 . ' majorée(s)';
+                                                                            echo $m50;
+                                                                            if ($row['h_night_tot'] != 0) {
+                                                                                $hnight = $row['h_night_tot'];
+                                                                                $hours = (int)($hnight / 10000);
+                                                                                $minutes = ((int)($hnight - ($hours * 10000)) / 100) / 60;
+                                                                                $hnight = $hours + $minutes;
+                                                                                echo '<div class="d-inline small text-success">&nbsp;&nbsp;&nbsp;[nuit =&nbsp;' . $hnight . ']</div>';
+                                                                            } 
+                                                                            echo '<br />' . $m50 * 50 / 100 . ' maj.';
                                                                         } else {
                                                                             echo '<div class="bg-secondary w-100 h-100"></div>';
                                                                         }
-
                                                                     echo '</td>';
+                                                                    
                                                                 echo '</tr>';
                                                             }
                                                         }
@@ -468,7 +508,6 @@ if($user) {
                         mysqli_close($db);
                         ?>
                         <div class="pt-5 w-75 m-auto">
-                            <!--<input type="submit" value="Valider" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">-->
                             <a href="javascript:history.go(-1)" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4 text-dark">Précédent</a>
                         </div>
                     </form>

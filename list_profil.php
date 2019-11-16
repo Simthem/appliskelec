@@ -201,7 +201,13 @@ if($user) {
                                             u.id AS `user_id`,
                                             #if (SUM(intervention_hours) > 80000, SUM(intervention_hours) - 80000, NULL) as \'> 80000\',
                                             #if (SUM(intervention_hours)-40000 > 0,if( SUM(intervention_hours) -40000>30000,30000,SUM(intervention_hours) - 40000), NULL) as \'> 40000\',
-                                            SUM(intervention_hours) AS totalheure
+                                            SUM(intervention_hours) AS totalheure,
+                                            #IF(
+                                            #    RIGHT(TRUNCATE(SUM(floor(intervention_hours / 10000)) + (SUM(((floor(intervention_hours) - floor(floor(intervention_hours) / 10000) * 10000) / 100) / 60)), 2), 2) = 0,
+                                            #    TRUNCATE(SUM(floor(intervention_hours / 10000)) + (SUM(((floor(intervention_hours) - floor(floor(intervention_hours) / 10000) * 10000) / 100) / 60)), 0),
+                                            #    TRUNCATE(SUM(floor(intervention_hours / 10000)) + (SUM(((floor(intervention_hours) - floor(floor(intervention_hours) / 10000) * 10000) / 100) / 60)), 2)
+                                            #    ) AS tot_glob
+                                            floor((SUM(floor(intervention_hours / 10000)) + (SUM(((floor(intervention_hours) - floor(floor(intervention_hours) / 10000) * 10000) / 100) / 60))) * 100) AS tot_glob
                                             #SUM(night_hours) AS maj50
                                         FROM
                                             chantiers AS c
@@ -210,6 +216,13 @@ if($user) {
                                             JOIN
                                             users AS u ON g.user_id = u.id
                                         WHERE
+                                            concat(month(g.updated)) = (
+																	SELECT 
+																		MAX(concat(month(updated)))
+																	FROM
+																		global_reference
+																	)
+											AND
                                             u.id = '" . $row['id'] . "'
                                         GROUP BY username , c.id , u.id WITH ROLLUP";
                                         
@@ -217,9 +230,9 @@ if($user) {
                                             if (mysqli_num_rows($result_hours) > 0){
                                                 while ($row_hours = $result_hours->fetch_array()) {
                                                     if (!empty($row_hours['username']) and empty($row_hours['chantier_id']) /*and !empty($row_hours['user_id'])*/) {
-                                                        $total = $row_hours['totalheure'];
-                                                        $hours = (int)($total / 10000);
-                                                        $minutes = ((int)($total - ($hours * 10000)) / 100);
+                                                        $total = $row_hours['tot_glob'];
+                                                        $hours = (int)($total / 100);
+                                                        $minutes = ((int)($total - ($hours * 100)) / 100) * 60;
                                                         if ($minutes > 59) {
                                                             $hours += 1;
                                                             $minutes -= 60;
@@ -232,6 +245,7 @@ if($user) {
                                                             $minutes = "00";
                                                         }
                                                         echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . $hours . ':' . $minutes . '</td>';
+                                                        //echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . $total . '</td>';
                                                     }
                                                 }
                                             } else {
