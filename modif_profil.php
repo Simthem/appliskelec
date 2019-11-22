@@ -382,7 +382,7 @@ if($user) {
                                         g.updated as inter_chantier,
                                         a.id AS admin_id,
                                         SUM(night_hours) AS h_night_tot,
-                                        SUM(intervention_hours) AS totalheure,
+                                        #SUM(intervention_hours) AS totalheure,
                                         SUM(intervention_hours - night_hours) AS tothsnight,
                                         floor((SUM(floor(intervention_hours / 10000)) + (SUM(((floor(intervention_hours) - floor(floor(intervention_hours) / 10000) * 10000) / 100) / 60))) * 100) AS tot_glob,
                                         if (SUM(intervention_hours - night_hours) - 1514000 > 0, if (SUM(intervention_hours - night_hours) - 1514000 > 344000, 344000, SUM(intervention_hours - night_hours) - 1514000), NULL) AS maj25,
