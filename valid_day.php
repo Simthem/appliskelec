@@ -172,6 +172,7 @@ if($user) {
                 updated = '" . $_GET['up_int'] . "'
             GROUP BY g.updated , u.id, c.name";
 
+            $date = date_create($_GET['up_inter']);
             //print_r($recap_2);
             if ($result = mysqli_query($db, $recap)) {
 
@@ -258,7 +259,7 @@ if($user) {
                         $night_m = "00";
                     }
 
-                    echo '<div class="d-inline-flex h6 m-0">Heures globales sur la journée du ' . $_GET['up_inter'] . ' <input class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-100" value=" : ' . $hours . 'h' . $minutes . ' [' . $night_h . 'h' . $night_m . ' h/nuit]" /></div><br />';
+                    echo '<div class="d-inline-flex h6 m-0">Heures globales sur la journée du ' . date_format($date, 'd-m-Y') . ' <input class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-100" value=" : ' . $hours . 'h' . $minutes . ' [' . $night_h . 'h' . $night_m . ' h/nuit]" /></div><br />';
                     mysqli_free_result($result);
                 } else {
                     echo "No records matching your query were found.";
