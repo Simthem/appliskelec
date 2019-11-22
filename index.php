@@ -238,6 +238,8 @@ if($user) {
                         </div>
                     </div>
                     <?php
+                        $date_sql = date_format($date, 'Y-m-d');
+                        
                         echo '<div class="collapse" id="preview">
                             <h4 class="w-75 mt-2 ml-auto mb-3 mr-auto text-center">Récapitulatif</h4>
                             <fieldset class="pl-3 text-dark bg-white border rounded w-75 m-auto" disabled>
@@ -248,8 +250,97 @@ if($user) {
                                 Panier repas :  <input id="pan_rep" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50" /><br />
                                 Horaires de nuit :  <input id="h_night" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50" /><br />
                                 <div class="d-inline-flex">
-                                Commentaires :  <textarea id="com" class="bg-white border-0 pt-0 pl-2 mt-0 ml-auto mb-0" cols="18" rows="2" style="resize: none;"></textarea></div><br />
-                            </fieldset>';
+                                Commentaires :  <textarea id="com" class="bg-white border-0 pt-0 pl-2 mt-0 ml-auto mb-0" cols="18" rows="2" style="resize: none;"></textarea></div><br />';
+                                
+                                if (isset($date) && !empty($date)) {
+
+                                    $recap="SELECT 
+                                        concat(month(g.updated)) AS `concat`,
+                                        g.updated as inter_chantier,
+                                        u.id,
+                                        c.name AS name_chantier,
+                                        SUM(night_hours) AS h_night_tot,
+                                        SUM(intervention_hours) AS totalheure,
+                                        SUM(intervention_hours - night_hours) AS tothsnight,
+                                        floor((SUM(floor(intervention_hours / 10000)) + (SUM(((floor(intervention_hours) - floor(floor(intervention_hours) / 10000) * 10000) / 100) / 60))) * 100) AS tot_glob
+                                    FROM
+                                        chantiers AS c
+                                        JOIN
+                                        global_reference AS g ON c.id = chantier_id
+                                        JOIN
+                                        users AS u ON g.user_id = u.id
+                                    WHERE
+                                        u.id = '" . $_SESSION['id'] . "'
+                                        AND
+                                        updated = '" . $date_sql . "' 
+                                        AND
+                                        concat(month(g.updated)) = (
+                                                                SELECT 
+                                                                    MAX(concat(month(updated)))
+                                                                FROM
+                                                                    global_reference
+                                                                )
+                                    GROUP BY concat(month(g.updated)) , g.updated , u.id, c.name with ROLLUP";
+
+                                    //print_r($recap_2);
+                                    if ($result = mysqli_query($db, $recap)) {
+
+                                        if (mysqli_num_rows($result) > 0) {
+
+                                            echo "<h4>Récap. du jour</h4>";
+
+                                            //print_r($result);
+
+                                            if ($db === false){
+                                                die("ERROR: Could not connect. " . mysqli_connect_error());
+                                            }
+
+                                            while ($row = $result->fetch_array()){
+
+                                                if ($row['name_chantier']) {
+
+                                                    $total = $row['tot_glob'];
+                                                    $hours = (int)($total / 100);
+                                                    $minutes = ((int)($total - ($hours * 100)) / 100) * 60;
+                                                    if ($minutes > 59) {
+                                                        $hours += 1;
+                                                        $minutes -= 60;
+                                                    }
+                                                    if ($minutes > 10) {
+                                                        $minutes = $minutes;
+                                                    } elseif ($minutes < 10 and $minutes > 0) {
+                                                        $minutes = "0" . $minutes;
+                                                    } else {
+                                                        $minutes = "00";
+                                                    }
+
+                                                    $night_tot = $row['h_night_tot'];
+                                                    $night_h = (int)($night_tot / 10000);
+                                                    $night_m = ((int)($night_tot - ($night_h * 10000)) / 100) * 60;
+                                                    if ($night_m > 59) {
+                                                        $night_h += 1;
+                                                        $night_m -= 60;
+                                                    }
+                                                    if ($night_m > 10) {
+                                                        $night_m = $night_m;
+                                                    } elseif ($night_m < 10 and $night_m > 0) {
+                                                        $night_m = "0" . $night_m;
+                                                    } else {
+                                                        $night_m = "00";
+                                                    }
+                                                    echo '<div class="d-inline-flex h6 m-0">' . $row['name_chantier'] . '<input class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-100" value=" : ' . $hours . 'h' . $minutes . ' [' . $night_h . 'h' . $night_m . ' h/nuit]" /></div><br />';
+                                                }
+                                            }
+                                            echo '<br />';
+                                            mysqli_free_result($result);
+                                        }/* else {
+                                            echo "No records matching your query were found.";
+                                        }*/
+                                    } else{
+                                        echo "ERROR: Could not able to execute $recap. " . mysqli_error($db);
+                                    }
+                                }
+                            echo '</fieldset>';
                         echo '<div class="w-75 mt-3 ml-auto mr-auto">
                             <input type="submit" value="Soumettre" class="btn send border-0 bg-white z-depth-1a mt-3 mb-0 align-middle text-dark" />
                         </div>';

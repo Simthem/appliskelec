@@ -160,6 +160,8 @@ $sql = "SELECT
                                         echo '<div class="w-25 text-center mt-4 ml-auto mb-4 mr-auto">';
                                             echo "<h5 class='w-50 text-center mt-2 ml-auto mr-auto'>" . $row['num_chantier'] . "</h5>";
                                         echo '</div>';
+                                    } else {
+                                        echo '<div class="w-25 text-center mt-4 ml-auto mb-4 mr-auto" style="height: 15.4px;"></div>';
                                     }
                                     $flag = 0;
                                 } else {
