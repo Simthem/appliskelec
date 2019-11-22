@@ -238,6 +238,8 @@ if($user) {
                         </div>
                     </div>
                     <?php
+                        $date_sql = date_format($date, 'Y-m-d');
+                        
                         echo '<div class="collapse" id="preview">
                             <h4 class="w-75 mt-2 ml-auto mb-3 mr-auto text-center">Récapitulatif</h4>
                             <fieldset class="pl-3 text-dark bg-white border rounded w-75 m-auto" disabled>
