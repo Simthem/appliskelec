@@ -238,9 +238,6 @@ if($user) {
                         </div>
                     </div>
                     <?php
-                                    echo date_format($date, 'd-m-Y') . "<br />";
-                                    $date_sql = date_format($date, 'Y-m-d');
-                                    echo $date_sql;
                         echo '<div class="collapse" id="preview">
                             <h4 class="w-75 mt-2 ml-auto mb-3 mr-auto text-center">Récapitulatif</h4>
                             <fieldset class="pl-3 text-dark bg-white border rounded w-75 m-auto" disabled>
@@ -254,8 +251,6 @@ if($user) {
                                 Commentaires :  <textarea id="com" class="bg-white border-0 pt-0 pl-2 mt-0 ml-auto mb-0" cols="18" rows="2" style="resize: none;"></textarea></div><br />';
                                 
                                 if (isset($date) && !empty($date)) {
-                                    
-                                    echo "<h4>Récap. du jour</h4>";
 
                                     $recap="SELECT 
                                         concat(month(g.updated)) AS `concat`,
@@ -289,6 +284,8 @@ if($user) {
                                     if ($result = mysqli_query($db, $recap)) {
 
                                         if (mysqli_num_rows($result) > 0) {
+
+                                            echo "<h4>Récap. du jour</h4>";
 
                                             //print_r($result);
 
@@ -334,9 +331,9 @@ if($user) {
                                             }
                                             echo '<br />';
                                             mysqli_free_result($result);
-                                        } else {
+                                        }/* else {
                                             echo "No records matching your query were found.";
-                                        }
+                                        }*/
                                     } else{
                                         echo "ERROR: Could not able to execute $recap. " . mysqli_error($db);
                                     }
