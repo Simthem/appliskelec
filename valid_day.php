@@ -158,7 +158,7 @@ if($user) {
                                     }
                                     echo '<div class="d-inline-flex m-0">
                                             <div class="mt-2 mb-2 p-0 text-wrap" style="width: 33%; height: 20.4px">' . $row['name_chantier'] . '</div><div class="col-1 p-0 mt-2 mb-2 text-center">:&nbsp</div>
-                                            <p class="d-inline bg-white border-0 p-0 mt-2 ml-auto mr-auto mb-2 col-7"><input class="col-1 border-0 rounded bg-secondary p-0 text-white text-center" value="' . $hours . '"><strong> h </strong><input class="col-1 border-0 rounded bg-secondary p-0 text-white text-center" value="' . $minutes . '" /><strong> [ </strong><input class="col-1 border-0 rounded bg-secondary p-0 text-white text-center" value="' . $night_h . '" /><strong> h </strong><input class="col-1 border-0 rounded bg-secondary p-0 text-white text-center" value="' . $night_m . '" /><strong> h/nuit ]</strong></p>';
+                                            <p id="tot_h" class="d-inline bg-white border-0 p-0 mt-2 ml-auto mr-auto mb-2 col-7"><input class="hours col-1 border-0 rounded bg-secondary p-0 text-white text-center" value="' . $hours . '"><strong> h </strong><input class="minutes col-1 border-0 rounded bg-secondary p-0 text-white text-center" value="' . $minutes . '" /><strong> [ </strong><input class="night_h col-1 border-0 rounded bg-secondary p-0 text-white text-center" value="' . $night_h . '" /><strong> h </strong><input class="night_m col-1 border-0 rounded bg-secondary p-0 text-white text-center" value="' . $night_m . '" /><strong> h/nuit ]</strong></p>';
                                             //<input class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-100" value="' . $hours . ' h ' . $minutes . ' [' . $night_h . ' h ' . $night_m . ' h/nuit]" />
                                     echo '</div>';
                                 }
@@ -200,7 +200,8 @@ if($user) {
 
                             echo '<div class="d-inline-flex m-0">
                                     <h5 class="mt-2 mb-2 p-0 text-wrap" style="width: 33%;">Heures globales sur la journée du&nbsp;<strong><u>' . date_format($date, 'd-m-Y') . '</h5></strong></u><div class="col-1 p-0 text-center mt-auto mb-auto">:&nbsp;</div>
-                                    <fieldset class="col-7 p-0 mt-auto mb-auto" disabled><p class="d-inline bg-white border-0 p-0 mt-auto ml-auto mr-auto mb-auto col-7"><strong><input class="col-1 border-0 rounded bg-white p-0 text-center" value="' . $hours . '"> h <input class="col-1 border-0 rounded bg-white p-0 text-center" value="' . $minutes . '" /> [ <input class="col-1 border-0 rounded bg-white p-0 text-center" value="' . $night_h . '" /> h <input class="col-1 border-0 rounded bg-white p-0 text-center" value="' . $night_m . '" /> h/nuit ]</strong></p></fieldset>
+                                    <span id="pouet"></span>
+                                    <fieldset class="col-7 p-0 mt-auto mb-auto" disabled><p class="d-inline bg-white border-0 p-0 mt-auto ml-auto mr-auto mb-auto col-7"><strong><input id="recap_h" class="col-1 border-0 rounded bg-white p-0 text-center" value="' . $hours . '"> h <input id="recap_m" class="col-1 border-0 rounded bg-white p-0 text-center" value="' . $minutes . '" /> [ <input id="rec_h_night" class="col-1 border-0 rounded bg-white p-0 text-center" value="' . $night_h . '" /> h <input id="rec_m_night" class="col-1 border-0 rounded bg-white p-0 text-center" value="' . $night_m . '" /> h/nuit ]</strong></p></fieldset>
                             </div><br />';
 
                             mysqli_free_result($result);

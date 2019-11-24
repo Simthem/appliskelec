@@ -54,6 +54,109 @@ function ext_link(start, stop, u_tot, admin) {
 }
 
 
+//function CALCUL_VALID_DAY
+
+function calcul() {
+
+    //HOURS------------------------------
+
+    var total_h = 0;
+    var totaux_h = 0;
+    totaux_h = document.querySelectorAll('.hours');
+
+    var i, nb = totaux_h.length;
+
+    for (i = 0; i < nb; i += 1) {
+        total_h += parseFloat(totaux_h[i].value);
+    }
+
+
+    //MINUTES----------------------------
+
+    var total_m = 0;
+    var totaux_m = 0;
+    totaux_m = document.querySelectorAll('.minutes');
+
+    var j, x = totaux_m.length;
+
+    for (j = 0; j < x; j += 1) {
+        total_m += parseFloat(totaux_m[j].value);
+    }
+    
+
+    //HOURS/NIGHT----------------------------
+
+    var night_h = 0;
+    var toth_night = 0;
+    toth_night = document.querySelectorAll('.night_h');
+
+    var k, y = toth_night.length;
+
+    for (k = 0; k < y; k += 1) {
+        night_h += parseFloat(toth_night[k].value);
+        console.log(night_h);
+    }
+
+
+    //MINUTES/NIGHT----------------------------
+
+    var night_m = 0;
+    var totm_night = 0;
+    totm_night = document.querySelectorAll('.night_m');
+
+    var l, z = totm_night.length;
+
+    for (l = 0; l < z; l += 1) {
+        night_m += parseFloat(totm_night[l].value);
+    }
+
+
+    //GLOBAL-----------------------------
+
+    var hours = total_h.toFixed(0);
+    var minutes = total_m.toFixed(0);
+
+    if (minutes > 59) {
+        hours = (total_h + 1).toFixed(0);
+        minutes -= 60;
+    }
+    if (minutes > 10) {
+        minutes = minutes;
+    } else if (minutes < 10 && minutes > 0) {
+        minutes = "0" . minutes;
+    } else {
+        minutes = "00";
+    }
+
+    document.getElementById('recap_h').value = hours;
+    document.getElementById('recap_h').textContent = hours;
+    document.getElementById('recap_m').value = minutes;
+    document.getElementById('recap_m').textContent = minutes;
+
+
+
+    var hours_night = night_h.toFixed(0);
+    var min_night = night_m.toFixed(0);
+
+    if (min_night > 59) {
+        hours_night = (night_h + 1).toFixed(0);
+        min_night -= 60;
+    }
+    if (min_night > 10) {
+        min_night = min_night;
+    } else if (min_night < 10 && min_night > 0) {
+        min_night = "0" . min_night;
+    } else {
+        min_night = "00";
+    }
+
+    document.getElementById('rec_h_night').value = hours_night;
+    document.getElementById('rec_h_night').textContent = hours_night;
+    document.getElementById('rec_m_night').value = min_night;
+    document.getElementById('rec_m_night').textContent = min_night;
+}
+
+
 //function PREVIEW_FORM_INDEX
 
 function preview1() {
