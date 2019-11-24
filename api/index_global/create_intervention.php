@@ -33,6 +33,7 @@ $intervention = new Intervention($db);
 $intervention->user_id = $_POST['user_id'];
 $intervention->chantier_id = $chantier_id;
 $intervention->intervention_hours = $_POST['intervention_hours'];
+$intervention->state = 0;
 
 if(isset($_POST['panier_repas'])) {
     $intervention->panier_repas = $_POST['panier_repas'];

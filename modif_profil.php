@@ -27,40 +27,9 @@ if($user) {
 <!DOCTYPE html>
 
 <html class='overflow-y mb-0'>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=0">
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-status-bar-style" content="black">
-        <meta name="apple-mobile-web-app-title" content="S.K.elec">
-        <link  rel="stylesheet" href="assets/css/bootstrap.css">
-        <link rel="stylesheet" href="assets/css/style.css">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-        <link href="https://fonts.googleapis.com/css?family=Lato:300,400,400italic,700,700italic" rel="stylesheet">
-        <script src="https://kit.fontawesome.com/f14bbc71a6.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-        <title>Appli Skelec</title>
-    </head>
+    
+    <?php include 'header.php'; ?>
 
-    <body>
-        <header class="header">
-            <!-- Menu Button -->
-            <div class="navbar-expand-md double-nav scrolling-navbar navbar-dark bg-dark">
-                <!--Menu -->
-                <nav class="menu left-menu">
-                    <div class="menu-content">
-                        <ul class="pl-0">
-                                <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="troubleshooting_list.php" class="text-warning">Chantiers</a></li>
-                                <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="list_profil.php" class="text-warning">Salariés</a></li>
-                                <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="#" class="text-warning">Paramètres</a></li>
-                                <li class="bg-dark border-top border-bottom border-warning rounded-0 p-0 menu-link"><a href="signin.php" class="text-warning">Déconnexion</a></li>
-                        </ul>
-                    </div>
-                </nav>
                 <div class="icons-navbar">
                     <div class="menu-btn-bars text-white"><button class="menu-btn fas fa-bars text-warning w-100 fa-3x p-0"></button></div>
                     <a href="index.php" class="text-warning m-auto"><h2 class="m-0">S.K.elec</h2></a>
@@ -150,30 +119,30 @@ if($user) {
                                     echo '<input type="text" value="' . $modif_user['id'] . '" id="id" name="id" style="display: none;"">';
                                     echo '<div class="md-form mt-1">';
                                         echo '<label for="fusername">Username</label>';
-                                        echo '<input type="text" value="' . $modif_user['username'] . '" id="username" name="username" class="form-control" placeholder="' . $modif_user['username'] . '"">';
+                                        echo '<input type="text" value="' . $modif_user['username'] . '" id="username" name="username" class="form-control" placeholder="' . $modif_user['username'] . '"" />';
                                     echo '</div>';
                                     echo '<div class="md-form mt-4">';
                                         echo '<label for="first-name">First name</label>';
-                                        echo '<input type="text" value="' . $modif_user['first_name'] . '" id="first_name" name="first_name" class="form-control" placeholder="' . $modif_user['first_name'] . '">';
+                                        echo '<input type="text" value="' . $modif_user['first_name'] . '" id="first_name" name="first_name" class="form-control" placeholder="' . $modif_user['first_name'] . '" />';
                                     echo '</div>';
                                     echo '<div class="md-form mt-4">';
                                         echo '<label for="last_name">Last name</label>';
-                                        echo '<input type="text" value="' . $modif_user['last_name'] . '" id="last_name" name="last_name" class="form-control" placeholder="' . $modif_user['last_name'] . '">';
+                                        echo '<input type="text" value="' . $modif_user['last_name'] . '" id="last_name" name="last_name" class="form-control" placeholder="' . $modif_user['last_name'] . '" />';
                                     echo '</div>';
                                     echo '<div class="md-form mt-4">';
                                         echo '<label for="e_mail">E_mail</label>';
-                                        echo '<input type="email" value="' . $modif_user['e_mail'] . '" id="e-mail" name="e_mail" class="form-control" placeholder="' . $modif_user['e_mail'] . '">';
+                                        echo '<input type="email" value="' . $modif_user['e_mail'] . '" id="e-mail" name="e_mail" class="form-control" placeholder="' . $modif_user['e_mail'] . '" />';
                                     echo '</div>';
                                     echo '<div class="md-form mt-4 pb-3">';
                                         echo '<label for="phone">Téléphone</label>';
-                                        echo '<input type="text" value="' . $modif_user['phone'] . '" id="phone" name="phone" class="form-control" placeholder="' . $modif_user['phone'] . '">';
+                                        echo '<input type="text" value="' . $modif_user['phone'] . '" id="phone" name="phone" class="form-control" placeholder="' . $modif_user['phone'] . '" />';
                                     echo '</div>';
 
                                     echo '<h4 class="w-75 mt-5 ml-auto mb-4 mr-auto pb-2 text-center border-bottom">Heures globales du mois</h4>';
                                     echo "<table class='table table-striped border mt-2 ml-auto mb-3 mr-auto w-100 text-center'>";
                                         echo "<thead>
                                             <tr>
-                                                <th scope='col' class='text-center border-right align-middle w-25 font-weight-normal'>H/totales<br />[avec h/nuit]</th>
+                                                <th scope='col' class='text-center border-right align-middle w-25 font-weight-normal'>H/totales<br />[<strong><u>avec</u></strong> h/nuit]</th>
                                                 <th scope='col' class='text-center border-right align-middle w-25 font-weight-normal'>H + 25%</th>
                                                 <th scope='col' class='text-center align-middle w-25 font-weight-normal'>H + 50%</th>
                                             </tr>
@@ -261,7 +230,7 @@ if($user) {
                                     echo "<table class='table table-striped border mt-4 ml-auto mb-3 mr-auto w-100 text-center'>";
                                         echo "<thead>
                                             <tr>
-                                                <th scope='col' class='text-center border-right align-middle w-25 font-weight-normal'>H/totales</th>
+                                                <th scope='col' class='text-center border-right align-middle w-25 font-weight-normal'>H/totales<br />[<strong><u>sans</u></strong> h/nuit]</th>
                                                 <th scope='col' class='text-center border-right align-middle w-25 font-weight-normal'>H + 25%</th>
                                                 <th scope='col' class='text-center align-middle w-25 font-weight-normal'>H + 50%</th>
                                             </tr>
@@ -846,15 +815,4 @@ if($user) {
         </div>
     </body>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="js/script.js"></script>
-    <script src="/js/jQuery.stayInWebApp-master/jquery.stayInWebApp.js"></script>
-    <script src="/js/jQuery.stayInWebApp-master/jquery.stayInWebApp.min.js"></script>
-    <script src="js/bootstrap.js"></script>
-    <script>
-        $(function() {
-            $.stayInWebApp();
-        });
-    </script>
-</html>
+    <?php include 'footer.php'; ?>
