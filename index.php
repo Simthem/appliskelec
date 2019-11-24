@@ -65,84 +65,9 @@ if($user) {
 <!DOCTYPE html>
 
 <html class="overflow-y mb-0">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=0">
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-status-bar-style" content="black">
-        <meta name="apple-mobile-web-app-title" content="S.K.elec">
-        <link  rel="stylesheet" href="assets/css/bootstrap.css">
-        <link rel="stylesheet" href="assets/css/style.css">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-        <link href="https://fonts.googleapis.com/css?family=Lato:300,400,400italic,700,700italic" rel="stylesheet">
-        <script src="https://kit.fontawesome.com/f14bbc71a6.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-        <title>Appli Skelec</title>
-    </head>
-    <body>
-        <header class="header">
-            <!-- Menu Button -->
-            <div class="navbar-expand-md double-nav scrolling-navbar navbar-dark bg-dark">
-                <!--Menu -->
-                <nav class="menu left-menu">
-                    <div class="menu-content">
-                        <ul class="pl-0">
-                            <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="troubleshooting_list.php" class="text-warning">Chantiers</a></li>
-                            <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="list_profil.php" class="text-warning">Salariés</a></li>
-                            
-                            <!--<li class="bg-dark border-top border-warning rounded-0 p-0 collapsed"><a id="params" data-toggle="collapse" href="#submenu" role="button" aria-expanded="true" aria-controls="#submenu" class="text-warning open-col">Paramètres<div class="mr-0 float-right" style="width: 40px;"><img src="img/fleche_menu.png" class="ml-3 mt-auto mb-auto open-col" style="width: 13px; height: 13px;"></div></a>-->
-                            <li data-toggle="collapse" href="#preview2" role="button" aria-expanded="false" aria-controls="preview2" class="bg-dark border-top border-warning rounded-0 p-0 collapsed text-warning"><a>Paramètres</a></li>
-                                <div id="preview2" class="bg-light collapse" action='api/user/edit_profil.php' method='GET'>
-                                    <?php
-                                        if ($_SESSION['id'] == $admin['id']) {
-                                            $admin_sql = "SELECT * FROM `admin`";
-                                            if ($admin_result = mysqli_query($db, $admin_sql)){
-                                                if (mysqli_num_rows($admin_result) > 0){
-                                                    if ($db === false){
-                                                        die("ERROR: Could not connect. " . mysqli_connect_error());
-                                                    }
-                                                    while($row = $admin_result->fetch_array()) {
-                                                        echo "<li class='rounded-0 p-0 menu-link' style='height: 60px;'><a href='modif_profil.php?id=" . $row['id'] . "' class='mt-auto ml-auto mb-auto mr-auto text-dark w-75'><div class='mt-auto mb-auto pr-3 float-left'> • </div>Profile</a></li>";
-                                                    }
-                                                    mysqli_free_result($admin_result);
-                                                } else {
-                                                    echo "No records matching your query were found.";
-                                                }
-                                            } else {
-                                                echo "ERROR: Could not able to execute $admin_sql. " . mysqli_error($db);
-                                            }
-                                            echo "<li class='rounded-0 p-0 menu-link border-top'><a href='extract_obj.php' class='pt-4 pr-0 pb-4 mt-auto ml-auto mb-auto mr-auto  text-dark w-75'><div class='mt-auto mb-auto pr-3 pt-3 float-left'> • </div><div class='w-100'>Extraire un compte rendu</div></a></li>";
-                                        } else {
-                                            $user_sql = "SELECT * FROM users";
-                                            if ($user_result = mysqli_query($db, $user_sql)){
-                                                if (mysqli_num_rows($user_result) > 0){
-                                                    if ($db === false) {
-                                                        die("ERROR: Could not connect. " . mysqli_connect_error());
-                                                    }
-                                                    while ($row = $user_result->fetch_array()){
-                                                        if ($row['id'] == $_SESSION['id']) {
-                                                            echo "<li><a href='modif_profil.php?id=" . $row['id'] . "' class='mt-auto ml-auto mb-auto mr-auto text-dark w-75'>Profile</a></li>";
-                                                        }
-                                                    }
-                                                    mysqli_free_result($user_result);
-                                                } else {
-                                                    echo "No records matching your query were found.";
-                                                }
-                                            } else {
-                                                echo "ERROR: Could not able to execute $admin_sql. " . mysqli_error($db);
-                                            }
-                                        }
-                                    ?>
-                                </div>
-                            </li>
-                            <li class="bg-dark border-top border-bottom border-warning rounded-0 p-0 menu-link"><a href="api/User/logout.php" class="text-warning">Déconnexion</a></li>
-                        </ul>
-                    </div>
-                </nav>
+    
+    <?php include 'header.php'; ?>
+
                 <div class="icons-navbar">
                     <div class="menu-btn-bars text-white"><button class="menu-btn fas fa-bars text-warning w-100 fa-3x p-0"></button></div>
                     <a href="index.php" class="text-warning d-inline-flex m-auto"><img class="mr-2 ml-2" src="img/ampoule_skelec.png" alt="logo S.K.elec" height="45" width="30"><h2 class="d-inline-flex mt-0 mr-2 mb-0 ml-0">S.K.elec</h2></a>
@@ -172,7 +97,8 @@ if($user) {
                                                 ?>
                         </div>
                     </div>
-                    <?php echo "<input type='number' id='user_id' name='user_id' value='" . $_SESSION['id'] . "' style='display: none'>" ?>
+                    <?php echo "<input type='number' id='user_id' name='user_id' value='" . $_SESSION['id'] . "' style='display: none;'>";
+                        //echo "<input type='number' id='state' name='state' value='0' style='display: none;'" ?>
                     <div class="text-center">
                         <div class="bg-white border rounded m-auto" style="width: max-content">
                             <?php
@@ -356,19 +282,4 @@ if($user) {
             mysqli_close($db);
         ?>
 
-        <footer>
-        </footer>
-
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-        <script src="/js/script.js"></script>
-        <script src="/js/jQuery.stayInWebApp-master/jquery.stayInWebApp.js"></script>
-        <script src="/js/jQuery.stayInWebApp-master/jquery.stayInWebApp.min.js"></script>
-        <script src="/js/bootstrap.js"></script>
-        <script>
-            $(function() {
-                $.stayInWebApp();
-            });
-        </script>
-        
-    </body>
-</html>
+    <?php include 'footer.php'; ?>
