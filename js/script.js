@@ -1,7 +1,6 @@
 //function FOR EXTRACT_FILE_CSV
 
 function pre_extract(n_inp) {
-    console.log(n_inp);
 
     if ($("#username").val() != 0) {
         document.getElementById('pre_ext').innerHTML = "";
@@ -34,7 +33,6 @@ function extract() {
     var stop = document.forms['extraction'].elements['end_ext'].value;
     if ($("input[name='all']").is(":checked")) {
         var u_tot = document.forms['extraction'].elements['all'].value;
-        console.log(u_tot);
     } else {
         var u_tot = 0;
     }
@@ -52,6 +50,8 @@ function extract() {
 function ext_link(start, stop, u_tot, admin) {
     document.location.href = 'extract_obj.php?beg='+start+'&end='+stop+'&all='+u_tot+'&a_name='+admin;
 }
+
+
 
 
 //function CALCUL_VALID_DAY
@@ -77,37 +77,59 @@ function calcul() {
     var totaux_m = 0;
     totaux_m = document.querySelectorAll('.minutes');
 
-    var j, x = totaux_m.length;
+    var x = totaux_m.length;
 
-    for (j = 0; j < x; j += 1) {
-        total_m += parseFloat(totaux_m[j].value);
+    for (i = 0; i < x; i += 1) {
+        total_m += parseFloat(totaux_m[i].value);
     }
-    
+
+
+    var tot_h = new Array();
+
+    for (i = 0; i < nb; i += 1) {
+        tot_h[i] = totaux_h[i].value + ':' + totaux_m[i].value;
+
+        document.getElementById('tot_h'+i).value = tot_h[i];
+        document.getElementById('tot_h'+i).textContent = tot_h[i];
+    }
+
 
     //HOURS/NIGHT----------------------------
 
     var night_h = 0;
-    var toth_night = 0;
-    toth_night = document.querySelectorAll('.night_h');
+    var tot_h_night = 0;
+    tot_h_night = document.querySelectorAll('.night_h');
 
-    var k, y = toth_night.length;
+    var j, y = tot_h_night.length;
 
-    for (k = 0; k < y; k += 1) {
-        night_h += parseFloat(toth_night[k].value);
-        console.log(night_h);
+    for (j = 0; j < y; j += 1) {
+        night_h += parseFloat(tot_h_night[j].value);
     }
 
 
     //MINUTES/NIGHT----------------------------
 
     var night_m = 0;
-    var totm_night = 0;
-    totm_night = document.querySelectorAll('.night_m');
+    var tot_m_night = 0;
+    tot_m_night = document.querySelectorAll('.night_m');
 
-    var l, z = totm_night.length;
+    var z = tot_m_night.length;
 
-    for (l = 0; l < z; l += 1) {
-        night_m += parseFloat(totm_night[l].value);
+    for (j = 0; j < z; j += 1) {
+        night_m += parseFloat(tot_m_night[j].value);
+    }
+
+
+    var h_night = new Array();
+
+    for (j = 0; j < z; j += 1) {
+        if (tot_m_night[j].value != 0) {
+            h_night[j] = tot_h_night[j].value + ':' + tot_m_night[j].value;
+        } else {
+            h_night[j] = tot_h_night[j].value + ':00';
+        }
+        document.getElementById('tot_h_night'+j).value = h_night[j];
+        document.getElementById('tot_h_night'+j).value = h_night[j];
     }
 
 
@@ -115,7 +137,7 @@ function calcul() {
 
     var hours = total_h.toFixed(0);
     var minutes = total_m.toFixed(0);
-
+    //console.log(hours);
     if (minutes > 59) {
         hours = (total_h + 1).toFixed(0);
         minutes -= 60;
@@ -136,11 +158,15 @@ function calcul() {
 
 
     var hours_night = night_h.toFixed(0);
+    var temp = night_h;
     var min_night = night_m.toFixed(0);
 
     if (min_night > 59) {
-        hours_night = (night_h + 1).toFixed(0);
-        min_night -= 60;
+        while (min_night > 59) {
+            temp += 1;
+            hours_night = temp.toFixed(0);
+            min_night -= 60;
+        }
     }
     if (min_night > 10) {
         min_night = min_night;
@@ -154,7 +180,16 @@ function calcul() {
     document.getElementById('rec_h_night').textContent = hours_night;
     document.getElementById('rec_m_night').value = min_night;
     document.getElementById('rec_m_night').textContent = min_night;
+
+    var pan_rep = document.getElementById("pan_rep");
+    if ($("input[name='panier_repas']").is(":checked")) {
+        pan_rep.value = document.getElementById("panier_repas").value;
+    } else {
+        pan_rep.value = 0;
+    }
+
 }
+
 
 
 //function PREVIEW_FORM_INDEX
@@ -188,6 +223,8 @@ function preview2() {
 }
 
 
+
+
 //function DELETE_USER
 
 function reply_click_user(clicked_id){
@@ -210,6 +247,9 @@ function reply_click_user(clicked_id){
         });
     }
 };
+
+
+
 
 //function DELETE_TROUBLES
 
@@ -235,6 +275,7 @@ function reply_click_troubles(clicked_id){
 };
 
 
+
 //nav choice for troubleshooting list
 
 $('.nav-pills a:last').on('click', function() {
@@ -252,6 +293,7 @@ $('.nav-pills a:first').on('click', function() {
     //$('#' + $(this).data(id)).show(); // show the tab content with matching id
     $('.tab-content #tab1').show();
 });
+
 
 
 
@@ -283,6 +325,7 @@ function checkFUser() {
 
 
 
+
 //check formula in index
 
 function checkForm(){
@@ -296,6 +339,7 @@ function checkForm(){
         document.getElementById('add_trouble').submit();
     }
 }
+
 
 
 
