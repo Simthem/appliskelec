@@ -123,11 +123,7 @@ function calcul() {
     var h_night = new Array();
 
     for (j = 0; j < z; j += 1) {
-        if (tot_m_night[j].value != 0) {
-            h_night[j] = tot_h_night[j].value + ':' + tot_m_night[j].value;
-        } else {
-            h_night[j] = tot_h_night[j].value + ':00';
-        }
+        h_night[j] = tot_h_night[j].value + ':' + tot_m_night[j].value;
         document.getElementById('tot_h_night'+j).value = h_night[j];
         document.getElementById('tot_h_night'+j).value = h_night[j];
     }
@@ -137,7 +133,7 @@ function calcul() {
 
     var hours = total_h.toFixed(0);
     var minutes = total_m.toFixed(0);
-    //console.log(hours);
+    
     if (minutes > 59) {
         hours = (total_h + 1).toFixed(0);
         minutes -= 60;
@@ -158,15 +154,11 @@ function calcul() {
 
 
     var hours_night = night_h.toFixed(0);
-    var temp = night_h;
     var min_night = night_m.toFixed(0);
 
     if (min_night > 59) {
-        while (min_night > 59) {
-            temp += 1;
-            hours_night = temp.toFixed(0);
-            min_night -= 60;
-        }
+        hours_night = (hours_night + 1).toFixed(0);
+        min_night -= 60;
     }
     if (min_night > 10) {
         min_night = min_night;
@@ -187,9 +179,14 @@ function calcul() {
     } else {
         pan_rep.value = 0;
     }
-
 }
 
+
+function change() {
+    var fl = document.getElementById("flag");
+    fl.value = 1;
+    document.getElementById("flag").value = fl.value;
+}
 
 
 //function PREVIEW_FORM_INDEX
@@ -282,7 +279,6 @@ $('.nav-pills a:last').on('click', function() {
     $('.nav-pills a:first').removeClass('active'); // remove active class from tabs
     $(this).addClass('active'); // add active class to clicked tab
     $('.tab-content #tab1').hide(); // hide all tab content
-    //$('#' + $(this).data(id)).show(); // show the tab content with matching id
     $('.tab-content #tab2').show();
 });
 
@@ -290,7 +286,6 @@ $('.nav-pills a:first').on('click', function() {
     $('.nav-pills a:last').removeClass('active'); // remove active class from tabs
     $(this).addClass('active'); // add active class to clicked tab
     $('.tab-content #tab2').hide(); // hide all tab content
-    //$('#' + $(this).data(id)).show(); // show the tab content with matching id
     $('.tab-content #tab1').show();
 });
 

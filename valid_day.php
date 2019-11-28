@@ -88,6 +88,7 @@ if($user) {
                             c.name AS name_chantier,
                             SUM(night_hours) AS h_night_tot,
                             SUM(intervention_hours - night_hours) AS tothsnight,
+                            floor((SUM(floor(night_hours / 10000)) + (SUM(((floor(night_hours) - floor(floor(night_hours) / 10000) * 10000) / 100) / 60))) * 100) AS total_night,
                             floor((SUM(floor(intervention_hours / 10000)) + (SUM(((floor(intervention_hours) - floor(floor(intervention_hours) / 10000) * 10000) / 100) / 60))) * 100) AS tot_glob,
                             panier_repas,
                             g.state AS `state`
@@ -124,6 +125,10 @@ if($user) {
 
                                 while ($row = $result->fetch_array()){
 
+                                    if ($row['state'] == 1 && $flag == 0) {
+                                        echo '<div class="text-center m-auto w-75"><p class="bg-warning w-50 pt-2 pl-2 pb-2 pr-2 ml-auto mr-auto rounded border-0 text-center text-white">mission ACCOMPLIE !!</p></div>';
+                                    }
+
                                     $flag += 1;
                                     $temp = 0;
 
@@ -139,6 +144,7 @@ if($user) {
 
                                         $hours = (int)($total / 100);
                                         $minutes = ((int)($total - ($hours * 100)) / 100) * 60;
+
                                         if ($minutes > 59) {
                                             $hours += 1;
                                             $minutes -= 60;
@@ -152,20 +158,39 @@ if($user) {
                                         }
 
                                         // NIGHT HOURS ----------------
-                                        $night_tot = $row['h_night_tot'];
+
+                                        $night_tot = $row['total_night'];
+                                        $h_ni_glob += $night_tot;
+
+                                        $night_h = (int)($night_tot / 100);
+                                        $night_m = ((int)($night_tot - ($night_h * 100)) / 100) * 60;
+
+                                        if ($night_m > 59) {
+                                            $night_h += 1;
+                                            $night_m -= 60;
+                                        }
+                                        if ($night_m > 10) {
+                                            $night_m = $night_m;
+                                        } elseif ($night_m < 10 and $night_m > 0) {
+                                            $night_m = "0" . $night_m;
+                                        } else {
+                                            $night_m = "00";
+                                        }
+                                        /*$night_tot = $row['h_night_tot'];
                                         $h_ni_glob += $night_tot;
 
                                         $night_h = (int)($night_tot / 10000);
                                         $night_m = ((int)($night_tot - ($night_h * 10000)) / 100);
                                         
-                                        $n_m_num = (($night_tot - ($night_h * 10000)) / 100) / 60;
+                                        $n_m_num = (($h_ni_glob - ($night_h * 10000)) / 100) / 60;
+                                        //echo $n_m_num . '<br />' . $h_ni_glob . '<br />' . $night_h . '<br />' . $night_m;
 
                                         if ($night_m == 0) {
                                             $night_m = "00";
-                                        }
+                                        }*/
 
                                         echo '<div class="w-100 d-inline-flex m-0">
-                                                <input name="' . $row['gid'] . '" value="' . $row['gid'] . '" style="display: none;"/>
+                                                <input name="' . $row['gid'] . '" value="' . $row['gid'] . '" style="display : none;" />
                                                 <div class="mt-2 mb-2 p-0 text-wrap" style="min-width: 27%; max-width=27%; height: 20.4px">' . $row['name_chantier'] . '</div>
                                                 <div class="w-75 p-0 text-center">
                                                     <div class="col-1 p-0 mt-2 mb-2 float-left">&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;</div>
@@ -240,12 +265,12 @@ if($user) {
                                                 </div>';
                                         echo '</div>';
                                     }
+                                    //print_r($row);
                                 }
 
-
                                 while ($temp < $flag) {
-                                    echo '<input id="tot_h' . $temp . '" name="tot_h' . $temp . '" style="display: none;" />';
-                                    echo '<input id="tot_h_night' . $temp . '" name="tot_h_night' . $temp . '" style="display: none;" />';
+                                    echo '<input id="tot_h' . $temp . '" name="tot_h' . $temp . '" style="display : none;" />';
+                                    echo '<input id="tot_h_night' . $temp . '" name="tot_h_night' . $temp . '" style="display : none;" />';
                                     $temp += 1;
                                 }
 
@@ -259,7 +284,7 @@ if($user) {
                                         echo '<label class="font-weight-normal mb-auto mt-auto ml-4 pl-1 text-center" for="">Panier repas</label>
                                 </div>
                                 <br />';
-                                echo '<div class="w-100 text-center mb-3"><a role="button" class="w-50 ml-auto mr-auto btn pt-1 pl-2 pb-1 pr-2 border bg-success text-white text-center" onClick="calcul()">Vérifier</a></div>';
+                                echo '<div class="w-100 text-center mb-3"><a role="button" class="w-50 ml-auto mr-auto btn pt-1 pl-2 pb-1 pr-2 border bg-light text-center" onClick="calcul()">Vérifier</a></div>';
                                 echo '<div class="mb-4"></div>';
                                 echo '<div class="mb-4 border"></div>';
 
@@ -272,14 +297,30 @@ if($user) {
                                 }
                                 if ($minutes > 10) {
                                     $minutes = $minutes;
-                                } elseif ($minutes < 10 and $minutes > 0) {
+                                } elseif ($minutes < 10 && $minutes > 0) {
                                     $minutes = "0" . $minutes;
                                 } else {
                                     $minutes = "00";
                                 }
 
-                                $night_h = $h_ni_glob / 10000;
+                                $night_h = (int)($h_ni_glob / 100);
+                                $night_m = ((int)($h_ni_glob - ($night_h * 100)) / 100) * 60;
 
+                                if ($night_m > 59) {
+                                    $night_m -= 60;
+                                    $night_h += 1;
+                                }
+                                if ($night_m > 10) {
+                                    $night_m = $night_m;
+                                } elseif ($night_m < 10 && $night_m > 0) {
+                                    $night_m = '0' . $night_m;
+                                } else {
+                                    $night_m = "00";
+                                }
+
+                                /*$night_h = $h_ni_glob / 10000;
+
+                                echo $h_ni_glob . '<br />' . $n_m_num . '<br />' . $night_h;
                                 if ((((int)$night_h * 10) !== ($night_h * 10 ))) {
                                     $night_h = (int)($h_ni_glob / 10000);
                                     $night_m = ((int)($h_ni_glob - ($night_h * 10000)) / 100);
@@ -290,11 +331,13 @@ if($user) {
                                     }
                                     if ($night_m == 0) {
                                         $night_m = "00";
-                                    }
-                                } else {
+                                    } /*elseif ($night_m < 10 && $night_m > 0) {
+                                        $night_m = '0' . $night_m;
+                                    }*/
+                                /*} else {
                                     $night_h = (int)($h_ni_glob / 10000);
                                     $night_m = "00";
-                                }
+                                }*/
 
 
                                 echo '<div class="d-inline-flex m-0 pb-3 text-center">
@@ -308,7 +351,12 @@ if($user) {
                                         </fieldset>
                                 </div>
                                 <br />';
-                                echo '<input type="submit" value="Soumettre" class="float-right mt-5 ml-0 mr-5 btn send border-0 bg-white z-depth-1a align-middle text-dark" style="width: 40%;" />
+                                echo '<div class="w-100 text-center">
+                                    <input id="flag" name="flag" value="0" style="display: none;" />
+                                    <input type="submit" value="Éditer mon jour" class="btn pt-1 pl-2 pb-1 pr-2 border bg-light w-50" />
+                                </div>';
+                                echo '
+                                    <input type="submit" value="Valider mon jour" class="float-right mt-5 ml-0 mr-5 btn send border-0 bg-success z-depth-1a align-middle text-white" style="width: 40%;" onClick="change()" />
                                     <a href="javascript:history.go(-1)" value="return" class="float-left mt-5 ml-5 mr-0 btn finish border-0 bg-white z-depth-1a align-middle text-dark" style="width: 40%;">Précédent</a>';
 
                                 mysqli_free_result($result);
