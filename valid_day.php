@@ -177,144 +177,120 @@ if($user) {
                                         } else {
                                             $night_m = "00";
                                         }
-                                        /*$night_tot = $row['h_night_tot'];
-                                        $h_ni_glob += $night_tot;
-
-                                        $night_h = (int)($night_tot / 10000);
-                                        $night_m = ((int)($night_tot - ($night_h * 10000)) / 100);
-                                        
-                                        $n_m_num = (($h_ni_glob - ($night_h * 10000)) / 100) / 60;
-                                        //echo $n_m_num . '<br />' . $h_ni_glob . '<br />' . $night_h . '<br />' . $night_m;
-
-                                        if ($night_m == 0) {
-                                            $night_m = "00";
-                                        }*/
-
-                                        //$id_sel = $row['gid'];
-                                        //echo $id_sel;
-                                        //print_r($row);
-                                        //echo '<br />';
                                         echo '<div class="w-100 d-inline-flex m-0">';
-                                                //echo "<input name='gid' value='" . $row['chantier_id'] . "' style='display : none;' />";
-                                                echo "<select class='chantier mt-2 mb-2 p-0 text-wrap' style='min-width: 27%; max-width=27%; height: 20.4px' size='1' onClick='ch_name()'>";
-                                                //echo "<option name='gid' value='" . $row['chantier_id'] . "' style='display : none;'>". $row['chantier_id'] . "</option>";
+                                            echo "<select class='chantier mt-2 mb-2 p-0 text-wrap' style='height: 20.4px;max-width: 27%;' size='1'>";
 
-                                                    $sql = 
-                                                    "SELECT 
-                                                        c.id AS chantier_id, `name`, c.state AS `state`, g.id AS ref_glo
-                                                    FROM 
-                                                        chantiers AS c
-                                                        JOIN
-                                                        global_reference AS g ON g.id = c.id
-                                                    WHERE
-                                                        c.state
-                                                    ORDER BY 
-                                                        c.id DESC";
+                                                $sql = 
+                                                "SELECT 
+                                                    c.id AS chantier_id, `name`, c.state AS `state`, g.id AS ref_glo
+                                                FROM 
+                                                    chantiers AS c
+                                                    JOIN
+                                                    global_reference AS g ON g.id = c.id
+                                                WHERE
+                                                    c.state
+                                                ORDER BY 
+                                                    c.id DESC";
 
-                                                    //print_r($sql);
-                                                    if ($reponse = mysqli_query($db, $sql)) {
+                                                if ($reponse = mysqli_query($db, $sql)) {
 
-                                                        if (mysqli_num_rows($reponse) > 0) {
+                                                    if (mysqli_num_rows($reponse) > 0) {
 
-                                                            if ($db === false){
-                                                                die("ERROR: Could not connect. " . mysqli_connect_error());
-                                                            }
-                                                            while ($chk = $reponse->fetch_array()){
-                                                                //print_r($chk);
-
-                                                                //echo '<br />chk = ' . $chk['ref_glo'] . '<br />row = ' . $row['gid'];
-                                                                if ($chk['chantier_id'] == $row['chantier_id']) {
-                                                                        echo "<option value='" . $chk['chantier_id'] . "' selected>" . $chk['name'] . "</option>";
-                                                                } else {
-                                                                    echo "<option value='" . $chk['chantier_id'] . "'>" . $chk['name'] . "</option>";
-                                                                    //echo "<option>row&nbsp;=&nbsp;" . $row['chantier_id'] . "&nbsp;chk=" . $chk['chantier_id']. "</option>";
-                                                                }
-                                                            }
-                                                            mysqli_free_result($reponse);
-                                                        } else {
-                                                            echo "No records matching your query were found.";
+                                                        if ($db === false){
+                                                            die("ERROR: Could not connect. " . mysqli_connect_error());
                                                         }
-                                                    } else{
-                                                        echo "ERROR: Could not able to execute $sql. " . mysqli_error($db);
-                                                    }
+                                                        while ($chk = $reponse->fetch_array()){
 
-                                                echo '</select>';
-                                                echo '<input name="glo_ch_id" value="' . $row['chantier_id'] . '" class="mt-2 mb-2 p-0 text-wrap" style="min-width: 27%; max-width=27%; height: 20.4px; display: none;" />';
-                                                echo '<div class="mt-2 mb-2 p-0 text-wrap" style="min-width: 27%; max-width=27%; height: 20.4px; display: none;">' . $row['name_chantier'] . '</div>
-                                                <div class="w-75 p-0 text-center">
-                                                    <div class="col-1 p-0 mt-2 mb-2 float-left">&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;</div>
-                                                    <div class="border-0 p-0 mt-2 ml-0 mr-0 mb-2 col-12">
-                                                        <select class="hours border-0 rounded bg-secondary text-white text-center">
-                                                            <option value="' . $hours . '" selected disabled>' . $hours . '</option>
-                                                            <option value="0">0</option>
-                                                            <option value="1">1</option>
-                                                            <option value="2">2</option>
-                                                            <option value="3">3</option>
-                                                            <option value="4">4</option>
-                                                            <option value="5">5</option>
-                                                            <option value="6">6</option>
-                                                            <option value="7">7</option>
-                                                            <option value="8">8</option>
-                                                            <option value="9">9</option>
-                                                            <option value="10">10</option>
-                                                            <option value="11">11</option>
-                                                            <option value="12">12</option>
-                                                            <option value="13">13</option>
-                                                            <option value="14">14</option>
-                                                            <option value="15">15</option>
-                                                            <option value="16">16</option>
-                                                            <option value="17">17</option>
-                                                            <option value="18">18</option>
-                                                            <option value="19">19</option>
-                                                            <option value="20">20</option>
-                                                        </select>
-                                                        <strong>h</strong>
-                                                        <select class="minutes border-0 rounded bg-secondary text-white text-center">
-                                                            <option value="' . $minutes . '" selected disabled>' . $minutes . '</option>
-                                                            <option value="00">00</option>
-                                                            <option value="15">15</option>
-                                                            <option value="30">30</option>
-                                                            <option value="45">45</option>
-                                                        </select>
-                                                        <strong>[</strong>
-                                                        <select class="night_h border-0 rounded bg-secondary text-white text-center">
-                                                            <option value="' . $night_h . '" selected disabled>' . $night_h . '</option>
-                                                            <option value="0">0</option>
-                                                            <option value="1">1</option>
-                                                            <option value="2">2</option>
-                                                            <option value="3">3</option>
-                                                            <option value="4">4</option>
-                                                            <option value="5">5</option>
-                                                            <option value="6">6</option>
-                                                            <option value="7">7</option>
-                                                            <option value="8">8</option>
-                                                            <option value="9">9</option>
-                                                            <option value="10">10</option>
-                                                            <option value="11">11</option>
-                                                            <option value="12">12</option>
-                                                            <option value="13">13</option>
-                                                            <option value="14">14</option>
-                                                            <option value="15">15</option>
-                                                            <option value="16">16</option>
-                                                            <option value="17">17</option>
-                                                            <option value="18">18</option>
-                                                            <option value="19">19</option>
-                                                            <option value="20">20</option>
-                                                        </select>
-                                                        <strong>h </strong>';
-                                                        echo '<select class="night_m border-0 rounded bg-secondary text-white text-center" />
-                                                            <option value="' . $night_m . '" selected disabled>' . $night_m . '</option>
-                                                            <option value="00">00</option>
-                                                            <option value="15">15</option>
-                                                            <option value="30">30</option>
-                                                            <option value="45">45</option>
-                                                        </select>
-                                                        <strong>/nuit]</strong>
-                                                    </div>
-                                                </div>';
+                                                            if ($chk['chantier_id'] == $row['chantier_id']) {
+                                                                    echo "<option value='" . $chk['chantier_id'] . "' selected>" . $chk['name'] . "</option>";
+                                                            } else {
+                                                                echo "<option value='" . $chk['chantier_id'] . "'>" . $chk['name'] . "</option>";
+                                                            }
+                                                        }
+                                                        mysqli_free_result($reponse);
+                                                    } else {
+                                                        echo "No records matching your query were found.";
+                                                    }
+                                                } else{
+                                                    echo "ERROR: Could not able to execute $sql. " . mysqli_error($db);
+                                                }
+
+                                            echo '</select>';
+                                            echo '<input name="glo_ch_id" value="' . $row['chantier_id'] . '" class="mt-2 mb-2 p-0 text-wrap" style="min-width: 27%; max-width=27%; height: 20.4px; display: none;" />';
+                                            echo '<div class="mt-2 mb-2 p-0 text-wrap" style="min-width: 27%; max-width=27%; height: 20.4px; display: none;">' . $row['name_chantier'] . '</div>
+                                            <div class="w-75 p-0 text-center">
+                                                <div class="col-1 p-0 mt-2 mb-2 float-left">&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;</div>
+                                                <div class="border-0 p-0 mt-2 ml-0 mr-0 mb-2 col-12">
+                                                    <select class="hours border-0 rounded bg-secondary text-white text-center">
+                                                        <option value="' . $hours . '" selected disabled>' . $hours . '</option>
+                                                        <option value="0">0</option>
+                                                        <option value="1">1</option>
+                                                        <option value="2">2</option>
+                                                        <option value="3">3</option>
+                                                        <option value="4">4</option>
+                                                        <option value="5">5</option>
+                                                        <option value="6">6</option>
+                                                        <option value="7">7</option>
+                                                        <option value="8">8</option>
+                                                        <option value="9">9</option>
+                                                        <option value="10">10</option>
+                                                        <option value="11">11</option>
+                                                        <option value="12">12</option>
+                                                        <option value="13">13</option>
+                                                        <option value="14">14</option>
+                                                        <option value="15">15</option>
+                                                        <option value="16">16</option>
+                                                        <option value="17">17</option>
+                                                        <option value="18">18</option>
+                                                        <option value="19">19</option>
+                                                        <option value="20">20</option>
+                                                    </select>
+                                                    <strong>h</strong>
+                                                    <select class="minutes border-0 rounded bg-secondary text-white text-center">
+                                                        <option value="' . $minutes . '" selected disabled>' . $minutes . '</option>
+                                                        <option value="00">00</option>
+                                                        <option value="15">15</option>
+                                                        <option value="30">30</option>
+                                                        <option value="45">45</option>
+                                                    </select>
+                                                    <strong>[</strong>
+                                                    <select class="night_h border-0 rounded bg-secondary text-white text-center">
+                                                        <option value="' . $night_h . '" selected disabled>' . $night_h . '</option>
+                                                        <option value="0">0</option>
+                                                        <option value="1">1</option>
+                                                        <option value="2">2</option>
+                                                        <option value="3">3</option>
+                                                        <option value="4">4</option>
+                                                        <option value="5">5</option>
+                                                        <option value="6">6</option>
+                                                        <option value="7">7</option>
+                                                        <option value="8">8</option>
+                                                        <option value="9">9</option>
+                                                        <option value="10">10</option>
+                                                        <option value="11">11</option>
+                                                        <option value="12">12</option>
+                                                        <option value="13">13</option>
+                                                        <option value="14">14</option>
+                                                        <option value="15">15</option>
+                                                        <option value="16">16</option>
+                                                        <option value="17">17</option>
+                                                        <option value="18">18</option>
+                                                        <option value="19">19</option>
+                                                        <option value="20">20</option>
+                                                    </select>
+                                                    <strong>h </strong>';
+                                                    echo '<select class="night_m border-0 rounded bg-secondary text-white text-center" />
+                                                        <option value="' . $night_m . '" selected disabled>' . $night_m . '</option>
+                                                        <option value="00">00</option>
+                                                        <option value="15">15</option>
+                                                        <option value="30">30</option>
+                                                        <option value="45">45</option>
+                                                    </select>
+                                                    <strong>/nuit]</strong>
+                                                </div>
+                                            </div>';
                                         echo '</div>';
                                     }
-                                    //print_r($row);
                                 }
 
                                 while ($temp < $flag) {
@@ -334,7 +310,7 @@ if($user) {
                                         echo '<label class="font-weight-normal mb-auto mt-auto ml-4 pl-1 text-center" for="">Panier repas</label>
                                 </div>
                                 <br />';
-                                echo '<div class="w-100 text-center mb-3"><a role="button" class="w-50 ml-auto mr-auto btn pt-1 pl-2 pb-1 pr-2 border bg-light text-center" onClick="calcul()">Vérifier</a></div>';
+                                echo '<div class="w-100 text-center mb-3"><a role="button" id="verif" class="w-50 ml-auto mr-auto btn pt-1 pl-2 pb-1 pr-2 border bg-light text-center">Vérifier</a></div>';
                                 echo '<div class="mb-4"></div>';
                                 echo '<div class="mb-4 border"></div>';
 

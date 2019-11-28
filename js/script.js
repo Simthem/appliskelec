@@ -56,7 +56,8 @@ function ext_link(start, stop, u_tot, admin) {
 
 //function CALCUL_VALID_DAY
 
-function calcul() {
+$('#verif').on('click', function() {
+    //function calcul() {
 
     //HOURS------------------------------
 
@@ -183,24 +184,24 @@ function calcul() {
     } else {
         pan_rep.value = 0;
     }
-}
-
-
-function ch_name() {
-    var chantier = document.querySelectorAll(".chantier");
-    var a, count = chantier.length;
-
-    for (a = 0; a < count; a++) {
-        console.log(chantier[a]);
-        document.getElementById('chantier_id'+ a).value = chantier[a].value;
-    }
-}
+});
 
 function change() {
     var fl = document.getElementById("flag");
     fl.value = 1;
     document.getElementById("flag").value = fl.value;
 }
+
+var chantier = document.querySelectorAll(".chantier");
+var a, count = chantier.length;
+
+$('.chantier').change(function() {
+    for (a = 0; a < count; a++) {
+        document.getElementById('chantier_id'+a).value = chantier[a].value;
+    }
+});
+
+
 
 
 //function PREVIEW_FORM_INDEX

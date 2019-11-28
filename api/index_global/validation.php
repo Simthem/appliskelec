@@ -61,16 +61,8 @@ if (isset($_POST['up_inter']) && !empty($_POST['up_inter'])) {
 
                 $final = $sql->fetch();
                 $id = $final['id'];
-                //echo '<br />' . $id;
                 $glo_id = $id . $_POST['gid'];
-                //print_r($sql);
-                //echo '<br />';
-                ///print_r($final);
-                //echo '<br />';
-                //print_r($final);
-                //echo '<br />';
-                //print_r($_POST);
-                //echo '<br />' . $_POST["chantier_id$i"] . '<br />';
+
                 if (isset($_POST["chantier_id$i"]) AND !empty($_POST["chantier_id$i"])) {
 
                     //echo '<br />p_id : ' . $_POST["chantier_id$i"] . '<br />f_id : ' . $final['chantier_id'] . '<br />gid = ' . $glo_id . '<br />glo_ch_id : ' . $_POST['glo_ch_id'] . '<br />';
@@ -82,7 +74,7 @@ if (isset($_POST['up_inter']) && !empty($_POST['up_inter'])) {
                         $newid = htmlspecialchars($_POST["chantier_id$i"]);
                         $insteridchant = $bdd->prepare("UPDATE global_reference SET chantier_id = '" . $newid . "' WHERE updated = '" . $_POST['up_inter'] . "' AND `user_id`= '" . $_SESSION['id'] . "' AND id = '" . $test[$i]['id'] . "'");
                         $insteridchant->execute(array($newid, $_POST["chantier_id$i"]));
-                        header("Location ../../valid_day.php?up_int=" . $_POST['up_inter']);
+                        //header("Location ../../valid_day.php?up_int=" . $_POST['up_inter']);
                     }
                 }
 
@@ -96,25 +88,19 @@ if (isset($_POST['up_inter']) && !empty($_POST['up_inter'])) {
                         $new_normh = htmlspecialchars($glo_h);
                         $insertnormh = $bdd->prepare("UPDATE global_reference SET intervention_hours = '" . $new_normh . "' WHERE updated = '" . $_POST['up_inter'] . "' AND `user_id`= '" . $_SESSION['id'] . "' AND id = '" . $test[$i]['id'] . "'");
                         $insertnormh->execute(array($new_normh, $glo_h));
-                        header("Location ../../valid_day.php?up_int=" . $_POST['up_inter']);
                     } 
                 } 
 
                 if (isset($_POST["tot_h_night$i"]) AND !empty($_POST["tot_h_night$i"])) {
 
-                    //echo '<br />' . $_POST["tot_h_night$i"];
                     $night_h = $_POST["tot_h_night$i"] . ':00';
-                    //echo '<br />' . $night_h;
                     $glo_night = DateTime::createFromFormat('H:i:s', $night_h);
                     $glo_night = $glo_night->format('H:i:s');
-                    //echo $glo_night . '<br />';
-                    //echo $final['night_hours'];
 
                     if ($glo_night != $final['night_hours']) {
                         $new_nighth = htmlspecialchars($glo_night);
                         $insertnighth = $bdd->prepare("UPDATE global_reference SET night_hours = '" . $new_nighth . "' WHERE updated = '" . $_POST['up_inter'] . "' AND `user_id`= '" . $_SESSION['id'] . "' AND id = '" . $test[$i]['id'] . "'");
                         $insertnighth->execute(array($new_nighth, $glo_night));
-                        header("Location: ../../valid_day.php?up_int=" . $_POST['up_inter']);
                     }
                 }
 
@@ -122,12 +108,10 @@ if (isset($_POST['up_inter']) && !empty($_POST['up_inter'])) {
                     $newpan = htmlspecialchars($_POST['panier_repas']);
                     $insertpan = $bdd->prepare("UPDATE global_reference SET panier_repas = '" . $newpan . "' WHERE updated = '" . $_POST['up_inter'] . "' AND `user_id`= '" . $_SESSION['id'] . "' AND id = '" . $test[$i]['id'] . "'");
                     $insertpan->execute(array($newpan, $_POST['panier_repas']));
-                    header("refresh:0; url= ../../valid_day.php?up_int=" . $_POST['up_inter']);
                 } else if (!isset($_POST['panier_repas'])) {
                     $newpan = htmlspecialchars(0);
                     $insertpan = $bdd->prepare("UPDATE global_reference SET panier_repas = '" . $newpan . "' WHERE updated = '" . $_POST['up_inter'] . "' AND `user_id`= '" . $_SESSION['id'] . "' AND id = '" . $test[$i]['id'] . "'");
                     $insertpan->execute(array($newpan, $_POST['panier_repas']));
-                    header("Location: ../../valid_day.php?up_int=" . $_POST['up_inter']);
                 }
                 $i += 1;
             }
@@ -138,8 +122,6 @@ if (isset($_POST['up_inter']) && !empty($_POST['up_inter'])) {
                 $newstate = htmlspecialchars($_POST['flag']);
                 $insertstate = $bdd->prepare("UPDATE global_reference SET `state`= '" . $newstate . "' WHERE updated = '" . $_POST['up_inter'] . "' AND `user_id`= '" . $_SESSION['id'] . "' AND id = '" . $test[$j]['id'] . "'");
                 $insertstate->execute(array($newstate, $_POST['flag']));
-                print_r($insertstate);
-                echo 'ca fonctionne';
             }
             echo '<script type="text/javascript">alert("Édition et validation correctement réalisées :)")</script>';
             header("refresh:0; url= ../../valid_day.php?up_int=" . $_POST['up_inter']);
