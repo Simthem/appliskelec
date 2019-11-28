@@ -69,20 +69,12 @@ if ($_POST['id'] != $admin['id'] or ($_POST['id'] == $user['id'] AND $_SESSION['
         //echo "five";
         header('Location: ../../list_profil.php');
     }
-    /*if(!empty($_POST['total_hours']) AND $_POST['total_hours'] != $user['total_hours']) {
-        $newtotal = htmlspecialchars($_POST['total_hours']);
-        $inserttotal = $bdd->prepare("UPDATE users SET total_hours = '". $newtotal ."' WHERE id = '". $_POST['id'] ."'");
-        $inserttotal->execute(array($newtotal, $_POST['total_hours']));
-  
-        echo "six";
-        header('Location: ../../list_profil.php');*/
-    //}
     if (($_POST['id'] != $admin['id'] AND $_SESSION['id'] == $_POST['id'] AND $_SESSION['id'] == $user['id']) OR ($_POST['id'] != $admin['id'] && $_SESSION['id'] == $admin['id'])) { 
         if (!empty($_POST['pass1']) AND !empty($_POST['pass2'])) {
 
             $pass1 = password_hash($_POST['pass1'], PASSWORD_BCRYPT, array("cost" => 10));
 
-            if ($_POST['pass1'] == $_POST['pass2'] AND !(password_verify($pass1, $user['password']))) {//$pass1 != md5($user['password'])) {
+            if ($_POST['pass1'] == $_POST['pass2'] AND !(password_verify($pass1, $user['password']))) {
 
                 $insertpassword = $bdd->prepare("UPDATE users SET password = '". $pass1 ."' WHERE id = '". $_POST['id'] ."'");
                 $insertpassword->execute(array($pass1, $_POST['password']));
@@ -113,7 +105,7 @@ if ($_POST['id'] != $admin['id'] or ($_POST['id'] == $user['id'] AND $_SESSION['
                     exit();
                 }
 
-            } elseif ($_POST['pass1'] == $_POST['pass2'] AND password_verify($pass1, $user['password'])) {//$pass1 == md5($user['password'])) {
+            } elseif ($_POST['pass1'] == $_POST['pass2'] AND password_verify($pass1, $user['password'])) {
                 
                 $_SESSION['username'] = $_POST['username'];//here session is used and value of 'username' store in $_SESSION.
 
@@ -189,7 +181,7 @@ if ($_POST['id'] != $admin['id'] or ($_POST['id'] == $user['id'] AND $_SESSION['
 
         $pass1 = password_hash($_POST['pass1'], PASSWORD_BCRYPT, array("cost" => 10));
         
-        if ($_POST['pass1'] == $_POST['pass2'] AND !(password_verify($pass1, $admin['admin_pass']))) {//$pass1 != md5($admin['password'])) {
+        if ($_POST['pass1'] == $_POST['pass2'] AND !(password_verify($pass1, $admin['admin_pass']))) {
             
             $insertpassword = $bdd->prepare("UPDATE `admin` SET admin_pass = '". $pass1 ."' WHERE id = '". $_POST['id'] ."'");
             $insertpassword->execute(array($pass1, $_POST['password']));
