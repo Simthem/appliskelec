@@ -86,6 +86,7 @@ if($user) {
                             g.updated as inter_chantier,
                             u.id,
                             c.name AS name_chantier,
+                            c.id AS chantier_id,
                             SUM(night_hours) AS h_night_tot,
                             SUM(intervention_hours - night_hours) AS tothsnight,
                             floor((SUM(floor(night_hours / 10000)) + (SUM(((floor(night_hours) - floor(floor(night_hours) / 10000) * 10000) / 100) / 60))) * 100) AS total_night,
@@ -102,7 +103,7 @@ if($user) {
                             u.id = '" . $_SESSION['id'] . "'
                             AND
                             updated = '" . $_GET['up_int'] . "'
-                        GROUP BY g.id, g.updated, u.id, c.name, panier_repas, g.state";
+                        GROUP BY g.id, g.updated, u.id, c.name, c.id, panier_repas, g.state";
 
                         $date = date_create($_GET['up_int']);
                         echo '<input id="up_inter" name="up_inter" value="' . date_format($date, 'Y-m-d') . '" style="display: none" />';
@@ -189,9 +190,57 @@ if($user) {
                                             $night_m = "00";
                                         }*/
 
-                                        echo '<div class="w-100 d-inline-flex m-0">
-                                                <input name="' . $row['gid'] . '" value="' . $row['gid'] . '" style="display : none;" />
-                                                <div class="mt-2 mb-2 p-0 text-wrap" style="min-width: 27%; max-width=27%; height: 20.4px">' . $row['name_chantier'] . '</div>
+                                        //$id_sel = $row['gid'];
+                                        //echo $id_sel;
+                                        //print_r($row);
+                                        //echo '<br />';
+                                        echo '<div class="w-100 d-inline-flex m-0">';
+                                                //echo "<input name='gid' value='" . $row['chantier_id'] . "' style='display : none;' />";
+                                                echo "<select class='chantier mt-2 mb-2 p-0 text-wrap' style='min-width: 27%; max-width=27%; height: 20.4px' size='1' onClick='ch_name()'>";
+                                                //echo "<option name='gid' value='" . $row['chantier_id'] . "' style='display : none;'>". $row['chantier_id'] . "</option>";
+
+                                                    $sql = 
+                                                    "SELECT 
+                                                        c.id AS chantier_id, `name`, c.state AS `state`, g.id AS ref_glo
+                                                    FROM 
+                                                        chantiers AS c
+                                                        JOIN
+                                                        global_reference AS g ON g.id = c.id
+                                                    WHERE
+                                                        c.state
+                                                    ORDER BY 
+                                                        c.id DESC";
+
+                                                    //print_r($sql);
+                                                    if ($reponse = mysqli_query($db, $sql)) {
+
+                                                        if (mysqli_num_rows($reponse) > 0) {
+
+                                                            if ($db === false){
+                                                                die("ERROR: Could not connect. " . mysqli_connect_error());
+                                                            }
+                                                            while ($chk = $reponse->fetch_array()){
+                                                                //print_r($chk);
+
+                                                                //echo '<br />chk = ' . $chk['ref_glo'] . '<br />row = ' . $row['gid'];
+                                                                if ($chk['chantier_id'] == $row['chantier_id']) {
+                                                                        echo "<option value='" . $chk['chantier_id'] . "' selected>" . $chk['name'] . "</option>";
+                                                                } else {
+                                                                    echo "<option value='" . $chk['chantier_id'] . "'>" . $chk['name'] . "</option>";
+                                                                    //echo "<option>row&nbsp;=&nbsp;" . $row['chantier_id'] . "&nbsp;chk=" . $chk['chantier_id']. "</option>";
+                                                                }
+                                                            }
+                                                            mysqli_free_result($reponse);
+                                                        } else {
+                                                            echo "No records matching your query were found.";
+                                                        }
+                                                    } else{
+                                                        echo "ERROR: Could not able to execute $sql. " . mysqli_error($db);
+                                                    }
+
+                                                echo '</select>';
+                                                echo '<input name="glo_ch_id" value="' . $row['chantier_id'] . '" class="mt-2 mb-2 p-0 text-wrap" style="min-width: 27%; max-width=27%; height: 20.4px; display: none;" />';
+                                                echo '<div class="mt-2 mb-2 p-0 text-wrap" style="min-width: 27%; max-width=27%; height: 20.4px; display: none;">' . $row['name_chantier'] . '</div>
                                                 <div class="w-75 p-0 text-center">
                                                     <div class="col-1 p-0 mt-2 mb-2 float-left">&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;</div>
                                                     <div class="border-0 p-0 mt-2 ml-0 mr-0 mb-2 col-12">
@@ -271,12 +320,13 @@ if($user) {
                                 while ($temp < $flag) {
                                     echo '<input id="tot_h' . $temp . '" name="tot_h' . $temp . '" style="display : none;" />';
                                     echo '<input id="tot_h_night' . $temp . '" name="tot_h_night' . $temp . '" style="display : none;" />';
+                                    echo '<input id="chantier_id' . $temp . '" name="chantier_id' . $temp . '" style="display: none;" />';
                                     $temp += 1;
                                 }
 
 
                                 echo '<br /><br /><div class="ml-2 p-0 position-relative">';
-                                    if (isset($pan) and !empty($pan)) {
+                                    if (isset($pan) && !empty($pan)) {
                                         echo '<input type="checkbox" id="panier_repas" name="panier_repas" value="1" class="form-check-input align-middle mt-1 mb-auto" checked>';
                                     } else {
                                         echo '<input type="checkbox" id="panier_repas" name="panier_repas" value="1" class="form-check-input align-middle mt-1 mb-auto">';

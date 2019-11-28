@@ -131,8 +131,10 @@ function calcul() {
 
     //GLOBAL-----------------------------
 
-    var hours = total_h.toFixed(0);
-    var minutes = total_m.toFixed(0);
+    var hours = 0;
+    hours = total_h.toFixed(0);
+    var minutes = 0;
+    minutes = total_m.toFixed(0);
     
     if (minutes > 59) {
         hours = (total_h + 1).toFixed(0);
@@ -153,11 +155,13 @@ function calcul() {
 
 
 
-    var hours_night = night_h.toFixed(0);
-    var min_night = night_m.toFixed(0);
-
+    var hours_night = 0;
+    hours_night = night_h.toFixed(0);
+    var min_night = 0;
+    min_night = night_m.toFixed(0);
+    
     if (min_night > 59) {
-        hours_night = (hours_night + 1).toFixed(0);
+        hours_night = (night_h + 1).toFixed(0);
         min_night -= 60;
     }
     if (min_night > 10) {
@@ -181,6 +185,16 @@ function calcul() {
     }
 }
 
+
+function ch_name() {
+    var chantier = document.querySelectorAll(".chantier");
+    var a, count = chantier.length;
+
+    for (a = 0; a < count; a++) {
+        console.log(chantier[a]);
+        document.getElementById('chantier_id'+ a).value = chantier[a].value;
+    }
+}
 
 function change() {
     var fl = document.getElementById("flag");
