@@ -170,18 +170,19 @@ if($user) {
                                                                         $total = $row['tot_glob'];
                                                                         $hours = (int)($total / 100);
                                                                         $minutes = ((int)($total - ($hours * 100)) / 100) * 60;
+                                                                        //echo $hours . '<br />' . $minutes . '<br />';
                                                                         if ($minutes > 59) {
                                                                             $hours += 1;
                                                                             $minutes -= 60;
                                                                         }
                                                                         if ($minutes > 10) {
-                                                                            $minutes = $minutes;
+                                                                            $minutes = $minutes / 60;
                                                                         } elseif ($minutes < 10 and $minutes > 0) {
                                                                             $minutes = "0" . $minutes;
                                                                         } else {
                                                                             $minutes = "00";
                                                                         }
-                                                                        echo $hours . '.' . $minutes . 
+                                                                        echo $hours + (int)$minutes . '.' . $minutes * 100;
                                                                     '</td>';
                                                                     echo '<td class="align-middle border-left border-right p-1 w-25" style="word-wrap: break-word;">';
                                                                         $m25 = $row['maj25'];
@@ -261,9 +262,20 @@ if($user) {
                                                                     echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
                                                                         $total = $row['tothsnight'];
                                                                         $hours = (int)($total / 10000);
-                                                                        $minutes = ((int)($total - ($hours * 10000)) / 100) / 60;
-                                                                        $total = $hours + $minutes;
-                                                                    echo $total . '</td>';
+                                                                        $minutes = ((int)($total - ($hours * 10000)) / 100);
+                                                                        if ($minutes > 59) {
+                                                                            $hours += 1;
+                                                                            $minutes -= 60;
+                                                                        }
+                                                                        if ($minutes > 10) {
+                                                                            $minutes = $minutes / 60 * 100;
+                                                                        } elseif ($minutes < 10 and $minutes > 0) {
+                                                                            $minutes = "0" . $minutes;
+                                                                        } else {
+                                                                            $minutes = "0";
+                                                                        }
+                                                                        echo $hours . '.' . $minutes;
+                                                                    echo '<br />' . $hours . '<br />' . $minutes . '<br />' . $total . '</td>';
                                                                     echo '<td class="align-middle border-left border-right p-1 w-25" style="word-wrap: break-word;">';
                                                                         $m25 = $row['maj25'];
                                                                         $hours = (int)($m25 / 10000);
@@ -435,13 +447,13 @@ if($user) {
                                                                                 $minutes -= 60;
                                                                             }
                                                                             if ($minutes > 10) {
-                                                                                $minutes = $minutes;
+                                                                                $minutes = $minutes / 60 * 100;
                                                                             } elseif ($minutes < 10 and $minutes > 0) {
                                                                                 $minutes = "0" . $minutes;
                                                                             } else {
-                                                                                $minutes = "00";
+                                                                                $minutes = "0";
                                                                             }
-                                                                            echo $hours . '.' . $minutes . 
+                                                                            echo $hours . '.' . $minutes; 
                                                                         '</td>';
                                                                         echo '<td class="align-middle border-left border-right p-1 w-25" style="word-wrap: break-word;">';
                                                                             $m25 = $row['maj25'];
@@ -668,11 +680,11 @@ if($user) {
                                                                             $minutes -= 60;
                                                                         }
                                                                         if ($minutes > 10) {
-                                                                            $minutes = $minutes;
+                                                                            $minutes = $minutes / 60 * 10;
                                                                         } elseif ($minutes < 10 and $minutes > 0) {
                                                                             $minutes = "0" . $minutes;
                                                                         } else {
-                                                                            $minutes = "00";
+                                                                            $minutes = "0";
                                                                         }
                                                                         echo $hours . '.' . $minutes . 
                                                                     '</td>';

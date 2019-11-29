@@ -106,7 +106,7 @@ if($user) {
 
                                 $sql = 
                                 "SELECT 
-                                    id, `name`, `state`
+                                    id, `name`, `state`, num_chantier
                                 FROM 
                                     chantiers
                                 WHERE
@@ -120,7 +120,7 @@ if($user) {
                                             die("ERROR: Could not connect. " . mysqli_connect_error());
                                         }
                                         while ($row = $result->fetch_array()){
-                                            echo "<option value='" . $row['name'] . "'>" . $row['name'] . "</option>";
+                                            echo "<option value='" . $row['name'] . "'>" . $row['num_chantier'] . ' / '. $row['name'] .  "</option>";
                                         }
                                         mysqli_free_result($result);
                                     } else {
@@ -134,10 +134,41 @@ if($user) {
                             ?>
                         </div>
                     </div>
-                    <div class="pt-5 w-50 m-auto text-center">
+                    <div class="pt-5 w-75 m-auto text-center">
                         <label for="input_time m-auto">Heures réalisées</label>
-                        <div class="w-50 m-auto pb-4">
-                            <input type="time" id="intervention_hours" name="intervention_hours" class="form-control text-center align-middle m-auto p-1" style="line-height: 25px;" step="900" required />
+                        <div class="w-100 m-auto pb-4">
+                            <div class="border-0 p-0 mt-2 ml-auto mr-auto mb-2 col-7">
+                                <input id="intervention_hours" name="intervention_hours" value="" style="display: none;" />
+                                <select type="number" id="h_index" class="col-3 p-0 border-0 rounded bg-secondary text-white text-center" style="height: 19px;">
+                                    <option value="-4">-4</option>
+                                    <option value="-3">-3</option>
+                                    <option value="-2">-2</option>
+                                    <option value="-1">-1</option>
+                                    <option value="0" selected>0</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                    <option value="13">13</option>
+                                    <option value="14">14</option>
+                                </select><!--
+                                --><strong>&nbsp;h&nbsp;</strong><!--
+                                --><select type="number" id="m_index" class="col-3 p-0 border-0 rounded bg-secondary text-white text-center" style="height: 19px;">
+                                    <option value="00">00</option>
+                                    <option value="15">15</option>
+                                    <option value="30">30</option>
+                                    <option value="45">45</option>
+                                </select>
+                            </div>
+                            <!--<input type="time" id="intervention_hours" name="intervention_hours" class="form-control text-center align-middle m-auto p-1" style="line-height: 25px;" step="900" required />-->
                         </div>
                     </div>
                     <div class="m-auto d-flex flex-column border-top pt-4 w-75">
@@ -154,7 +185,32 @@ if($user) {
                                     <label class="mt-auto mb-auto ml-4 pl-1 text-center" for="">Dont :</label>
                                 </div>
                                 <div class="col-7 d-inline-flex m-auto text-center pr-0 pl-0 mt-auto mb-auto">
-                                    <input type="time" id="night_hours" name="night_hours" class="col-7 form-control text-center align-middle m-auto p-1" style="line-height: 25px;" step="900">
+                                    <input id="night_hours" name="night_hours" value="" style="display: none;"/>
+                                    <select type="number" id="ni_h_index" class="col-3 p-0 border-0 rounded bg-secondary text-white mt-auto mb-auto text-center" style="height: 19px;">
+                                        <option value="-2">-2</option>
+                                        <option value="-1">-1</option>
+                                        <option value="0" selected>0</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                    </select>
+                                    <strong class="mt-auto mb-auto">&nbsp;h&nbsp;</strong>
+                                    <select type="number" id="ni_m_index" class="col-3 p-0 border-0 rounded bg-secondary text-white mt-auto mb-auto text-center" style="height: 19px;">
+                                        <option value="00">00</option>
+                                        <!--<option value="15">15</option>-->
+                                        <option value="30">30</option>
+                                        <!--<option value="45">45</option>-->
+                                    </select>
+                                    <!--<input type="time" id="night_hours" name="night_hours" class="col-7 form-control text-center align-middle m-auto p-1" style="line-height: 25px;" step="900">-->
                                     <label class="col-8 mt-auto ml-3 mb-auto text-wrap text-left">heures de nuit</label>
                                 </div>
                             </div>
@@ -163,6 +219,9 @@ if($user) {
                             </div>
                         </div>
                     </div>
+
+                    <!--<input id="h_night" name="h_night" class="bg-white border-0 p-6 mt-0 ml-4 mr-auto mb-0 w-50" />-->
+                    
                     <?php
                         $date_sql = date_format($date, 'Y-m-d');
                         
@@ -174,7 +233,7 @@ if($user) {
                                 Nom du chantier :  <input id="chant_name" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50" /><br />
                                 Total des heures :  <input id="inter_h" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50" /><br />
                                 Panier repas :  <input id="pan_rep" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50" /><br />
-                                Horaires de nuit :  <input id="h_night" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50" /><br />
+                                Horaires de nuit :  <input name="h_night" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50" /><br />
                                 <div class="d-inline-flex">
                                 Commentaires :  <textarea id="com" class="bg-white border-0 pt-0 pl-2 mt-0 ml-auto mb-0" cols="18" rows="2" style="resize: none;"></textarea></div><br />';
                                 
@@ -241,8 +300,8 @@ if($user) {
                                                     }
 
                                                     $night_tot = $row['h_night_tot'];
-                                                    $night_h = (int)($night_tot / 10000);
-                                                    $night_m = ((int)($night_tot - ($night_h * 10000)) / 100) * 60;
+                                                    $night_h = (int)($night_tot / 100);
+                                                    $night_m = ((int)($night_tot - ($night_h * 100)) / 100) * 60;
                                                     if ($night_m > 59) {
                                                         $night_h += 1;
                                                         $night_m -= 60;
@@ -254,7 +313,7 @@ if($user) {
                                                     } else {
                                                         $night_m = "00";
                                                     }
-                                                    echo '<div class="d-inline-flex h6 m-0">' . $row['name_chantier'] . '<input class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-100" value=" : ' . $hours . 'h' . $minutes . ' [' . $night_h . 'h' . $night_m . ' h/nuit]" /></div><br />';
+                                                    echo '<div class="d-inline-flex h6 w-100 m-0">' . $row['name_chantier'] . '<input class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-75" value=" : ' . $hours . 'h' . $minutes . ' [' . $night_h . 'h' . $night_m . ' h/nuit]" /></div><br />';
                                                 }
                                             }
                                             echo '<br />';
@@ -268,7 +327,7 @@ if($user) {
                                 }
                             echo '</fieldset>';
                         echo '<div class="w-75 mt-3 ml-auto mr-auto">
-                            <input type="submit" value="Soumettre" class="btn send border-0 bg-white z-depth-1a mt-3 mb-0 align-middle text-dark" />
+                            <input id="submit" type="submit" value="Soumettre" class="btn send border-0 bg-white z-depth-1a mt-3 mb-0 align-middle text-dark" />
                         </div>';
                         ?>
                     </div>
