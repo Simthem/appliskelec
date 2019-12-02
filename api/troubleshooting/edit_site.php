@@ -85,6 +85,13 @@ if(!empty($_POST['contact_phone']) && $_POST['contact_phone'] != $chantier['cont
     header('Location: ../../modif_troubleshooting.php?id=' . $_POST['id']);
 }
 
+if(!empty($_POST['e_mail']) && $_POST['e_mail'] != $chantier['e_mail']) {
+    $newe_mail = htmlspecialchars($_POST['e_mail']);
+    $insertmail = $bdd->prepare("UPDATE chantiers SET e_mail = '". $newe_mail ."' WHERE id = '". $_POST['id'] ."'");
+    $insertmail->execute(array($newe_mail, $_POST['e_mail']));
+    header('Location: ../../modif_troubleshooting.php?id=' . $_POST['id']);
+}
+
 if(!empty($_POST['contact_address']) && $_POST['contact_address'] != $chantier['contact_address']) {
     $newc_address = htmlspecialchars($_POST['contact_address']);
     $insertc_address = $bdd->prepare("UPDATE chantiers SET contact_address = '". $newc_address ."' WHERE id = '". $_POST['id'] ."'");

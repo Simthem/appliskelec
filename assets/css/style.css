@@ -96,10 +96,9 @@ h2
 
 /* Specifics */
 
-::-webkit-clear-button
-{
-    display: none; /* Hide the button */
-    -webkit-appearance: none; /* turn off default browser styling */
+input::-webkit-calendar-picker-indicator {
+    -webkit-appearance: none;
+    opacity: 0;
 }
 
 .nav-pills>li.active>a,

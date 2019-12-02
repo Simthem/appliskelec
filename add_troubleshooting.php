@@ -84,6 +84,10 @@ if($user) {
                         <input type="text" id="contact_phone" name="contact_phone" class="form-control">
                     </div>
                     <div class="md-form mt-4">
+                        <label for="e_mail">E_mail</label>
+                        <input type="email" id="e_mail" name="e_mail" class="form-control">
+                    </div>
+                    <div class="md-form mt-4">
                         <label for="contact_address">Adresse</label>
                         <input type="text" id="contact_address" name="contact_address" class="form-control">
                     </div>

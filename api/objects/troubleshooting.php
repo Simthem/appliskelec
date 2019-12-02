@@ -12,6 +12,7 @@ class Troubles{
     public $name;
     public $contact_name;
     public $contact_phone;
+    public $e_mail;
     public $contact_address;
     public $type;
     public $commit;
@@ -32,7 +33,7 @@ class Troubles{
         $query = "INSERT INTO
                     " . $this->table_name . "
                 SET
-                    num_chantier=:num_chantier, created=:created, name=:name, contact_name=:contact_name, contact_phone=:contact_phone, contact_address=:contact_address, commit=:commit, type=:type; state=:state";
+                    num_chantier=:num_chantier, created=:created, name=:name, contact_name=:contact_name, contact_phone=:contact_phone, e_mail=:e_mail, contact_address=:contact_address, commit=:commit, type=:type; state=:state";
     
         // prepare query
         $stmt = $this->conn->prepare($query);
@@ -47,6 +48,7 @@ class Troubles{
         $this->name=htmlspecialchars(strip_tags($this->name));
         $this->contact_name=htmlspecialchars(strip_tags($this->contact_name));
         $this->contact_phone=htmlspecialchars(strip_tags($this->contact_phone));
+        $this->e_mail=htmlspecialchars(strip_tags($this->e_mail));
         $this->contact_address=htmlspecialchars(strip_tags($this->contact_address));
         $this->type=htmlspecialchars(strip_tags($this->type));
         if(isset($this->commit) and !empty($this->commit)) {
@@ -63,6 +65,7 @@ class Troubles{
         $stmt->bindParam(":name", $this->name);
         $stmt->bindParam(":contact_name", $this->contact_name);
         $stmt->bindParam(":contact_phone", $this->contact_phone);
+        $stmt->bindParam(":e_mail", $this->e_mail);
         $stmt->bindParam(":contact_address", $this->contact_address);
         $stmt->bindParam(":type", $this->type);
         $stmt->bindParam(":commit", $this->commit);

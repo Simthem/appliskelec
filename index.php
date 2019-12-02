@@ -83,9 +83,9 @@ if($user) {
                         <?php
                             if (isset($_GET['store']) && !empty($_GET['store'])) {
                                 $date = date_create($_GET['store']);
-                                echo '<div class="text-center w-75 mr-auto ml-auto pb-4"><input class="bg-white col-5 m-0 p-0 text-right" type="date" id="up_inter" name="up_inter" value="' . $_GET['store'] . '" placeholder="' . date_format($date, "d-m-Y") . '" onChange="preview1(this.form)" onfocus="(this.type=\'date\')" onblur="if(this.value==\'\'){this.type=\'text\'}" style="height: 26px;" required="required"></div>';
+                                echo '<div class="text-center w-75 mr-auto ml-auto pb-4"><input class="bg-white col-7 text-center pl-4" type="date" id="up_inter" name="up_inter" value="' . $_GET['store'] . '" placeholder="' . date_format($date, "d-m-Y") . '" onChange="preview1(this.form)" onfocus="(this.type=\'date\')" onblur="if(this.value==\'\'){this.type=\'text\'}" style="height: 26px;" required="required"></div>';
                             } else {
-                                echo '<div class="text-center w-75 mr-auto ml-auto pb-4"><input class="bg-white col-5 m-0 p-0 text-right" type="date" id="up_inter" name="up_inter"  placeholder="" onChange="preview1(this.form)" style="height: 26px;" required="required"></div>';
+                                echo '<div class="text-center w-75 mr-auto ml-auto pb-4"><input class="bg-white col-7 text-center pl-4" type="date" id="up_inter" name="up_inter"  placeholder="" onChange="preview1(this.form)" style="height: 26px;" required="required"></div>';
                             }
                         ?>
                         <div class="text-center pt-2"><?php echo $_SESSION['username']; ?></div>

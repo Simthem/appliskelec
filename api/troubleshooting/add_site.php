@@ -24,10 +24,20 @@ if (isset($_POST['session']) && !empty($_POST['session'])) {
     $_POST['num_chantier'] = NULL;
     $troubles->num_chantier = $_POST['num_chantier'];
 }
+
 $troubles->name = $_POST['name'];
 $troubles->contact_name = $_POST['contact_name'];
-$troubles->contact_phone = $_POST['contact_phone'];
+
+if (preg_match('/^[+0-9]{10,12}$/m', $_POST['contact_phone']) && isset($_POST['contact_phone']) && !empty($_POST['contact_phone'])) {
+    $troubles->contact_phone = $_POST['contact_phone'];
+} else {
+    $troubles->contact_phone = NULL;
+}
+
+//$troubles->contact_phone = $_POST['contact_phone'];
+$troubles->e_mail = $_POST['e_mail'];
 $troubles->contact_address = $_POST['contact_address'];
+
 if (!empty($_POST['commit'])) {
     $troubles->commit = $_POST['commit'];
 } else {
