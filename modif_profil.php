@@ -52,10 +52,9 @@ if($user) {
                 u.id AS `user_id`,
                 night_hours,
                 SUM(night_hours) AS h_night_tot,
-                SUM(intervention_hours) AS totalheure,
                 SUM(intervention_hours - night_hours) AS tothsnight,
-                if (SUM(intervention_hours - night_hours) - 350000 > 0, if (SUM(intervention_hours - night_hours) - 350000 > 80000, 80000, SUM(intervention_hours - night_hours) - 350000), NULL) AS maj25,
-                if (SUM(intervention_hours - night_hours) > 430000, if (SUM(night_hours) > 0, SUM(intervention_hours) - 430000, SUM(intervention_hours - night_hours) - 430000), if (SUM(intervention_hours - night_hours) < 430000, if (SUM(night_hours) > 0, SUM(night_hours), NULL), NULL)) AS maj50
+                if (SUM(intervention_hours - night_hours) - 35 > 0, if (SUM(intervention_hours - night_hours) - 35 > 8, 8, SUM(intervention_hours - night_hours) - 35), NULL) AS maj25,
+                if (SUM(intervention_hours - night_hours) > 43, if (SUM(night_hours) > 0, SUM(intervention_hours) - 43, SUM(intervention_hours - night_hours) - 43), if (SUM(intervention_hours - night_hours) < 43, if (SUM(night_hours) > 0, SUM(night_hours), NULL), NULL)) AS maj50
             FROM
                 chantiers AS c
                 JOIN
@@ -71,12 +70,11 @@ if($user) {
                 concat(month(g.updated)) AS `concat`,
                 g.updated as inter_chantier,
                 u.id AS `user_id`,
+                SUM(intervention_hours) AS tot_glob,
                 SUM(night_hours) AS h_night_tot,
-                #SUM(intervention_hours) AS totalheure,
                 SUM(intervention_hours - night_hours) AS tothsnight,
-                floor((SUM(floor(intervention_hours / 10000)) + (SUM(((floor(intervention_hours) - floor(floor(intervention_hours) / 10000) * 10000) / 100) / 60))) * 100) AS tot_glob,
-                if (SUM(intervention_hours - night_hours) - 1514000 > 0, if (SUM(intervention_hours - night_hours) - 1514000 > 344000, 344000, SUM(intervention_hours - night_hours) - 1514000), NULL) AS maj25,
-                if (SUM(intervention_hours - night_hours) > 1862000, if (SUM(night_hours) > 0, SUM(intervention_hours) - 1862000, SUM(intervention_hours - night_hours) - 1862000), if (SUM(intervention_hours - night_hours) < 1862000, if (SUM(night_hours) > 0, SUM(night_hours), NULL), NULL)) AS maj50
+                if (SUM(intervention_hours - night_hours) - 151.4 > 0, if (SUM(intervention_hours - night_hours) - 151.4 > 34.4, 34.4, SUM(intervention_hours - night_hours) - 151.4), NULL) AS maj25,
+                if (SUM(intervention_hours - night_hours) > 186.2, if (SUM(night_hours) > 0, SUM(intervention_hours) - 186.2, SUM(intervention_hours - night_hours) - 186.2), if (SUM(intervention_hours - night_hours) < 186.2, if (SUM(night_hours) > 0, SUM(night_hours), NULL), NULL)) AS maj50
             FROM
                 chantiers AS c
                 JOIN
@@ -168,26 +166,14 @@ if($user) {
                                                                     
                                                                     echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
                                                                         $total = $row['tot_glob'];
-                                                                        $hours = (int)($total / 100);
-                                                                        $minutes = ((int)($total - ($hours * 100)) / 100) * 60;
-                                                                        //echo $hours . '<br />' . $minutes . '<br />';
-                                                                        if ($minutes > 59) {
-                                                                            $hours += 1;
-                                                                            $minutes -= 60;
-                                                                        }
-                                                                        if ($minutes > 10) {
-                                                                            $minutes = $minutes / 60;
-                                                                        } elseif ($minutes < 10 and $minutes > 0) {
-                                                                            $minutes = "0" . $minutes;
-                                                                        } else {
-                                                                            $minutes = "00";
-                                                                        }
-                                                                        echo $hours + (int)$minutes . '.' . $minutes * 100;
+                                                                        $hours = (int)$total;
+                                                                        $minutes = ($total - $hours);
+                                                                        echo $hours + $minutes;
                                                                     '</td>';
                                                                     echo '<td class="align-middle border-left border-right p-1 w-25" style="word-wrap: break-word;">';
                                                                         $m25 = $row['maj25'];
-                                                                        $hours = (int)($m25 / 10000);
-                                                                        $minutes = ((int)($m25 - ($hours * 10000)) / 100) / 60;
+                                                                        $hours = (int)$m25;
+                                                                        $minutes = ($m25 - $hours);
                                                                         $m25 = $hours + $minutes;
                                                                         if ($m25 > 0) {
                                                                             echo $m25 . '<br />' . $m25 * 25 / 100 . ' maj.';
@@ -197,15 +183,15 @@ if($user) {
                                                                     echo '</td>';
                                                                     echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
                                                                         $m50 = $row['maj50'];
-                                                                        $hours = (int)($m50 / 10000);
-                                                                        $minutes = ((int)($m50 - ($hours * 10000)) / 100) / 60;
+                                                                        $hours = (int)$m50;
+                                                                        $minutes = ($m50 - $hours);
                                                                         $m50 = $hours + $minutes;
                                                                         if ($m50 > 0) {
                                                                             echo $m50;
                                                                             if ($row['h_night_tot'] != 0) {
                                                                                 $hnight = $row['h_night_tot'];
-                                                                                $hours = (int)($hnight / 10000);
-                                                                                $minutes = ((int)($hnight - ($hours * 10000)) / 100) / 60;
+                                                                                $hours = (int)$hnight;
+                                                                                $minutes = ($hnight - $hours);
                                                                                 $hnight = $hours + $minutes;
                                                                                 echo '<div class="d-inline small text-success">&nbsp;&nbsp;&nbsp;[nuit =&nbsp;' . $hnight . ']</div>';
                                                                             } 
@@ -261,25 +247,13 @@ if($user) {
                                                                     
                                                                     echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
                                                                         $total = $row['tothsnight'];
-                                                                        $hours = (int)($total / 10000);
-                                                                        $minutes = ((int)($total - ($hours * 10000)) / 100);
-                                                                        if ($minutes > 59) {
-                                                                            $hours += 1;
-                                                                            $minutes -= 60;
-                                                                        }
-                                                                        if ($minutes > 10) {
-                                                                            $minutes = $minutes / 60 * 100;
-                                                                        } elseif ($minutes < 10 and $minutes > 0) {
-                                                                            $minutes = "0" . $minutes;
-                                                                        } else {
-                                                                            $minutes = "0";
-                                                                        }
-                                                                        echo $hours . '.' . $minutes;
-                                                                    echo '<br />' . $hours . '<br />' . $minutes . '<br />' . $total . '</td>';
+                                                                        $hours = (int)$total;
+                                                                        $minutes = ($total - $hours);
+                                                                        echo $hours + $minutes;
                                                                     echo '<td class="align-middle border-left border-right p-1 w-25" style="word-wrap: break-word;">';
                                                                         $m25 = $row['maj25'];
-                                                                        $hours = (int)($m25 / 10000);
-                                                                        $minutes = ((int)($m25 - ($hours * 10000)) / 100) / 60;
+                                                                        $hours = (int)$m25;
+                                                                        $minutes = ($m25 - $hours);
                                                                         $m25 = $hours + $minutes;
                                                                         if ($m25 > 0) {
                                                                             echo $m25 . '<br />' . $m25 * 25 / 100 . ' maj.';
@@ -289,15 +263,15 @@ if($user) {
                                                                     echo '</td>';
                                                                     echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
                                                                         $m50 = $row['maj50'];
-                                                                        $hours = (int)($m50 / 10000);
-                                                                        $minutes = ((int)($m50 - ($hours * 10000)) / 100) / 60;
+                                                                        $hours = (int)$m50;
+                                                                        $minutes = ($m50 - $hours);
                                                                         $m50 = $hours + $minutes;
                                                                         if ($m50 > 0) {
                                                                             echo $m50;
                                                                             if ($row['h_night_tot'] != 0) {
                                                                                 $hnight = $row['h_night_tot'];
-                                                                                $hours = (int)($hnight / 10000);
-                                                                                $minutes = ((int)($hnight - ($hours * 10000)) / 100) / 60;
+                                                                                $hours = (int)$hnight;
+                                                                                $minutes = ($hnight - $hours);
                                                                                 $hnight = $hours + $minutes;
                                                                                 echo '<div class="d-inline small text-success">&nbsp;&nbsp;&nbsp;[nuit =&nbsp;' . $hnight . ']</div>';
                                                                             } 
@@ -343,10 +317,9 @@ if($user) {
                                         a.id AS admin_id,
                                         night_hours,
                                         SUM(night_hours) AS h_night_tot,
-                                        SUM(intervention_hours) AS totalheure,
                                         SUM(intervention_hours - night_hours) AS tothsnight,
-                                        if (SUM(intervention_hours - night_hours) - 350000 > 0, if (SUM(intervention_hours - night_hours) - 350000 > 80000, 80000, SUM(intervention_hours - night_hours) - 350000), NULL) AS maj25,
-                                        if (SUM(intervention_hours - night_hours) > 430000, if (SUM(night_hours) > 0, SUM(intervention_hours) - 430000, SUM(intervention_hours - night_hours) - 430000), if (SUM(intervention_hours - night_hours) < 430000, if (SUM(night_hours) > 0, SUM(night_hours), NULL), NULL)) AS maj50
+                                        if (SUM(intervention_hours - night_hours) - 35 > 0, if (SUM(intervention_hours - night_hours) - 35 > 8, 8, SUM(intervention_hours - night_hours) - 35), NULL) AS maj25,
+                                        if (SUM(intervention_hours - night_hours) > 43, if (SUM(night_hours) > 0, SUM(intervention_hours) - 43, SUM(intervention_hours - night_hours) - 43), if (SUM(intervention_hours - night_hours) < 43, if (SUM(night_hours) > 0, SUM(night_hours), NULL), NULL)) AS maj50
                                     FROM
                                         chantiers AS c
                                         JOIN
@@ -355,19 +328,18 @@ if($user) {
                                         `admin` AS a ON g.user_id = a.id
                                     WHERE
                                         a.id = '" . $admin['id'] . "'
-                                    GROUP BY concat(year(g.updated) , month(g.updated), week(g.updated)), g.updated , a.id , admin_name , c.id , c.created , c.name , night_hours with ROLLUP";
+                                    GROUP BY concat(year(g.updated) , month(g.updated), week(g.updated)) DESC, g.updated DESC, a.id , admin_name , c.id , c.created , c.name , night_hours with ROLLUP";
 
 
                                     $month_admin = "SELECT 
                                         concat(month(g.updated)) AS `concat`,
                                         g.updated as inter_chantier,
                                         a.id AS admin_id,
+                                        SUM(intervention_hours) AS tot_glob,
                                         SUM(night_hours) AS h_night_tot,
-                                        #SUM(intervention_hours) AS totalheure,
                                         SUM(intervention_hours - night_hours) AS tothsnight,
-                                        floor((SUM(floor(intervention_hours / 10000)) + (SUM(((floor(intervention_hours) - floor(floor(intervention_hours) / 10000) * 10000) / 100) / 60))) * 100) AS tot_glob,
-                                        if (SUM(intervention_hours - night_hours) - 1514000 > 0, if (SUM(intervention_hours - night_hours) - 1514000 > 344000, 344000, SUM(intervention_hours - night_hours) - 1514000), NULL) AS maj25,
-                                        if (SUM(intervention_hours - night_hours) > 1862000, if (SUM(night_hours) > 0, SUM(intervention_hours) - 1862000, SUM(intervention_hours - night_hours) - 1862000), if (SUM(intervention_hours - night_hours) < 1862000, if (SUM(night_hours) > 0, SUM(night_hours), NULL), NULL)) AS maj50
+                                        if (SUM(intervention_hours - night_hours) - 151.4 > 0, if (SUM(intervention_hours - night_hours) - 151.4 > 34.4, 34.4, SUM(intervention_hours - night_hours) - 151.4), NULL) AS maj25,
+                                        if (SUM(intervention_hours - night_hours) > 186.2, if (SUM(night_hours) > 0, SUM(intervention_hours) - 186.2, SUM(intervention_hours - night_hours) - 186.2), if (SUM(intervention_hours - night_hours) < 186.2, if (SUM(night_hours) > 0, SUM(night_hours), NULL), NULL)) AS maj50
                                     FROM
                                         chantiers AS c
                                         JOIN
@@ -440,25 +412,14 @@ if($user) {
                                                                         
                                                                         echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
                                                                             $total = $row['tot_glob'];
-                                                                            $hours = (int)($total / 100);
-                                                                            $minutes = ((int)($total - ($hours * 100)) / 100) * 60;
-                                                                            if ($minutes > 59) {
-                                                                                $hours += 1;
-                                                                                $minutes -= 60;
-                                                                            }
-                                                                            if ($minutes > 10) {
-                                                                                $minutes = $minutes / 60 * 100;
-                                                                            } elseif ($minutes < 10 and $minutes > 0) {
-                                                                                $minutes = "0" . $minutes;
-                                                                            } else {
-                                                                                $minutes = "0";
-                                                                            }
-                                                                            echo $hours . '.' . $minutes; 
+                                                                            $hours = (int)$total;
+                                                                            $minutes = ($total - $hours);
+                                                                            echo $hours + $minutes; 
                                                                         '</td>';
                                                                         echo '<td class="align-middle border-left border-right p-1 w-25" style="word-wrap: break-word;">';
                                                                             $m25 = $row['maj25'];
-                                                                            $hours = (int)($m25 / 10000);
-                                                                            $minutes = ((int)($m25 - ($hours * 10000)) / 100) / 60;
+                                                                            $hours = (int)$m25;
+                                                                            $minutes = ($m25 - $hours);
                                                                             $m25 = $hours + $minutes;
                                                                             if ($m25 > 0) {
                                                                                 echo $m25 . '<br />' . $m25 * 25 / 100 . ' maj.';
@@ -468,15 +429,15 @@ if($user) {
                                                                         echo '</td>';
                                                                         echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
                                                                             $m50 = $row['maj50'];
-                                                                            $hours = (int)($m50 / 10000);
-                                                                            $minutes = ((int)($m50 - ($hours * 10000)) / 100) / 60;
+                                                                            $hours = (int)$m50;
+                                                                            $minutes = ($m50 - $hours);
                                                                             $m50 = $hours + $minutes;
                                                                             if ($m50 > 0) {
                                                                                 echo $m50;
                                                                                 if ($row['h_night_tot'] != 0) {
                                                                                     $hnight = $row['h_night_tot'];
-                                                                                    $hours = (int)($hnight / 10000);
-                                                                                    $minutes = ((int)($hnight - ($hours * 10000)) / 100) / 60;
+                                                                                    $hours = (int)$hnight;
+                                                                                    $minutes = ($hnight - $hours);
                                                                                     $hnight = $hours + $minutes;
                                                                                     echo '<div class="d-inline small text-success">&nbsp;&nbsp;&nbsp;[nuit =&nbsp;' . $hnight . ']</div>';
                                                                                 } 
@@ -525,7 +486,7 @@ if($user) {
                                                                     die("ERROR: Could not connect. " . mysqli_connect_error());
                                                                 }
 
-                                                                if (empty($row['date_chantier']) && empty($row['inter_chantier']) && empty($row['name_chantier']) /*&& !empty($row['chantier_id'])*/ && $flag <= 4) {
+                                                                if (empty($row['date_chantier']) && empty($row['inter_chantier']) && empty($row['name_chantier']) && $flag <= 4) {
                                                                     
                                                                     $flag += 1;
                                                                     
@@ -533,14 +494,14 @@ if($user) {
                                                                         
                                                                         echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
                                                                             $total = $row['tothsnight'];
-                                                                            $hours = (int)($total / 10000);
-                                                                            $minutes = ((int)($total - ($hours * 10000)) / 100) / 60;
+                                                                            $hours = (int)$total;
+                                                                            $minutes = ($total - $hours);
                                                                             $total = $hours + $minutes;
                                                                         echo $total . '</td>';
                                                                         echo '<td class="align-middle border-left border-right p-1 w-25" style="word-wrap: break-word;">';
                                                                             $m25 = $row['maj25'];
-                                                                            $hours = (int)($m25 / 10000);
-                                                                            $minutes = ((int)($m25 - ($hours * 10000)) / 100) / 60;
+                                                                            $hours = (int)$m25;
+                                                                            $minutes = ($m25 - $hours);
                                                                             $m25 = $hours + $minutes;
                                                                             if ($m25 > 0) {
                                                                                 echo $m25 . '<br />' . $m25 * 25 / 100 . ' maj.';
@@ -550,15 +511,15 @@ if($user) {
                                                                         echo '</td>';
                                                                         echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
                                                                             $m50 = $row['maj50'];
-                                                                            $hours = (int)($m50 / 10000);
-                                                                            $minutes = ((int)($m50 - ($hours * 10000)) / 100) / 60;
+                                                                            $hours = (int)$m50;
+                                                                            $minutes = ($m50 - $hours);
                                                                             $m50 = $hours + $minutes;
                                                                             if ($m50 > 0) {
                                                                                 echo $m50;
                                                                                 if ($row['h_night_tot'] != 0) {
                                                                                     $hnight = $row['h_night_tot'];
-                                                                                    $hours = (int)($hnight / 10000);
-                                                                                    $minutes = ((int)($hnight - ($hours * 10000)) / 100) / 60;
+                                                                                    $hours = (int)$hnight;
+                                                                                    $minutes = ($hnight - $hours);
                                                                                     $hnight = $hours + $minutes;
                                                                                     echo '<div class="d-inline small text-success">&nbsp;&nbsp;&nbsp;[nuit =&nbsp;' . $hnight . ']</div>';
                                                                                 } 
@@ -673,25 +634,14 @@ if($user) {
                                                                     
                                                                     echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
                                                                         $total = $row['tot_glob'];
-                                                                        $hours = (int)($total / 100);
-                                                                        $minutes = ((int)($total - ($hours * 100)) / 100) * 60;
-                                                                        if ($minutes > 59) {
-                                                                            $hours += 1;
-                                                                            $minutes -= 60;
-                                                                        }
-                                                                        if ($minutes > 10) {
-                                                                            $minutes = $minutes / 60 * 10;
-                                                                        } elseif ($minutes < 10 and $minutes > 0) {
-                                                                            $minutes = "0" . $minutes;
-                                                                        } else {
-                                                                            $minutes = "0";
-                                                                        }
-                                                                        echo $hours . '.' . $minutes . 
+                                                                        $hours = (int)$total;
+                                                                        $minutes = ($total - $hours);
+                                                                        echo $hours + $minutes; 
                                                                     '</td>';
                                                                     echo '<td class="align-middle border-left border-right p-1 w-25" style="word-wrap: break-word;">';
                                                                         $m25 = $row['maj25'];
-                                                                        $hours = (int)($m25 / 10000);
-                                                                        $minutes = ((int)($m25 - ($hours * 10000)) / 100) / 60;
+                                                                        $hours = (int)$m25;
+                                                                        $minutes = ($m25 - $hours);
                                                                         $m25 = $hours + $minutes;
                                                                         if ($m25 > 0) {
                                                                             echo $m25 . '<br />' . $m25 * 25 / 100 . ' maj.';
@@ -701,15 +651,15 @@ if($user) {
                                                                     echo '</td>';
                                                                     echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
                                                                         $m50 = $row['maj50'];
-                                                                        $hours = (int)($m50 / 10000);
-                                                                        $minutes = ((int)($m50 - ($hours * 10000)) / 100) / 60;
+                                                                        $hours = (int)$m50;
+                                                                        $minutes = ($m50 - $hours);
                                                                         $m50 = $hours + $minutes;
                                                                         if ($m50 > 0) {
                                                                             echo $m50;
                                                                             if ($row['h_night_tot'] != 0) {
                                                                                 $hnight = $row['h_night_tot'];
-                                                                                $hours = (int)($hnight / 10000);
-                                                                                $minutes = ((int)($hnight - ($hours * 10000)) / 100) / 60;
+                                                                                $hours = (int)$hnight;
+                                                                                $minutes = ($hnight - $hours);
                                                                                 $hnight = $hours + $minutes;
                                                                                 echo '<div class="d-inline small text-success">&nbsp;&nbsp;&nbsp;[nuit =&nbsp;' . $hnight . ']</div>';
                                                                             } 
@@ -765,14 +715,14 @@ if($user) {
 
                                                                     echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
                                                                         $total = $row['tothsnight'];
-                                                                        $hours = (int)($total / 10000);
-                                                                        $minutes = ((int)($total - ($hours * 10000)) / 100) / 60;
+                                                                        $hours = (int)$total;
+                                                                        $minutes = ($total - $hours);
                                                                         $total = $hours + $minutes;
                                                                     echo $total . '</td>';
                                                                     echo '<td class="align-middle border-left border-right p-1 w-25" style="word-wrap: break-word;">';
                                                                         $m25 = $row['maj25'];
-                                                                        $hours = (int)($m25 / 10000);
-                                                                        $minutes = ((int)($m25 - ($hours * 10000)) / 100) / 60;
+                                                                        $hours = (int)$m25;
+                                                                        $minutes = ($m25 - $hours);
                                                                         $m25 = $hours + $minutes;
                                                                         if ($m25 > 0) {
                                                                             echo $m25 . '<br />' . $m25 * 25 / 100 . ' maj.';
@@ -782,15 +732,15 @@ if($user) {
                                                                     echo '</td>';
                                                                     echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
                                                                         $m50 = $row['maj50'];
-                                                                        $hours = (int)($m50 / 10000);
-                                                                        $minutes = ((int)($m50 - ($hours * 10000)) / 100) / 60;
+                                                                        $hours = (int)$m50;
+                                                                        $minutes = ($m50 - $hours);
                                                                         $m50 = $hours + $minutes;
                                                                         if ($m50 > 0) {
                                                                             echo $m50;
                                                                             if ($row['h_night_tot'] != 0) {
                                                                                 $hnight = $row['h_night_tot'];
-                                                                                $hours = (int)($hnight / 10000);
-                                                                                $minutes = ((int)($hnight - ($hours * 10000)) / 100) / 60;
+                                                                                $hours = (int)$hnight;
+                                                                                $minutes = ($hnight - $hours);
                                                                                 $hnight = $hours + $minutes;
                                                                                 echo '<div class="d-inline small text-success">&nbsp;&nbsp;&nbsp;[nuit =&nbsp;' . $hnight . ']</div>';
                                                                             } 

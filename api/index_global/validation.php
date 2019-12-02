@@ -47,9 +47,9 @@ if (isset($_POST['up_inter']) && !empty($_POST['up_inter'])) {
 
     
     if ($test = $inter_glo->fetchAll(PDO::FETCH_ASSOC)) {
-        //print_r($test);
+        
         $i = 0;
-        //echo '<br />' . $test[0]['id'] . '<br />';
+        
         while ($i < $x) {
 
             $temp[$i] = $test[$i]['id'];
@@ -65,16 +65,11 @@ if (isset($_POST['up_inter']) && !empty($_POST['up_inter'])) {
 
                 if (isset($_POST["chantier_id$i"]) AND !empty($_POST["chantier_id$i"])) {
 
-                    //echo '<br />p_id : ' . $_POST["chantier_id$i"] . '<br />f_id : ' . $final['chantier_id'] . '<br />gid = ' . $glo_id . '<br />glo_ch_id : ' . $_POST['glo_ch_id'] . '<br />';
-
                     if ($_POST["chantier_id$i"] != $final['chantier_id']) {
-
-                        //echo 'post_id =' . $_POST["chantier_id$i"] . '<br />final_id =' . $final['chantier_id'] . '<br />p_global_id =' . $_POST['gid'] . '<br />test_id =' . $test[$i]['id'];
 
                         $newid = htmlspecialchars($_POST["chantier_id$i"]);
                         $insteridchant = $bdd->prepare("UPDATE global_reference SET chantier_id = '" . $newid . "' WHERE updated = '" . $_POST['up_inter'] . "' AND `user_id`= '" . $_SESSION['id'] . "' AND id = '" . $test[$i]['id'] . "'");
                         $insteridchant->execute(array($newid, $_POST["chantier_id$i"]));
-                        //header("Location ../../valid_day.php?up_int=" . $_POST['up_inter']);
                     }
                 }
 

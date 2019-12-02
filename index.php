@@ -34,14 +34,14 @@ if (isset($_COOKIE['id'])) {
             $_SESSION['username'] = "admin";
             $_SESSION['admin_name'] = $admin['admin_name'];
         } else {
-            header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
+            header("Location: signin.php"); 
         }
     }
 }
 
-if(!($_SESSION['username'])){// or !($_SESSION['admin_name'])) {  
+if(!($_SESSION['username'])){
   
-    header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
+    header("Location: signin.php");
 }
 
 $stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");
@@ -57,7 +57,6 @@ if($user) {
 } elseif ($admin) {
     $_SESSION['id'] = $admin['id'];
 } else {
-    //echo "ERROR: Could not get 'id' of current user [first_method]";
     header("Location: signin.php");
 }
 ?>
@@ -97,8 +96,7 @@ if($user) {
                                                 ?>
                         </div>
                     </div>
-                    <?php echo "<input type='number' id='user_id' name='user_id' value='" . $_SESSION['id'] . "' style='display: none;'>";
-                        //echo "<input type='number' id='state' name='state' value='0' style='display: none;'" ?>
+                    <?php echo "<input type='number' id='user_id' name='user_id' value='" . $_SESSION['id'] . "' style='display: none;'>"; ?>
                     <div class="text-center">
                         <div class="bg-white border rounded m-auto" style="width: max-content">
                             <?php
@@ -163,12 +161,9 @@ if($user) {
                                 --><strong>&nbsp;h&nbsp;</strong><!--
                                 --><select type="number" id="m_index" class="col-3 p-0 border-0 rounded bg-secondary text-white text-center" style="height: 19px;">
                                     <option value="00">00</option>
-                                    <!--<option value="15">15</option>-->
                                     <option value="30">30</option>
-                                    <!--<option value="45">45</option>-->
                                 </select>
                             </div>
-                            <!--<input type="time" id="intervention_hours" name="intervention_hours" class="form-control text-center align-middle m-auto p-1" style="line-height: 25px;" step="900" required />-->
                         </div>
                     </div>
                     <div class="m-auto d-flex flex-column border-top pt-4 w-75">
@@ -206,11 +201,8 @@ if($user) {
                                     <strong class="mt-auto mb-auto">&nbsp;h&nbsp;</strong>
                                     <select type="number" id="ni_m_index" class="col-3 p-0 border-0 rounded bg-secondary text-white mt-auto mb-auto text-center" style="height: 19px;">
                                         <option value="00">00</option>
-                                        <!--<option value="15">15</option>-->
                                         <option value="30">30</option>
-                                        <!--<option value="45">45</option>-->
                                     </select>
-                                    <!--<input type="time" id="night_hours" name="night_hours" class="col-7 form-control text-center align-middle m-auto p-1" style="line-height: 25px;" step="900">-->
                                     <label class="col-8 mt-auto ml-3 mb-auto text-wrap text-left">heures de nuit</label>
                                 </div>
                             </div>
@@ -219,8 +211,6 @@ if($user) {
                             </div>
                         </div>
                     </div>
-
-                    <!--<input id="h_night" name="h_night" class="bg-white border-0 p-6 mt-0 ml-4 mr-auto mb-0 w-50" />-->
                     
                     <?php
                         $date_sql = date_format($date, 'Y-m-d');
@@ -245,9 +235,7 @@ if($user) {
                                         u.id,
                                         c.name AS name_chantier,
                                         SUM(night_hours) AS h_night_tot,
-                                        SUM(intervention_hours) AS totalheure,
-                                        SUM(intervention_hours - night_hours) AS tothsnight,
-                                        floor((SUM(floor(intervention_hours / 10000)) + (SUM(((floor(intervention_hours) - floor(floor(intervention_hours) / 10000) * 10000) / 100) / 60))) * 100) AS tot_glob
+                                        SUM(intervention_hours) AS totalheure
                                     FROM
                                         chantiers AS c
                                         JOIN
@@ -284,35 +272,22 @@ if($user) {
 
                                                 if ($row['name_chantier']) {
 
-                                                    $total = $row['tot_glob'];
-                                                    $hours = (int)($total / 100);
-                                                    $minutes = ((int)($total - ($hours * 100)) / 100) * 60;
-                                                    if ($minutes > 59) {
-                                                        $hours += 1;
-                                                        $minutes -= 60;
-                                                    }
-                                                    if ($minutes > 10) {
-                                                        $minutes = $minutes;
-                                                    } elseif ($minutes < 10 and $minutes > 0) {
-                                                        $minutes = "0" . $minutes;
-                                                    } else {
+                                                    $total = $row['totalheure'];
+                                                    $hours = (int)$total;
+                                                    $minutes = ($total - $hours) * 60;
+
+                                                    if ($minutes == 0) {
                                                         $minutes = "00";
                                                     }
 
                                                     $night_tot = $row['h_night_tot'];
-                                                    $night_h = (int)($night_tot / 100);
-                                                    $night_m = ((int)($night_tot - ($night_h * 100)) / 100) * 60;
-                                                    if ($night_m > 59) {
-                                                        $night_h += 1;
-                                                        $night_m -= 60;
-                                                    }
-                                                    if ($night_m > 10) {
-                                                        $night_m = $night_m;
-                                                    } elseif ($night_m < 10 and $night_m > 0) {
-                                                        $night_m = "0" . $night_m;
-                                                    } else {
+                                                    $night_h = (int)$night_tot;
+                                                    $night_m = ($night_tot - $night_h) * 60;
+
+                                                    if ($night_m == 0) {
                                                         $night_m = "00";
                                                     }
+
                                                     echo '<div class="d-inline-flex h6 w-100 m-0">' . $row['name_chantier'] . '<input class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-75" value=" : ' . $hours . 'h' . $minutes . ' [' . $night_h . 'h' . $night_m . ' h/nuit]" /></div><br />';
                                                 }
                                             }

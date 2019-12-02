@@ -1,6 +1,5 @@
 <?php
 session_start();
-//print_r(session_get_cookie_params());
 
 include 'api/config/db_connexion.php';
 
@@ -34,14 +33,14 @@ if (isset($_COOKIE['id'])) {
             $_SESSION['username'] = "admin";
             $_SESSION['admin_name'] = $admin['admin_name'];
         } else {
-            header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
+            header("Location: signin.php");  
         }
     }
 }
 
-if(!($_SESSION['username'])){// or !($_SESSION['admin_name'])) {  
+if(!($_SESSION['username'])){  
   
-    header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
+    header("Location: signin.php");
 }
 
 $stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");
@@ -57,7 +56,6 @@ if($user) {
 } elseif ($admin) {
     $_SESSION['id'] = $admin['id'];
 } else {
-    //echo "ERROR: Could not get 'id' of current user [first_method]";
     header("Location: signin.php");
 }
 ?>
@@ -90,8 +88,6 @@ if($user) {
                             SUM(night_hours) AS h_night_tot,
                             SUM(intervention_hours - night_hours) AS tothsnight,
                             SUM(intervention_hours) AS tot_glob,
-                            #floor((SUM(floor(night_hours / 10000)) + (SUM(((floor(night_hours) - floor(floor(night_hours) / 10000) * 10000) / 100) / 60))) * 100) AS total_night,
-                            #floor((SUM(floor(intervention_hours / 10000)) + (SUM(((floor(intervention_hours) - floor(floor(intervention_hours) / 10000) * 10000) / 100) / 60))) * 100) AS tot_glob,
                             panier_repas,
                             g.state AS `state`
                         FROM
@@ -143,8 +139,6 @@ if($user) {
                                         // NORMAL HOURS ---------------
                                         $total = $row['tot_glob'];
                                         $h_global += $total;
-                                        //echo $total . '<br />';
-                                        //print_r($row);
                                         $hours = (int)($total);
                                         $minutes = ($total - $hours) * 60;
 
@@ -159,9 +153,8 @@ if($user) {
                                         } else {
                                             $minutes = "00";
                                         }
-                                        //echo (int)($total - $hours) . '<br />';
-                                        //echo $hours . '<br />';
-                                        //echo $minutes . '<br />';
+
+
                                         // NIGHT HOURS ----------------
 
                                         $night_tot = $row['h_night_tot'];
@@ -186,11 +179,9 @@ if($user) {
 
                                                 $sql = 
                                                 "SELECT 
-                                                    c.id AS chantier_id, `name`, c.state AS `state`#, g.id AS ref_glo
+                                                    c.id AS chantier_id, `name`, c.state AS `state`
                                                 FROM 
                                                     chantiers AS c
-                                                    #JOIN
-                                                    #global_reference AS g ON g.id = c.id
                                                 WHERE
                                                     c.state
                                                 ORDER BY 
@@ -242,20 +233,12 @@ if($user) {
                                                         <option value="12">12</option>
                                                         <option value="13">13</option>
                                                         <option value="14">14</option>
-                                                        <option value="15">15</option>
-                                                        <option value="16">16</option>
-                                                        <option value="17">17</option>
-                                                        <option value="18">18</option>
-                                                        <option value="19">19</option>
-                                                        <option value="20">20</option>
                                                     </select>
                                                     <strong>h</strong>
                                                     <select class="minutes border-0 rounded bg-secondary text-white text-center">
                                                         <option value="' . $minutes . '" selected disabled>' . $minutes . '</option>
                                                         <option value="00">00</option>
-                                                        <option value="15">15</option>
                                                         <option value="30">30</option>
-                                                        <option value="45">45</option>
                                                     </select>
                                                     <strong>[</strong>
                                                     <select class="night_h border-0 rounded bg-secondary text-white text-center">
@@ -275,20 +258,12 @@ if($user) {
                                                         <option value="12">12</option>
                                                         <option value="13">13</option>
                                                         <option value="14">14</option>
-                                                        <option value="15">15</option>
-                                                        <option value="16">16</option>
-                                                        <option value="17">17</option>
-                                                        <option value="18">18</option>
-                                                        <option value="19">19</option>
-                                                        <option value="20">20</option>
                                                     </select>
                                                     <strong>h </strong>';
                                                     echo '<select class="night_m border-0 rounded bg-secondary text-white text-center" />
                                                         <option value="' . $night_m . '" selected disabled>' . $night_m . '</option>
                                                         <option value="00">00</option>
-                                                        <option value="15">15</option>
                                                         <option value="30">30</option>
-                                                        <option value="45">45</option>
                                                     </select>
                                                     <strong>/nuit]</strong>
                                                 </div>

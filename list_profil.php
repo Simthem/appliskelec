@@ -34,14 +34,14 @@ if (isset($_COOKIE['id'])) {
             $_SESSION['username'] = "admin";
             $_SESSION['admin_name'] = $admin['admin_name'];
         } else {
-            header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
+            header("Location: signin.php");
         }
     }
 }
 
 if(!($_SESSION['username'])) {  
   
-    header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
+    header("Location: signin.php");
 }
 
 $stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");
@@ -73,10 +73,10 @@ if($user) {
                     <a href="index.php" class="text-warning m-auto"><h2 class="m-0">S.K.elec</h2></a>
                     <div action='api/user/edit_profil.php' method='GET'>
                         <?php
-                            //echo $_SESSION['id'];
-                            
                             if ($_SESSION['id'] == $admin['id']) {
+
                                 $admin_sql = "SELECT * FROM `admin`";
+
                                 if ($admin_result = mysqli_query($db, $admin_sql)){
                                     if (mysqli_num_rows($admin_result) > 0){
                                         if ($db === false){
@@ -93,7 +93,9 @@ if($user) {
                                     echo "ERROR: Could not able to execute $admin_sql. " . mysqli_error($db);
                                 }
                             } else {
+
                                 $user_sql = "SELECT * FROM users";
+
                                 if ($user_result = mysqli_query($db, $user_sql)){
                                     if (mysqli_num_rows($user_result) > 0){
                                         if ($db === false) {
@@ -131,12 +133,17 @@ if($user) {
                     FROM 
                         users";
 
+                    $sql_a = 
+                    "SELECT
+                        id, admin_name, phone
+                    FROM
+                        `admin`";
+
                     if ($result = mysqli_query($db, $sql)){
-                        if (mysqli_num_rows($result) > 0){
+                        if (mysqli_num_rows($result)){
                             echo '<thead>';
                                 echo '<tr>';
                                     echo '<th scope="col" class="text-center align-middle p-2 w-25" id="first_name">Prénom</th>';
-                                    //echo '<th scope="col" class="text-center align-middle p-4" id="e_mail">E-mail</th>';
                                     echo '<th scope="col" class="text-center align-middle p-2 w-25" id="phone">Téléphone</th>';
                                     echo '<th scope="col" class="text-center align-middle p-2 w-25" id="hours">H/totales</th>';
                                     echo '<th scope="col" class="text-center align-middle p-2 w-25" id="">Détails</th>';
@@ -151,11 +158,92 @@ if($user) {
                                 die("ERROR: Could not connect. " . mysqli_connect_error());
                             }
                             echo '<tbody>';
-                            
+
+                                if ($reponse = mysqli_query($db, $sql_a)) {
+                                    if (mysqli_num_rows($reponse)) {
+
+                                        while ($row_a = $reponse->fetch_array()) {
+                                            echo '<tr>';
+                                                echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . $row_a['admin_name'] . '</td>';
+                                                echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . $row_a['phone'] . '</td>';
+
+                                                $sql_admin_h = 
+                                                "SELECT
+                                                    a.id AS admin_id,
+                                                    admin_name,
+                                                    c.id AS chantier_id,
+                                                    updated,
+                                                    SUM(intervention_hours) AS totalheure
+                                                FROM
+                                                    chantiers AS c
+                                                    JOIN
+                                                    global_reference AS g ON c.id = chantier_id
+                                                    JOIN
+                                                    `admin` AS a ON g.user_id = a.id 
+                                                WHERE
+                                                    concat(month(g.updated)) = (
+                                                                            SELECT 
+                                                                                MAX(concat(month(updated)))
+                                                                            FROM
+                                                                                global_reference
+                                                                            )
+                                                    AND
+                                                    a.id = 1
+                                                GROUP BY admin_name , updated , c.id , a.id WITH ROLLUP";
+
+                                                if ($reponse_hours = mysqli_query($db, $sql_admin_h)){
+                                                    if (mysqli_num_rows($reponse_hours) > 0){
+
+                                                        while ($row_h_a = $reponse_hours->fetch_array()) {
+
+                                                            if (!empty($row_h_a['admin_name']) and !empty($row_h_a['updated'] and empty($row_h_a['chantier_id']))) {
+                                                                $total = $row_h_a['totalheure'];
+                                                                $hours = (int)$total;
+                                                                $minutes = ($total - $hours) * 60;
+                                                                if ($minutes > 59) {
+                                                                    $hours += 1;
+                                                                    $minutes -= 60;
+                                                                }
+                                                                if ($minutes > 10) {
+                                                                    $minutes = $minutes;
+                                                                } elseif ($minutes < 10 and $minutes > 0) {
+                                                                    $minutes = "0" . $minutes;
+                                                                } else {
+                                                                    $minutes = "00";
+                                                                }
+                                                                echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . $hours . ':' . $minutes . '</td>';
+                                                            }
+                                                        }
+                                                    } else {
+                                                        echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">00:00</td>';
+                                                    }
+                                                } else {
+                                                    echo "ERROR: Could not able to execute $reponse_hours. " . mysqli_error($db);
+                                                }
+
+                                                if ($_SESSION['id'] == $admin['id']) {
+                                                    echo '<td class="p-0 align-middle w-25>';
+                                                    ?>
+                                                    <div class="w-100 text-center"><a href="modif_profil.php?id=<?php echo $row_a['id'] ?>"><i class="fas fa-tools mr-2"></i></a></div>
+                                                    <div class="float-left pl-0" style="width: 12.25px; height: 14px;"></div>
+                                                    <?php
+                                                    echo '</td>';
+                                                } else {
+                                                    echo '<td class="p-0 align-middle w-25>';
+                                                    ?>
+                                                    <div class="w-100 text-center" style="width: 12.25px; height: 14px;"></div>
+                                                    <div class="float-left pl-0" style="width: 12.25px; height: 14px;"></div>
+                                                    <?php
+                                                    echo '</td>';
+                                                }
+                                            echo '</tr>';
+                                        }
+                                    }
+                                }
+                                    
                                 while ($row = $result->fetch_array()){
                                     echo '<tr>';
                                         echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . $row['username'] . '</td>';
-                                        //echo '<td class="align-middle p-4" style="word-wrap: break-word; max-width: 85px;">' . $row['e_mail'] . '</td>';
                                         echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . $row['phone'] . '</td>';
                                         $id_user_row = $row['id'];
                                         
@@ -163,22 +251,8 @@ if($user) {
                                         "SELECT 
                                             username,
                                             c.id AS chantier_id,
-                                            #c.created as date_chantier,
-                                            #concat(year(g.created),
-                                            #month(g.created),
-                                            #week(g.created)),
-                                            #c.name AS name_chantier,
                                             u.id AS `user_id`,
-                                            #if (SUM(intervention_hours) > 80000, SUM(intervention_hours) - 80000, NULL) as \'> 80000\',
-                                            #if (SUM(intervention_hours)-40000 > 0,if( SUM(intervention_hours) -40000>30000,30000,SUM(intervention_hours) - 40000), NULL) as \'> 40000\',
-                                            SUM(intervention_hours) AS totalheure,
-                                            #IF(
-                                            #    RIGHT(TRUNCATE(SUM(floor(intervention_hours / 10000)) + (SUM(((floor(intervention_hours) - floor(floor(intervention_hours) / 10000) * 10000) / 100) / 60)), 2), 2) = 0,
-                                            #    TRUNCATE(SUM(floor(intervention_hours / 10000)) + (SUM(((floor(intervention_hours) - floor(floor(intervention_hours) / 10000) * 10000) / 100) / 60)), 0),
-                                            #    TRUNCATE(SUM(floor(intervention_hours / 10000)) + (SUM(((floor(intervention_hours) - floor(floor(intervention_hours) / 10000) * 10000) / 100) / 60)), 2)
-                                            #    ) AS tot_glob
-                                            floor((SUM(floor(intervention_hours / 10000)) + (SUM(((floor(intervention_hours) - floor(floor(intervention_hours) / 10000) * 10000) / 100) / 60))) * 100) AS tot_glob
-                                            #SUM(night_hours) AS maj50
+                                            SUM(intervention_hours) AS totalheure
                                         FROM
                                             chantiers AS c
                                             JOIN
@@ -193,16 +267,18 @@ if($user) {
 																		global_reference
 																	)
 											AND
-                                            u.id = '" . $row['id'] . "'
+                                            u.id = $id_user_row
                                         GROUP BY username , c.id , u.id WITH ROLLUP";
                                         
                                         if ($result_hours = mysqli_query($db, $sql_hours)){
                                             if (mysqli_num_rows($result_hours) > 0){
+
                                                 while ($row_hours = $result_hours->fetch_array()) {
-                                                    if (!empty($row_hours['username']) and empty($row_hours['chantier_id']) /*and !empty($row_hours['user_id'])*/) {
-                                                        $total = $row_hours['tot_glob'];
-                                                        $hours = (int)($total / 100);
-                                                        $minutes = ((int)($total - ($hours * 100)) / 100) * 60;
+
+                                                    if (!empty($row_hours['username']) and empty($row_hours['chantier_id'])) {
+                                                        $total = $row_hours['totalheure'];
+                                                        $hours = (int)$total;
+                                                        $minutes = ($total - $hours) * 60;
                                                         if ($minutes > 59) {
                                                             $hours += 1;
                                                             $minutes -= 60;
@@ -215,7 +291,6 @@ if($user) {
                                                             $minutes = "00";
                                                         }
                                                         echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . $hours . ':' . $minutes . '</td>';
-                                                        //echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . $total . '</td>';
                                                     }
                                                 }
                                             } else {
