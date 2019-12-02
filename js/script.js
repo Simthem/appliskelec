@@ -4,8 +4,10 @@ function pre_extract(n_inp) {
 
     if ($("#username").val() != 0) {
         document.getElementById('pre_ext').innerHTML = "";
+
         var users = document.getElementById("username");
         users.value = document.getElementById("username").value;
+
         var newInput1 = document.createElement("input");
         newInput1.id = n_inp;
         newInput1.type = "text";
@@ -13,6 +15,7 @@ function pre_extract(n_inp) {
         newInput1.value = users.value;
         newInput1.style = 'width: 33%';
         newInput1.className = 'col-3 p-0 text-center border-0';
+        
         var newInput2 = document.createElement("a");
         newInput2.name = n_inp;
         newInput2.type = 'button';
@@ -263,7 +266,6 @@ function preview2() {
     ni_total = ni_h_index +'.'+ ni_m_index * 100;
     document.getElementById("night_hours").value = ni_total;
     document.getElementById("night_hours").textContent = ni_total;
-    //console.log(document.getElementById("night_hours").value);
 
 
     if ($("input[name='coch_night']").is(":checked")) {
@@ -277,16 +279,7 @@ function preview2() {
         if (temp_m_ni < 10) {
             temp_m_ni = '0' + temp_m_ni;
         }
-        h_night = temp_h_ni +' h '+ temp_m_ni;
-        console.log(h_night);
-        //h_night.value = h_night;
-        //console.log(h_night.value);
-        //h_night = document.getElementById("h_night").value;
-        //document.getElementById("h_night").textContent = h_night;
-        //console.log(temp_h_ni);
-        //console.log(temp_m_ni);
-        //console.log(h_night.value);
-        //console.log(document.getElementById("h_night").value);
+        h_night.value = temp_h_ni +' h '+ temp_m_ni;
     };
 
 
@@ -304,12 +297,6 @@ function preview2() {
     } else {
         pan_rep.value = 0;
     }
-
-    //var h_night = document.getElementById("h_night");
-     /*   h_night.value = document.getElementById("night_hours").value;
-    } else {
-        h_night.value = 0;
-    }*/
 
     var com = document.getElementById("com");
     com.value = document.getElementById("commit").value;

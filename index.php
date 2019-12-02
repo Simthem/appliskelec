@@ -140,7 +140,7 @@ if($user) {
                             <div class="border-0 p-0 mt-2 ml-auto mr-auto mb-2 col-7">
                                 <input id="intervention_hours" name="intervention_hours" value="" style="display: none;" />
                                 <select type="number" id="h_index" class="col-3 p-0 border-0 rounded bg-secondary text-white text-center" style="height: 19px;">
-                                    <option value="-4">-4</option>
+                                    <option value="-4">-4</option> <!-- see later to have a page with decremente numbers and soustract to maj hours or normal hours -->
                                     <option value="-3">-3</option>
                                     <option value="-2">-2</option>
                                     <option value="-1">-1</option>
@@ -163,9 +163,9 @@ if($user) {
                                 --><strong>&nbsp;h&nbsp;</strong><!--
                                 --><select type="number" id="m_index" class="col-3 p-0 border-0 rounded bg-secondary text-white text-center" style="height: 19px;">
                                     <option value="00">00</option>
-                                    <option value="15">15</option>
+                                    <!--<option value="15">15</option>-->
                                     <option value="30">30</option>
-                                    <option value="45">45</option>
+                                    <!--<option value="45">45</option>-->
                                 </select>
                             </div>
                             <!--<input type="time" id="intervention_hours" name="intervention_hours" class="form-control text-center align-middle m-auto p-1" style="line-height: 25px;" step="900" required />-->
@@ -233,7 +233,7 @@ if($user) {
                                 Nom du chantier :  <input id="chant_name" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50" /><br />
                                 Total des heures :  <input id="inter_h" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50" /><br />
                                 Panier repas :  <input id="pan_rep" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50" /><br />
-                                Horaires de nuit :  <input name="h_night" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50" /><br />
+                                Horaires de nuit :  <input id="h_night" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50" /><br />
                                 <div class="d-inline-flex">
                                 Commentaires :  <textarea id="com" class="bg-white border-0 pt-0 pl-2 mt-0 ml-auto mb-0" cols="18" rows="2" style="resize: none;"></textarea></div><br />';
                                 

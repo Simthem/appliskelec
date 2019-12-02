@@ -89,8 +89,9 @@ if($user) {
                             c.id AS chantier_id,
                             SUM(night_hours) AS h_night_tot,
                             SUM(intervention_hours - night_hours) AS tothsnight,
-                            floor((SUM(floor(night_hours / 10000)) + (SUM(((floor(night_hours) - floor(floor(night_hours) / 10000) * 10000) / 100) / 60))) * 100) AS total_night,
-                            floor((SUM(floor(intervention_hours / 10000)) + (SUM(((floor(intervention_hours) - floor(floor(intervention_hours) / 10000) * 10000) / 100) / 60))) * 100) AS tot_glob,
+                            SUM(intervention_hours) AS tot_glob,
+                            #floor((SUM(floor(night_hours / 10000)) + (SUM(((floor(night_hours) - floor(floor(night_hours) / 10000) * 10000) / 100) / 60))) * 100) AS total_night,
+                            #floor((SUM(floor(intervention_hours / 10000)) + (SUM(((floor(intervention_hours) - floor(floor(intervention_hours) / 10000) * 10000) / 100) / 60))) * 100) AS tot_glob,
                             panier_repas,
                             g.state AS `state`
                         FROM
@@ -142,9 +143,10 @@ if($user) {
                                         // NORMAL HOURS ---------------
                                         $total = $row['tot_glob'];
                                         $h_global += $total;
-
-                                        $hours = (int)($total / 100);
-                                        $minutes = ((int)($total - ($hours * 100)) / 100) * 60;
+                                        //echo $total . '<br />';
+                                        //print_r($row);
+                                        $hours = (int)($total);
+                                        $minutes = ($total - $hours) * 60;
 
                                         if ($minutes > 59) {
                                             $hours += 1;
@@ -157,14 +159,16 @@ if($user) {
                                         } else {
                                             $minutes = "00";
                                         }
-
+                                        //echo (int)($total - $hours) . '<br />';
+                                        //echo $hours . '<br />';
+                                        //echo $minutes . '<br />';
                                         // NIGHT HOURS ----------------
 
-                                        $night_tot = $row['total_night'];
+                                        $night_tot = $row['h_night_tot'];
                                         $h_ni_glob += $night_tot;
 
-                                        $night_h = (int)($night_tot / 100);
-                                        $night_m = ((int)($night_tot - ($night_h * 100)) / 100) * 60;
+                                        $night_h = (int)($night_tot);
+                                        $night_m = ($night_tot - $night_h) * 60;
 
                                         if ($night_m > 59) {
                                             $night_h += 1;
@@ -182,11 +186,11 @@ if($user) {
 
                                                 $sql = 
                                                 "SELECT 
-                                                    c.id AS chantier_id, `name`, c.state AS `state`, g.id AS ref_glo
+                                                    c.id AS chantier_id, `name`, c.state AS `state`#, g.id AS ref_glo
                                                 FROM 
                                                     chantiers AS c
-                                                    JOIN
-                                                    global_reference AS g ON g.id = c.id
+                                                    #JOIN
+                                                    #global_reference AS g ON g.id = c.id
                                                 WHERE
                                                     c.state
                                                 ORDER BY 
@@ -294,8 +298,8 @@ if($user) {
                                 }
 
                                 while ($temp < $flag) {
-                                    echo '<input id="tot_h' . $temp . '" name="tot_h' . $temp . '" style="display : none;" />';
-                                    echo '<input id="tot_h_night' . $temp . '" name="tot_h_night' . $temp . '" style="display : none;" />';
+                                    echo '<input id="tot_h' . $temp . '" name="tot_h' . $temp . '" style="display: none;" />';
+                                    echo '<input id="tot_h_night' . $temp . '" name="tot_h_night' . $temp . '" style="display: none;" />';
                                     echo '<input id="chantier_id' . $temp . '" name="chantier_id' . $temp . '" style="display: none;" />';
                                     $temp += 1;
                                 }
@@ -314,8 +318,8 @@ if($user) {
                                 echo '<div class="mb-4"></div>';
                                 echo '<div class="mb-4 border"></div>';
 
-                                $hours = (int)($h_global / 100);
-                                $minutes = ((int)($h_global - ($hours * 100)) / 100) * 60;
+                                $hours = (int)$h_global;
+                                $minutes = ($h_global - $hours) * 60;
 
                                 if ($minutes > 59) {
                                     $hours += 1;
@@ -329,8 +333,8 @@ if($user) {
                                     $minutes = "00";
                                 }
 
-                                $night_h = (int)($h_ni_glob / 100);
-                                $night_m = ((int)($h_ni_glob - ($night_h * 100)) / 100) * 60;
+                                $night_h = (int)$h_ni_glob;
+                                $night_m = ($h_ni_glob - $night_h) * 60;
 
                                 if ($night_m > 59) {
                                     $night_m -= 60;
@@ -343,28 +347,6 @@ if($user) {
                                 } else {
                                     $night_m = "00";
                                 }
-
-                                /*$night_h = $h_ni_glob / 10000;
-
-                                echo $h_ni_glob . '<br />' . $n_m_num . '<br />' . $night_h;
-                                if ((((int)$night_h * 10) !== ($night_h * 10 ))) {
-                                    $night_h = (int)($h_ni_glob / 10000);
-                                    $night_m = ((int)($h_ni_glob - ($night_h * 10000)) / 100);
-                                    
-                                    while ($night_m > 59) {
-                                        $night_m -= 60;
-                                        $night_h += 1;
-                                    }
-                                    if ($night_m == 0) {
-                                        $night_m = "00";
-                                    } /*elseif ($night_m < 10 && $night_m > 0) {
-                                        $night_m = '0' . $night_m;
-                                    }*/
-                                /*} else {
-                                    $night_h = (int)($h_ni_glob / 10000);
-                                    $night_m = "00";
-                                }*/
-
 
                                 echo '<div class="d-inline-flex m-0 pb-3 text-center">
                                         <h5 class="mt-2 mb-2 p-0 text-wrap" style="width: 33%;">Heures globales sur la journée du&nbsp;<strong><u>' . date_format($date, 'd-m-Y') . '</h5></strong></u><div class="col-1 p-0 text-center mt-auto mb-auto">:&nbsp;</div>

@@ -80,27 +80,29 @@ if (isset($_POST['up_inter']) && !empty($_POST['up_inter'])) {
 
                 if (isset($_POST["tot_h$i"]) AND !empty($_POST["tot_h$i"])) {
 
-                    $norm_h = $_POST["tot_h$i"] . ':00';
-                    $glo_h = DateTime::createFromFormat('H:i:s', $norm_h);
-                    $glo_h = $glo_h->format('H:i:s');
+                    $norm_h = explode(':', $_POST["tot_h$i"]);
+                    $norm_m = $norm_h[1] / 60;
+                    $norm_h = $norm_h[0] + $norm_m;
+                    
+                    echo $norm_h . '<br />';
 
-                    if ($glo_h != $final['intervention_hours']) {
-                        $new_normh = htmlspecialchars($glo_h);
+                    if ($norm_h != $final['intervention_hours']) {
+                        $new_normh = htmlspecialchars($norm_h);
                         $insertnormh = $bdd->prepare("UPDATE global_reference SET intervention_hours = '" . $new_normh . "' WHERE updated = '" . $_POST['up_inter'] . "' AND `user_id`= '" . $_SESSION['id'] . "' AND id = '" . $test[$i]['id'] . "'");
-                        $insertnormh->execute(array($new_normh, $glo_h));
+                        $insertnormh->execute(array($new_normh, $norm_h));
                     } 
                 } 
 
                 if (isset($_POST["tot_h_night$i"]) AND !empty($_POST["tot_h_night$i"])) {
 
-                    $night_h = $_POST["tot_h_night$i"] . ':00';
-                    $glo_night = DateTime::createFromFormat('H:i:s', $night_h);
-                    $glo_night = $glo_night->format('H:i:s');
+                    $night_h = explode(':', $_POST["tot_h_night$i"]);
+                    $night_m = $night_h[1] / 60;
+                    $night_h = $night_h[0] + $night_m;
 
-                    if ($glo_night != $final['night_hours']) {
-                        $new_nighth = htmlspecialchars($glo_night);
+                    if ($night_h != $final['night_hours']) {
+                        $new_nighth = htmlspecialchars($night_h);
                         $insertnighth = $bdd->prepare("UPDATE global_reference SET night_hours = '" . $new_nighth . "' WHERE updated = '" . $_POST['up_inter'] . "' AND `user_id`= '" . $_SESSION['id'] . "' AND id = '" . $test[$i]['id'] . "'");
-                        $insertnighth->execute(array($new_nighth, $glo_night));
+                        $insertnighth->execute(array($new_nighth, $night_h));
                     }
                 }
 
