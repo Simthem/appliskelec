@@ -4,8 +4,10 @@ function pre_extract(n_inp) {
 
     if ($("#username").val() != 0) {
         document.getElementById('pre_ext').innerHTML = "";
+
         var users = document.getElementById("username");
         users.value = document.getElementById("username").value;
+
         var newInput1 = document.createElement("input");
         newInput1.id = n_inp;
         newInput1.type = "text";
@@ -13,6 +15,7 @@ function pre_extract(n_inp) {
         newInput1.value = users.value;
         newInput1.style = 'width: 33%';
         newInput1.className = 'col-3 p-0 text-center border-0';
+        
         var newInput2 = document.createElement("a");
         newInput2.name = n_inp;
         newInput2.type = 'button';
@@ -211,27 +214,93 @@ function preview1() {
     document.location.href = 'index.php?store='+calen;
 }
 
+
 function preview2() {
+
+    //NORM_HOUR_RECAP _  AND _ PREPARE_SEND_FORM
+    var h_index = document.getElementById('h_index').value;
+    var total = 0;
+
+    if (document.getElementById('h_index').textContent == '-' . h_index) {
+        total = h_index * -1;
+        console.log(total);
+    } else {
+        total = h_index;
+    }
+    //total = h_index;
+    document.getElementById("intervention_hours").value = total;
+
+    var m_index = document.getElementById('m_index').value;
+    var total = 0;
+    
+    m_index /= 60;
+    total = h_index +'.'+ m_index * 100;
+    document.getElementById("intervention_hours").value = total;
+    document.getElementById("intervention_hours").textContent = total;
+    console.log(document.getElementById("intervention_hours").value);
+
+    var inter_h = document.getElementById("inter_h");
+    var temp = document.getElementById("intervention_hours").value;
+    var temp_h = parseInt(temp, 10);
+    var temp_m = (temp * 100 - temp_h * 100) / 100 * 60;
+
+    if (temp_m < 10) {
+        temp_m = '0' + temp_m;
+    }
+    inter_h.value = temp_h +' h '+ temp_m;
+
+//_____________________________________________________________________________________________________________________________
+
+
+    //NIGHT_HOUR_RECAP _  AND _ PREPARE_SEND_FORM
+    var ni_h_index = document.getElementById('ni_h_index').value;
+    var ni_total = 0;
+
+    ni_total = ni_h_index;
+    document.getElementById("night_hours").value = ni_total;
+
+    var ni_m_index = document.getElementById('ni_m_index').value;
+    var ni_total = 0;
+    
+    ni_m_index /= 60;
+    ni_total = ni_h_index +'.'+ ni_m_index * 100;
+    document.getElementById("night_hours").value = ni_total;
+    document.getElementById("night_hours").textContent = ni_total;
+
+
+    if ($("input[name='coch_night']").is(":checked")) {
+        var h_night = document.getElementById("h_night");
+        var temp_ni = document.getElementById("night_hours").value;
+        var temp_h_ni = parseInt(temp_ni, 10);
+        var temp_m_ni = (temp_ni * 100 - temp_h_ni * 100) / 100 * 60;
+        console.log(temp_ni);
+        console.log(temp_h_ni);
+        console.log(temp_m_ni);
+        if (temp_m_ni < 10) {
+            temp_m_ni = '0' + temp_m_ni;
+        }
+        h_night.value = temp_h_ni +' h '+ temp_m_ni;
+    };
+
+
+//_________________________________________________________________________________________________________________________
+    //THE_REST
+
     var chant_name = document.getElementById("chant_name");
     chant_name.value = document.getElementById("chantier_name").value;
-    var inter_h = document.getElementById("inter_h");
-    inter_h.value = document.getElementById("intervention_hours").value;
     var pan_rep = document.getElementById("pan_rep");
     pan_rep.value = document.getElementById("panier_repas").value;
+
     var pan_rep = document.getElementById("pan_rep");
     if ($("input[name='panier_repas']").is(":checked")) {
         pan_rep.value = document.getElementById("panier_repas").value;
     } else {
         pan_rep.value = 0;
     }
-    var h_night = document.getElementById("h_night");
-    if ($("input[name='coch_night']").is(":checked")) {
-        h_night.value = document.getElementById("night_hours").value;
-    } else {
-        h_night.value = 0;
-    }
+
     var com = document.getElementById("com");
     com.value = document.getElementById("commit").value;
+    
 }
 
 
@@ -242,7 +311,7 @@ function preview2() {
 function reply_click_user(clicked_id){
     var id = clicked_id;
 
-    if(confirm('Are you sure to remove this record ?'))
+    if (confirm('Are you sure to remove this record ?'))
     {
         $.ajax({
             url: '../api/user/delete_user.php',
@@ -268,7 +337,7 @@ function reply_click_user(clicked_id){
 function reply_click_troubles(clicked_id){
     var id = clicked_id;
 
-    if(confirm('Are you sure to remove this record ?'))
+    if (confirm('Are you sure to remove this record ?'))
     {
         $.ajax({
             url: '../api/troubleshooting/delete_troubles.php',

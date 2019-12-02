@@ -34,14 +34,14 @@ if (isset($_COOKIE['id'])) {
             $_SESSION['username'] = "admin";
             $_SESSION['admin_name'] = $admin['admin_name'];
         } else {
-            header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
+            header("Location: signin.php"); 
         }
     }
 }
 
-if(!($_SESSION['username'])){// or !($_SESSION['admin_name'])) {  
+if(!($_SESSION['username'])){
   
-    header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
+    header("Location: signin.php");
 }
 
 $stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");
@@ -57,7 +57,6 @@ if($user) {
 } elseif ($admin) {
     $_SESSION['id'] = $admin['id'];
 } else {
-    //echo "ERROR: Could not get 'id' of current user [first_method]";
     header("Location: signin.php");
 }
 ?>
@@ -97,8 +96,7 @@ if($user) {
                                                 ?>
                         </div>
                     </div>
-                    <?php echo "<input type='number' id='user_id' name='user_id' value='" . $_SESSION['id'] . "' style='display: none;'>";
-                        //echo "<input type='number' id='state' name='state' value='0' style='display: none;'" ?>
+                    <?php echo "<input type='number' id='user_id' name='user_id' value='" . $_SESSION['id'] . "' style='display: none;'>"; ?>
                     <div class="text-center">
                         <div class="bg-white border rounded m-auto" style="width: max-content">
                             <?php
@@ -106,7 +104,7 @@ if($user) {
 
                                 $sql = 
                                 "SELECT 
-                                    id, `name`, `state`
+                                    id, `name`, `state`, num_chantier
                                 FROM 
                                     chantiers
                                 WHERE
@@ -120,7 +118,7 @@ if($user) {
                                             die("ERROR: Could not connect. " . mysqli_connect_error());
                                         }
                                         while ($row = $result->fetch_array()){
-                                            echo "<option value='" . $row['name'] . "'>" . $row['name'] . "</option>";
+                                            echo "<option value='" . $row['name'] . "'>" . $row['num_chantier'] . ' / '. $row['name'] .  "</option>";
                                         }
                                         mysqli_free_result($result);
                                     } else {
@@ -134,35 +132,88 @@ if($user) {
                             ?>
                         </div>
                     </div>
-                    <div class="pt-5 w-50 m-auto text-center">
+                    <div class="pt-5 w-75 m-auto text-center">
                         <label for="input_time m-auto">Heures réalisées</label>
-                        <div class="w-50 m-auto pb-4">
-                            <input type="time" id="intervention_hours" name="intervention_hours" class="form-control text-center align-middle m-auto p-1" style="line-height: 25px;" step="900" required />
+                        <div class="w-100 m-auto pb-4">
+                            <div class="border-0 p-0 mt-2 ml-auto mr-auto mb-2 col-7">
+                                <input id="intervention_hours" name="intervention_hours" value="" style="display: none;" />
+                                <select type="number" id="h_index" class="col-3 p-0 border-0 rounded bg-secondary text-white text-center" style="height: 19px;">
+                                    <option value="-4">-4</option> <!-- see later to have a page with decremente numbers and soustract to maj hours or normal hours -->
+                                    <option value="-3">-3</option>
+                                    <option value="-2">-2</option>
+                                    <option value="-1">-1</option>
+                                    <option value="0" selected>0</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                    <option value="13">13</option>
+                                    <option value="14">14</option>
+                                </select><!--
+                                --><strong>&nbsp;h&nbsp;</strong><!--
+                                --><select type="number" id="m_index" class="col-3 p-0 border-0 rounded bg-secondary text-white text-center" style="height: 19px;">
+                                    <option value="00">00</option>
+                                    <option value="30">30</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
-                    <div class="m-auto d-flex flex-column border-top pt-4 w-75">
+                    <div class="m-auto d-flex flex-column border-top pt-4 w-100">
                         <div class="pt-1 pb-3">
-                            <div class="col-8 mb-2 p-0 position-relative">
+                            <div class="pl-5 col-5 mb-2 p-0 position-relative" style="margin-right: -7%; margin-left: 7%;">
                                 <input type="checkbox" id="panier_repas" name="panier_repas" value="1" class="form-check-input align-middle mt-1 mb-auto">
                                 <label class="mb-auto mt-auto ml-4 pl-1 text-center" for="">Panier repas</label>
                             </div>
                             <div class="d-inline-flex h-25 w-100">
-                                <div class="col-3 mt-auto pl-0 mb-auto pr-0 position-relative">
+                                <div class="col-3 pl-5 mt-auto mb-auto pr-0 position-relative" style="margin-right: -7%; margin-left: 7%;">
                                     <div class="form-check-input mt-auto mb-auto ml-0">
                                         <input type="checkbox" name="coch_night" class="m-0">
                                     </div>
                                     <label class="mt-auto mb-auto ml-4 pl-1 text-center" for="">Dont :</label>
                                 </div>
                                 <div class="col-7 d-inline-flex m-auto text-center pr-0 pl-0 mt-auto mb-auto">
-                                    <input type="time" id="night_hours" name="night_hours" class="col-7 form-control text-center align-middle m-auto p-1" style="line-height: 25px;" step="900">
-                                    <label class="col-8 mt-auto ml-3 mb-auto text-wrap text-left">heures de nuit</label>
+                                    <input id="night_hours" name="night_hours" value="" style="display: none;"/>
+                                    <div class="d-inline col-7 p-0 mt-auto mb-auto">
+                                        <select type="number" id="ni_h_index" class="col-4 p-0 border-0 rounded bg-secondary text-white mt-auto mb-auto text-center" style="height: 19px;">
+                                            <option value="-2">-2</option>
+                                            <option value="-1">-1</option>
+                                            <option value="0" selected>0</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
+                                            <option value="11">11</option>
+                                            <option value="12">12</option>
+                                        </select><!--
+                                        --><strong class="">&nbsp;h&nbsp;</strong><!--
+                                        --><select type="number" id="ni_m_index" class="col-4 p-0 border-0 rounded bg-secondary text-white mt-auto mb-auto text-center" style="height: 19px;">
+                                            <option value="00">00</option>
+                                            <option value="30">30</option>
+                                        </select>
+                                    </div>
+                                    <label class="col-4 mt-auto pl-0 mb-auto text-wrap text-left">heures de nuit</label>
                                 </div>
                             </div>
-                            <div class="mt-2 mb-2 pt-5 pb-2">
+                            <div class="mt-2 mb-2 pt-5 pb-2 w-75 m-auto">
                                 <textarea class="form-control textarea" id="commit" name="commit" placeholder="Informations ?" maxlength="450"></textarea>
                             </div>
                         </div>
                     </div>
+                    
                     <?php
                         $date_sql = date_format($date, 'Y-m-d');
                         
@@ -170,52 +221,97 @@ if($user) {
                             <h4 class="w-75 mt-2 ml-auto mb-3 mr-auto text-center">Récapitulatif</h4>
                             <fieldset class="pl-3 text-dark bg-white border rounded w-75 m-auto" disabled>
                                 <br />
-                                Date du jour :   <input id="date" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50" value="' . date_format($date, 'd-m-Y') . '" /><br />
-                                Nom du chantier :  <input id="chant_name" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50" /><br />
-                                Total des heures :  <input id="inter_h" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50" /><br />
-                                Panier repas :  <input id="pan_rep" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50" /><br />
-                                Horaires de nuit :  <input id="h_night" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50" /><br />
-                                <div class="d-inline-flex">
-                                Commentaires :  <textarea id="com" class="bg-white border-0 pt-0 pl-2 mt-0 ml-auto mb-0" cols="18" rows="2" style="resize: none;"></textarea></div><br />';
+                                <div class="d-inline-flex w-100">
+                                    <div class="col-5 pl-0 pr-0 h6 mt-auto mb-auto">Date du jour </div>:
+                                    <input id="date" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50" value="' . date_format($date, 'd-m-Y') . '" />
+                                </div>
+                                <div class="d-inline-flex w-100">
+                                    <div class="col-5 pl-0 pr-0 h6 mt-auto mb-auto">Nom du chantier </div>:
+                                    <input id="chant_name" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50" />
+                                </div>
+                                <div class="d-inline-flex w-100">
+                                    <div class="col-5 pl-0 pr-0 h6 mt-auto mb-auto">Total des heures </div>:
+                                    <input id="inter_h" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50" />
+                                </div>
+                                <div class="d-inline-flex w-100">
+                                    <div class="col-5 pl-0 pr-0 h6 mt-auto mb-auto">Panier repas </div>:
+                                    <input id="pan_rep" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50" />
+                                </div>
+                                <div class="d-inline-flex w-100">
+                                    <div class="col-5 pl-0 pr-0 h6 mt-auto mb-auto">Horaires de nuit </div>:
+                                    <input id="h_night" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50" />
+                                </div>
+                                    <div class="d-inline-flex w-100">
+                                    <div class="col-5 pl-0 pr-0 h6 mt-0 mb-auto d-inline">Commentaires </div><div class="h6 mt-0 mb-auto">:</div>
+                                    <textarea id="com" class="bg-white border-0 pt-0 pl-2 mt-0 ml-auto mb-0" cols="18" rows="2" style="resize: none;"></textarea>
+                                </div>';
                                 
-                                if (isset($date) && !empty($date)) {
+                                if ($_SESSION['id']) {
+                                    if ($user) {
+                                        if (isset($date) && !empty($date)) {
 
-                                    $recap="SELECT 
-                                        concat(month(g.updated)) AS `concat`,
-                                        g.updated as inter_chantier,
-                                        u.id,
-                                        c.name AS name_chantier,
-                                        SUM(night_hours) AS h_night_tot,
-                                        SUM(intervention_hours) AS totalheure,
-                                        SUM(intervention_hours - night_hours) AS tothsnight,
-                                        floor((SUM(floor(intervention_hours / 10000)) + (SUM(((floor(intervention_hours) - floor(floor(intervention_hours) / 10000) * 10000) / 100) / 60))) * 100) AS tot_glob
-                                    FROM
-                                        chantiers AS c
-                                        JOIN
-                                        global_reference AS g ON c.id = chantier_id
-                                        JOIN
-                                        users AS u ON g.user_id = u.id
-                                    WHERE
-                                        u.id = '" . $_SESSION['id'] . "'
-                                        AND
-                                        updated = '" . $date_sql . "' 
-                                        AND
-                                        concat(month(g.updated)) = (
-                                                                SELECT 
-                                                                    MAX(concat(month(updated)))
-                                                                FROM
-                                                                    global_reference
-                                                                )
-                                    GROUP BY concat(month(g.updated)) , g.updated , u.id, c.name with ROLLUP";
+                                            $recap="SELECT 
+                                                concat(month(g.updated)) AS `concat`,
+                                                g.updated as inter_chantier,
+                                                u.id,
+                                                c.name AS name_chantier,
+                                                SUM(night_hours) AS h_night_tot,
+                                                SUM(intervention_hours) AS totalheure
+                                            FROM
+                                                chantiers AS c
+                                                JOIN
+                                                global_reference AS g ON c.id = chantier_id
+                                                JOIN
+                                                users AS u ON g.user_id = u.id
+                                            WHERE
+                                                u.id = '" . $_SESSION['id'] . "'
+                                                AND
+                                                updated = '" . $date_sql . "' 
+                                                AND
+                                                concat(month(g.updated)) = (
+                                                                        SELECT 
+                                                                            MAX(concat(month(updated)))
+                                                                        FROM
+                                                                            global_reference
+                                                                        )
+                                            GROUP BY concat(month(g.updated)) , g.updated , u.id, c.name with ROLLUP";
+                                        }
+                                    } else if($admin) {
+                                        if (isset($date) && !empty($date)) {
+                                            
+                                            $recap="SELECT 
+                                                concat(month(g.updated)) AS `concat`,
+                                                g.updated as inter_chantier,
+                                                a.id,
+                                                c.name AS name_chantier,
+                                                SUM(night_hours) AS h_night_tot,
+                                                SUM(intervention_hours) AS totalheure
+                                            FROM
+                                                chantiers AS c
+                                                JOIN
+                                                global_reference AS g ON c.id = chantier_id
+                                                JOIN
+                                                `admin` AS a ON g.user_id = a.id
+                                            WHERE
+                                                a.id = '" . $_SESSION['id'] . "'
+                                                AND
+                                                updated = '" . $date_sql . "' 
+                                                AND
+                                                concat(month(g.updated)) = (
+                                                                        SELECT 
+                                                                            MAX(concat(month(updated)))
+                                                                        FROM
+                                                                            global_reference
+                                                                        )
+                                            GROUP BY concat(month(g.updated)) , g.updated , a.id, c.name with ROLLUP";
+                                        }
+                                    }
 
-                                    //print_r($recap_2);
                                     if ($result = mysqli_query($db, $recap)) {
 
                                         if (mysqli_num_rows($result) > 0) {
 
                                             echo "<h4>Récap. du jour</h4>";
-
-                                            //print_r($result);
 
                                             if ($db === false){
                                                 die("ERROR: Could not connect. " . mysqli_connect_error());
@@ -225,50 +321,37 @@ if($user) {
 
                                                 if ($row['name_chantier']) {
 
-                                                    $total = $row['tot_glob'];
-                                                    $hours = (int)($total / 100);
-                                                    $minutes = ((int)($total - ($hours * 100)) / 100) * 60;
-                                                    if ($minutes > 59) {
-                                                        $hours += 1;
-                                                        $minutes -= 60;
-                                                    }
-                                                    if ($minutes > 10) {
-                                                        $minutes = $minutes;
-                                                    } elseif ($minutes < 10 and $minutes > 0) {
-                                                        $minutes = "0" . $minutes;
-                                                    } else {
+                                                    $total = $row['totalheure'];
+                                                    $hours = (int)$total;
+                                                    $minutes = ($total - $hours) * 60;
+
+                                                    if ($minutes == 0) {
                                                         $minutes = "00";
                                                     }
 
                                                     $night_tot = $row['h_night_tot'];
-                                                    $night_h = (int)($night_tot / 10000);
-                                                    $night_m = ((int)($night_tot - ($night_h * 10000)) / 100) * 60;
-                                                    if ($night_m > 59) {
-                                                        $night_h += 1;
-                                                        $night_m -= 60;
-                                                    }
-                                                    if ($night_m > 10) {
-                                                        $night_m = $night_m;
-                                                    } elseif ($night_m < 10 and $night_m > 0) {
-                                                        $night_m = "0" . $night_m;
-                                                    } else {
+                                                    $night_h = (int)$night_tot;
+                                                    $night_m = ($night_tot - $night_h) * 60;
+
+                                                    if ($night_m == 0) {
                                                         $night_m = "00";
                                                     }
-                                                    echo '<div class="d-inline-flex h6 m-0">' . $row['name_chantier'] . '<input class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-100" value=" : ' . $hours . 'h' . $minutes . ' [' . $night_h . 'h' . $night_m . ' h/nuit]" /></div><br />';
+
+                                                    echo '<div class="d-inline-flex w-100 m-0">
+                                                        <div class="col-5 pl-0 pr-0 h6 mt-auto mb-auto">' . $row['name_chantier'] . '</div>:
+                                                        <input class="bg-white border-0 pt-0 pl-2 pb-0 pr-0 mt-0 ml-auto mr-auto mb-0 w-50" value="' . $hours . 'h' . $minutes . ' [' . $night_h . 'h' . $night_m . ' h/nuit]" /></div><br />';
                                                 }
                                             }
                                             echo '<br />';
                                             mysqli_free_result($result);
-                                        }/* else {
-                                            echo "No records matching your query were found.";
-                                        }*/
+                                        }
                                     } else{
                                         echo "ERROR: Could not able to execute $recap. " . mysqli_error($db);
                                     }
                                 }
                             echo '</fieldset>';
                         echo '<div class="w-75 mt-3 ml-auto mr-auto">
-                            <input type="submit" value="Soumettre" class="btn send border-0 bg-white z-depth-1a mt-3 mb-0 align-middle text-dark" />
+                            <input id="submit" type="submit" value="Soumettre" class="btn send border-0 bg-white z-depth-1a mt-3 mb-0 align-middle text-dark" />
                         </div>';
                         ?>
                     </div>

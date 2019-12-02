@@ -57,11 +57,11 @@ if(empty($chantier_id)) {
     header("refresh:2; url=../../index.php");
     exit();
 } elseif(empty($_POST['intervention_hours'])) {
-    echo "intervention_hours is required";
+    echo "Les heures d'intervention sont requises (ou dépasse le nombre d'heures envisagé)";
     header("refresh:2; url=../../index.php");
     exit();
 } elseif($_POST['night_hours'] > 9) {
-    echo "night_hours is wrong!";
+    echo "les heures de nuit sont requises (ou dépasse le nombre d'heures envisagé ..)";
     header("refresh:2; url=../../index.php");
     exit();
 } else {
