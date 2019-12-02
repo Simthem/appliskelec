@@ -136,6 +136,10 @@ $cur_chant = $sql->fetch();
                                     <input type='text' id='contact_address' name='contact_address' class='form-control' value='" . $cur_chant['contact_address'] . "'>
                                 </div>
                                 <div class='md-form mt-4'>
+                                    <label for='contact_phone'>E-mail</label>
+                                    <input type='email' id='e_mail' name='e_mail' class='form-control' value='" . $cur_chant['e_mail'] . "'>
+                                </div>
+                                <div class='md-form mt-4'>
                                     <label for='commit'>Commentaires</label>
                                     <textarea type='text' id='commit' name='commit' class='form-control' value='" . $cur_chant['commit'] . "' placeholder='" . $cur_chant['commit'] . "'></textarea>
                                 </div>
@@ -159,6 +163,10 @@ $cur_chant = $sql->fetch();
                                     <input type='text' id='contact_phone' name='contact_phone' class='form-control' value='" . $cur_chant['contact_phone'] . "'>
                                 </div>
                                 <div class='md-form mt-4'>
+                                    <label for='contact_phone'>E-mail</label>
+                                    <input type='email' id='e_mail' name='e_mail' class='form-control' value='" . $cur_chant['e_mail'] . "'>
+                                </div>
+                                <div class='md-form mt-4'>
                                     <label for='contact_address'>Adresse</label>
                                     <input type='text' id='contact_address' name='contact_address' class='form-control' value='" . $cur_chant['contact_address'] . "'>
                                 </div>
@@ -171,7 +179,7 @@ $cur_chant = $sql->fetch();
                     ?>
                     <!--<input type="text" id="type" name="type" value="<?php// echo $cur_chant['type']; ?>" style="display: none;">-->
                     <div class="pt-5 w-75 m-auto">
-                        <input type="submit" value="Valider" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">
+                        <input type="submit" value="Valider" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark" onClick="checkForm()">
                         <a href="troubleshooting_list.php" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4 text-dark">Précédent</a>
                     </div>
                 </form>

@@ -64,7 +64,8 @@ $sql =
 "SELECT 
     id,
     `name`,
-    contact_address,
+    e_mail,
+    #contact_address,
     num_chantier,
     `state`
 FROM
@@ -83,7 +84,8 @@ $stmt =
     id,
     #created,
     `name`,
-    contact_address,
+    e_mail,
+    #contact_address,
     num_chantier,
     `state`
 FROM
@@ -124,9 +126,9 @@ ORDER BY
                                 echo '<thead>';
                                     echo '<tr>';
                                         echo '<th scope="col" class="text-center align-middle p-2 w-25" id="num_chantier">ID\'s</th>';
-                                        //echo '<th scope="col" class="text-center align-middle p-4" id="e_mail">E-mail</th>';
                                         echo '<th scope="col" class="text-center align-middle p-2 w-25" id="name">Libellés</th>';
-                                        echo '<th scope="col" class="text-center align-middle p-2 w-25" id="contact_address">Adresse</th>';
+                                        echo '<th scope="col" class="text-center align-middle p-2 w-25" id="e_mail">E-mail</th>';
+                                        //echo '<th scope="col" class="text-center align-middle p-2 w-25" id="contact_address">Adresse</th>';
                                         echo '<th scope="col" class="text-center align-middle p-0 w-25" id="">Détails</th>';
                                     echo '</tr>';
                                 echo '</thead>';
@@ -145,14 +147,14 @@ ORDER BY
                                             if ($row['num_chantier'] != 0 or !empty($row['num_chantier'])) {
                                                 if ($row['state']) {
                                                     echo '<td class="align-middle p-4 w-25">' . $row['num_chantier'] . '</td>';
-                                                    //echo '<td class="align-middle p-4" style="word-wrap: break-word; max-width: 85px;">' . $row['e_mail'] . '</td>';
                                                     echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 85px;">' . $row['name'] . '</td>';
-                                                    echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 85px;">' . $row['contact_address'] . '</td>';
+                                                    //echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 85px;">' . $row['contact_address'] . '</td>';
+                                                    echo '<td class="align-middle p-4 w-25 overflow-hidden" style="max-width: 85px;">' . $row['e_mail'] . '</td>';
                                                 } else {
                                                     echo '<td class="align-middle p-4 w-25 border-top border-bottom border-danger">' . $row['num_chantier'] . '<br /><h6 class="text-danger">[Clôturé]</h6></td>';
-                                                    //echo '<td class="align-middle p-4" style="word-wrap: break-word; max-width: 85px;">' . $row['e_mail'] . '</td>';
                                                     echo '<td class="align-middle p-4 w-25 border-top border-bottom border-danger" style="word-wrap: break-word; max-width: 85px;">' . $row['name'] . '</td>';
-                                                    echo '<td class="align-middle p-4 w-25 border-top border-bottom border-danger" style="word-wrap: break-word; max-width: 85px;">' . $row['contact_address'] . '</td>';
+                                                    //echo '<td class="align-middle p-4 w-25 border-top border-bottom border-danger" style="word-wrap: break-word; max-width: 85px;">' . $row['contact_address'] . '</td>';
+                                                    echo '<td class="align-middle p-4 w-25 border-top border-bottom border-danger overflow-hidden" style="max-width: 85px;">' . $row['e_mail'] . '</td>';
                                                 }
                                                 if ($_SESSION['id'] == $admin['id']) {
                                                     if ($row['state']) {
@@ -212,15 +214,15 @@ ORDER BY
                                             if($row['num_chantier'] == 0 or empty($row['num_chantier'])) {
                                                 if ($row['state']) {
                                                     echo '<td class="align-middle p-4 w-25 bg-success text-white">Dép.</td>';
-                                                    //echo '<td class="align-middle p-4" style="word-wrap: break-word; max-width: 85px;">' . $row['e_mail'] . '</td>';
                                                     echo '<td class="align-middle p-4 w-25 bg-success text-white" style="word-wrap: break-word; max-width: 85px;">' . $row['name'] . '</td>';
-                                                    echo '<td class="align-middle p-4 w-25 bg-success text-white" style="word-wrap: break-word; max-width: 85px;">' . $row['contact_address'] . '</td>';
+                                                    echo '<td class="align-middle p-4 w-25 bg-success text-white overflow-hidden" style="max-width: 85px;">' . $row['e_mail'] . '</td>';
+                                                    //echo '<td class="align-middle p-4 w-25 bg-success text-white" style="word-wrap: break-word; max-width: 85px;">' . $row['contact_address'] . '</td>';
                                                     //echo "<td class='p-0 align-middle w-25 bg-success'><a href='troubleshooting_details.php?chantier_id=" . $row['id']  . "'><i class='fas fa-tools text-white'></i></a></td>";
                                                 } else {
                                                     echo '<td class="align-middle p-4 w-25 bg-success border-top border-bottom border-danger text-white">Dép.<br /><h6 class="text-danger">[Clôturé]</h6></td>';
-                                                    //echo '<td class="align-middle p-4" style="word-wrap: break-word; max-width: 85px;">' . $row['e_mail'] . '</td>';
                                                     echo '<td class="align-middle p-4 w-25 bg-success border-top border-bottom border-danger text-white" style="word-wrap: break-word; max-width: 85px;">' . $row['name'] . '</td>';
-                                                    echo '<td class="align-middle p-4 w-25 bg-success border-top border-bottom border-danger text-white" style="word-wrap: break-word; max-width: 85px;">' . $row['contact_address'] . '</td>';
+                                                    echo '<td class="align-middle p-4 w-25 bg-success border-top border-bottom border-danger text-white overflow-hidden" style="max-width: 85px;">' . $row['e_mail'] . '</td>';
+                                                    //echo '<td class="align-middle p-4 w-25 bg-success border-top border-bottom border-danger text-white" style="word-wrap: break-word; max-width: 85px;">' . $row['contact_address'] . '</td>';
                                                     //echo "<td class='p-0 align-middle w-25 bg-success border-top border-bottom border-danger'><a href='troubleshooting_details.php?chantier_id=" . $row['id']  . "'><i class='fas fa-tools text-white'></i></a></td>";
                                                 }
 

@@ -45,7 +45,7 @@
                         <li class="bg-dark border-top border-warning rounded-0 p-0 menu-link"><a href="list_profil.php" class="text-warning">Salariés</a></li>
                         
                         <!--<li class="bg-dark border-top border-warning rounded-0 p-0 collapsed"><a id="params" data-toggle="collapse" href="#submenu" role="button" aria-expanded="true" aria-controls="#submenu" class="text-warning open-col">Paramètres<div class="mr-0 float-right" style="width: 40px;"><img src="img/fleche_menu.png" class="ml-3 mt-auto mb-auto open-col" style="width: 13px; height: 13px;"></div></a>-->
-                        <li data-toggle="collapse" href="#preview2" role="button" aria-expanded="false" aria-controls="preview2" class="bg-dark border-top border-warning rounded-0 p-0 collapsed text-warning"><a>Paramètres</a></li>
+                        <li data-toggle="collapse" href="#preview2" role="button" aria-expanded="false" aria-controls="preview2" class="bg-dark border-top border-warning rounded-0 p-0 collapsed text-warning"><a class="mt-auto mb-auto">+ Options <img src="img/fleche_menu.png" class="float-right mt-auto pt-1 color-warning" alt="Fleche du menu indiquant ce dernier comme deroulant" height="18" width="16"></a></li>
                             <div id="preview2" class="bg-light collapse" action='api/user/edit_profil.php' method='GET'>
                                 <?php
                                     if ($_SESSION['id'] == $admin['id']) {
@@ -56,7 +56,8 @@
                                                     die("ERROR: Could not connect. " . mysqli_connect_error());
                                                 }
                                                 while($row = $admin_result->fetch_array()) {
-                                                    echo "<li class='rounded-0 p-0 menu-link' style='height: 60px;'><a href='modif_profil.php?id=" . $row['id'] . "' class='mt-auto ml-auto mb-auto mr-auto text-dark w-75'><div class='mt-auto mb-auto pr-3 float-left'> • </div>Profile</a></li>";
+                                                    echo "<li class='rounded-0 p-0 menu-link' style='height: 60px;'><a href='modif_profil.php?id=" . $row['id'] . "' class='mt-auto ml-auto mb-auto mr-auto pr-3 pl-3 text-dark w-75'><div class='mt-auto mb-auto pr-3 float-left'> • </div>Profile</a></li>";
+                                                    echo "<li><a href='absence.php?id=" . $row['id'] . "' class='pt-4 pr-3 pb-4 pl-3 mt-auto ml-auto mb-auto mr-auto text-dark w-75 d-flex border-top'><div class='mt-auto mb-auto pr-3 float-left'> • </div><div class='float-right text-left'>Signaler une <br />ou des absence(s)</div></a></li>";
                                                 }
                                                 mysqli_free_result($admin_result);
                                             } else {
@@ -65,7 +66,7 @@
                                         } else {
                                             echo "ERROR: Could not able to execute $admin_sql. " . mysqli_error($db);
                                         }
-                                        echo "<li class='rounded-0 p-0 menu-link border-top'><a href='extract_obj.php' class='pt-4 pr-0 pb-4 mt-auto ml-auto mb-auto mr-auto  text-dark w-75'><div class='mt-auto mb-auto pr-3 pt-3 float-left'> • </div><div class='w-100'>Extraire un compte rendu</div></a></li>";
+                                        echo "<li class='rounded-0 p-0 menu-link'><a href='extract_obj.php' class='pt-4 pr-3 pb-4 pl-3 mt-auto ml-auto mb-auto mr-auto text-dark border-top w-75'><div class='mt-auto mb-auto pr-3 pt-3 float-left'> • </div><div class='w-100'>Extraire un compte rendu</div></a></li>";
                                     } else {
                                         $user_sql = "SELECT * FROM users";
                                         if ($user_result = mysqli_query($db, $user_sql)){
@@ -75,7 +76,8 @@
                                                 }
                                                 while ($row = $user_result->fetch_array()){
                                                     if ($row['id'] == $_SESSION['id']) {
-                                                        echo "<li><a href='modif_profil.php?id=" . $row['id'] . "' class='mt-auto ml-auto mb-auto mr-auto text-dark w-75'>Profile</a></li>";
+                                                        echo "<li><a href='modif_profil.php?id=" . $row['id'] . "' class='mt-auto ml-auto mb-auto mr-auto pl-3 pr-3 text-dark w-75'><div class='mt-auto mb-auto pr-3 float-left'> • </div>Profile</a></li>";
+                                                        echo "<li><a href='absence.php?id=" . $row['id'] . "' class='pt-4 pr-3 pb-4 pl-3 mt-auto ml-auto mb-auto mr-auto text-dark w-75 d-flex border-top'><div class='mt-auto mb-auto pr-3 float-left'> • </div><div class='float-right text-left'>Signaler une <br />ou des absence(s)</div></a></li>";
                                                     }
                                                 }
                                                 mysqli_free_result($user_result);

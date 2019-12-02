@@ -15,7 +15,7 @@ function pre_extract(n_inp) {
         newInput1.value = users.value;
         newInput1.style = 'width: 33%';
         newInput1.className = 'col-3 p-0 text-center border-0';
-        
+
         var newInput2 = document.createElement("a");
         newInput2.name = n_inp;
         newInput2.type = 'button';
@@ -190,9 +190,7 @@ $('#verif').on('click', function() {
 });
 
 function change() {
-    var fl = document.getElementById("flag");
-    fl.value = 1;
-    document.getElementById("flag").value = fl.value;
+    document.getElementById("flag").value = 1;
 }
 
 var chantier = document.querySelectorAll(".chantier");
@@ -205,6 +203,48 @@ $('.chantier').change(function() {
 });
 
 
+//function PREVIEW_FORM_ABSENCE
+
+function date_ab(id) {
+    var calen = document.forms['sign_ab'].elements['up_inter'].value;
+    document.location.href = 'absence.php?id='+id+'&store='+calen;
+}
+
+$('#chantier').change(function () {
+
+    if ($("input[name='chantier']").is(":checked")) {
+        $("input[name='chantier']").prop("checked", true);
+        $("div[name='flag_chant']").removeClass('d-none');
+        $("div[name='flag_day']").removeClass('d-block');
+        $("div[name='flag_day']").addClass('d-none');
+        $("input[name='ab_day']").prop("checked", false);
+        $("div[name='flag_chant']").addClass('d-block');
+        console.log('entrée_chantier');
+    }
+    if (!($("input[name='chantier']").is(":checked"))) {
+        $("div[name='flag_chant']").removeClass('d-block');
+        $("div[name='flag_chant']").addClass('d-none');
+        console.log('sortie_chantier');
+    }
+});
+
+$('#ab_day').change(function () {
+     
+    if ($("input[name='ab_day']").is(":checked")) {
+        $("input[name='ab_day']").prop('checked', true);
+        $("div[name='flag_day']").removeClass('d-none');
+        $("div[name='flag_chant']").removeClass('d-block');
+        $("div[name='flag_chant']").addClass('d-none');
+        $("input[name='chantier']").prop("checked", false);
+        $("div[name='flag_day']").addClass('d-block');
+        console.log('entrée_day');
+    }
+    if (!($("input[name='ab_day']").is(":checked"))) {
+        $("div[name='flag_day']").removeClass('d-block');
+        $("div[name='flag_day']").addClass('d-none');
+        console.log('sortie_day');
+    }
+});
 
 
 //function PREVIEW_FORM_INDEX
@@ -223,7 +263,7 @@ function preview2() {
 
     if (document.getElementById('h_index').textContent == '-' . h_index) {
         total = h_index * -1;
-        console.log(total);
+        //console.log(total);
     } else {
         total = h_index;
     }
@@ -237,7 +277,7 @@ function preview2() {
     total = h_index +'.'+ m_index * 100;
     document.getElementById("intervention_hours").value = total;
     document.getElementById("intervention_hours").textContent = total;
-    console.log(document.getElementById("intervention_hours").value);
+    //console.log(document.getElementById("intervention_hours").value);
 
     var inter_h = document.getElementById("inter_h");
     var temp = document.getElementById("intervention_hours").value;
@@ -273,9 +313,9 @@ function preview2() {
         var temp_ni = document.getElementById("night_hours").value;
         var temp_h_ni = parseInt(temp_ni, 10);
         var temp_m_ni = (temp_ni * 100 - temp_h_ni * 100) / 100 * 60;
-        console.log(temp_ni);
-        console.log(temp_h_ni);
-        console.log(temp_m_ni);
+        //console.log(temp_ni);
+        //console.log(temp_h_ni);
+        //console.log(temp_m_ni);
         if (temp_m_ni < 10) {
             temp_m_ni = '0' + temp_m_ni;
         }
@@ -411,8 +451,18 @@ function checkForm(){
     if (document.getElementById('name').value == ""){
         alert('Vous devez indiquer un libellé obligatoirement !');
         return false;
-    } else if (document.getElementById('contact_name').value == "") {
+    }
+    
+    if (document.getElementById('contact_name').value == "") {
         alert('Vous devez indiquer un nom de contact obligatoirement !');
+        return false;
+    }
+
+    const regex = /^[+0-9]{10,12}$/gm;
+    var str = document.getElementById('contact_phone').value;
+    
+    if (!(str.match(regex))) {
+        alert('Le numéro de téléphone n\'est pas valide');
         return false;
     } else {
         document.getElementById('add_trouble').submit();
