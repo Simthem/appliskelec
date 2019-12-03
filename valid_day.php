@@ -1,5 +1,6 @@
 <?php
 session_start();
+//print_r(session_get_cookie_params());
 
 include 'api/config/db_connexion.php';
 
@@ -15,6 +16,8 @@ if (isset($_COOKIE['id'])) {
         if ($user && $auth[1] === hash('sha512', $user['username'].'---'.$user['password'])) {
             $_SESSION['id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
+            $_SESSION['admin_name'] = null;
+            $admin['id'] = null;
         } else {
             header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
         }
@@ -33,12 +36,12 @@ if (isset($_COOKIE['id'])) {
             $_SESSION['username'] = "admin";
             $_SESSION['admin_name'] = $admin['admin_name'];
         } else {
-            header("Location: signin.php");  
+            header("Location: signin.php"); 
         }
     }
 }
 
-if(!($_SESSION['username'])){  
+if(!($_SESSION['username'])){
   
     header("Location: signin.php");
 }
@@ -47,13 +50,16 @@ $stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['user
 $stmt->execute();
 $user = $stmt->fetch();
 
-$stmt_admin = $bdd->prepare("SELECT id FROM `admin` WHERE admin_name = '". $_SESSION['admin_name'] ."'");
-$stmt_admin->execute();
-$admin = $stmt_admin->fetch();
+if (isset($_SESSION['admin_name']) && !empty($_SESSION['admin_name'])) {
+
+    $stmt_admin = $bdd->prepare("SELECT id FROM `admin` WHERE admin_name = '". $_SESSION['admin_name'] ."'");
+    $stmt_admin->execute();
+    $admin = $stmt_admin->fetch();
+}
 
 if($user) {
     $_SESSION['id'] = $user['id'];
-} elseif ($admin) {
+} elseif (isset($admin) && !empty($admin)) {
     $_SESSION['id'] = $admin['id'];
 } else {
     header("Location: signin.php");

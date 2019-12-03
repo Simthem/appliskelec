@@ -71,7 +71,7 @@ if(empty($chantier_id)) {
     print_r($intervention);
     //echo '<br />';
     //print_r($_POST);
-    //header("refresh:2; url=../../valid_day.php?up_int=" . $_POST['up_inter']);
-    //exit();
+    header("refresh:2; url=../../valid_day.php?up_int=" . $_POST['up_inter']);
+    exit();
 }
 ?>

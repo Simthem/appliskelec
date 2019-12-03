@@ -69,7 +69,7 @@ if(empty($chantier_id)) {
     echo "Success !! :)";
     $intervention->create();
     print_r($intervention);
-    //header("refresh:2; url=../../valid_day.php?up_int=" . $_POST['up_inter']);
-    //exit();
+    header("refresh:2; url=../../valid_day.php?up_int=" . $_POST['up_inter']);
+    exit();
 }
 ?>

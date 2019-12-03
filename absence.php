@@ -95,39 +95,6 @@ if($user) {
                                 } else {
                                     echo '<div class="text-center w-75 mr-auto ml-auto pb-4"><input class="bg-white col-7 text-center pl-4" type="date" id="up_inter" name="up_inter"  placeholder="" onChange="date_ab(' . $_GET['id'] . ')" style="height: 26px;" required="required"></div>';
                                 }
-                            ?>
-                            <?php
-                                /*echo '<select id="chantier_name" name="chantier_name" class="bg-white border-white" size="1" required>';
-
-                                    $sql = 
-                                    "SELECT 
-                                        id, `name`, `state`, num_chantier
-                                    FROM 
-                                        chantiers
-                                    WHERE
-                                        `state`
-                                    ORDER BY 
-                                        id DESC";
-
-                                    if ($result = mysqli_query($db, $sql)) {
-                                        if (mysqli_num_rows($result) > 0) {
-                                            if ($db === false){
-                                                die("ERROR: Could not connect. " . mysqli_connect_error());
-                                            }
-                                            while ($row = $result->fetch_array()){
-                                                echo "<option value='" . $row['name'] . "'>" . $row['num_chantier'] . ' / '. $row['name'] .  "</option>";
-                                            }
-                                            mysqli_free_result($result);
-                                        } else {
-                                            echo "No records matching your query were found.";
-                                        }
-                                    } else{
-                                        echo "ERROR: Could not able to execute $sql. " . mysqli_error($db);
-                                    }
-
-                                echo '</select>
-                            </div>';*/
-
                                 
                             echo '<div class="w-100 m-auto p-5">
                                 <div class="col-6 float-left">
