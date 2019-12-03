@@ -96,10 +96,10 @@ h2
 
 /* Specifics */
 
-input::-webkit-calendar-picker-indicator {
+/*input::-webkit-calendar-picker-indicator {
     -webkit-appearance: none;
     opacity: 0;
-}
+}*/
 
 .nav-pills>li.active>a,
 .nav-pills>li.active>a:focus,

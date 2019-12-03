@@ -16,6 +16,8 @@ if (isset($_COOKIE['id'])) {
         if ($user && $auth[1] === hash('sha512', $user['username'].'---'.$user['password'])) {
             $_SESSION['id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
+            $_SESSION['admin_name'] = null;
+            $admin['id'] = null;
         } else {
             header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
         }
@@ -48,13 +50,16 @@ $stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['user
 $stmt->execute();
 $user = $stmt->fetch();
 
-$stmt_admin = $bdd->prepare("SELECT id FROM `admin` WHERE admin_name = '". $_SESSION['admin_name'] ."'");
-$stmt_admin->execute();
-$admin = $stmt_admin->fetch();
+if (isset($_SESSION['admin_name']) && !empty($_SESSION['admin_name'])) {
+
+    $stmt_admin = $bdd->prepare("SELECT id FROM `admin` WHERE admin_name = '". $_SESSION['admin_name'] ."'");
+    $stmt_admin->execute();
+    $admin = $stmt_admin->fetch();
+}
 
 if($user) {
     $_SESSION['id'] = $user['id'];
-} elseif ($admin) {
+} elseif (isset($admin) && !empty($admin)) {
     $_SESSION['id'] = $admin['id'];
 } else {
     header("Location: signin.php");
@@ -138,11 +143,7 @@ if($user) {
                             <div class="border-0 p-0 mt-2 ml-auto mr-auto mb-2 col-7">
                                 <input id="intervention_hours" name="intervention_hours" value="" style="display: none;" />
                                 <select type="number" id="h_index" class="col-3 p-0 border-0 rounded bg-secondary text-white text-center" style="height: 19px;">
-                                    <option value="-4">-4</option> <!-- see later to have a page with decremente numbers and soustract to maj hours or normal hours -->
-                                    <option value="-3">-3</option>
-                                    <option value="-2">-2</option>
-                                    <option value="-1">-1</option>
-                                    <option value="0" selected>0</option>
+                                    <option value="0">0</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
@@ -166,8 +167,9 @@ if($user) {
                             </div>
                         </div>
                     </div>
-                    <div class="m-auto d-flex flex-column border-top pt-4 w-100">
-                        <div class="pt-1 pb-3">
+                    <div class="d-flex flex-column mt-2 ml-auto mb-auto mr-auto w-100">
+                        <div class="border-top w-75 m-auto pb-3"></div>
+                        <div class="pt-5 pb-3">
                             <div class="pl-5 col-5 mb-2 p-0 position-relative" style="margin-right: -7%; margin-left: 7%;">
                                 <input type="checkbox" id="panier_repas" name="panier_repas" value="1" class="form-check-input align-middle mt-1 mb-auto">
                                 <label class="mb-auto mt-auto ml-4 pl-1 text-center" for="">Panier repas</label>
@@ -183,9 +185,7 @@ if($user) {
                                     <input id="night_hours" name="night_hours" value="" style="display: none;"/>
                                     <div class="d-inline col-7 p-0 mt-auto mb-auto">
                                         <select type="number" id="ni_h_index" class="col-4 p-0 border-0 rounded bg-secondary text-white mt-auto mb-auto text-center" style="height: 19px;">
-                                            <option value="-2">-2</option>
-                                            <option value="-1">-1</option>
-                                            <option value="0" selected>0</option>
+                                            <option value="0">0</option>
                                             <option value="1">1</option>
                                             <option value="2">2</option>
                                             <option value="3">3</option>
@@ -208,7 +208,7 @@ if($user) {
                                     <label class="col-4 mt-auto pl-0 mb-auto text-wrap text-left">heures de nuit</label>
                                 </div>
                             </div>
-                            <div class="mt-2 mb-2 pt-5 pb-2 w-75 m-auto">
+                            <div class="mt-2 mb-2 pt-5 pb-4 w-75 m-auto">
                                 <textarea class="form-control textarea" id="commit" name="commit" placeholder="Informations ?" maxlength="450"></textarea>
                             </div>
                         </div>
@@ -218,7 +218,7 @@ if($user) {
                         $date_sql = date_format($date, 'Y-m-d');
                         
                         echo '<div class="collapse" id="preview">
-                            <h4 class="w-75 mt-2 ml-auto mb-3 mr-auto text-center">Récapitulatif</h4>
+                            <h4 class="w-75 mt-3 ml-auto mb-3 mr-auto pt-3 border-top text-center">Récapitulatif</h4>
                             <fieldset class="pl-3 text-dark bg-white border rounded w-75 m-auto" disabled>
                                 <br />
                                 <div class="d-inline-flex w-100">
@@ -241,14 +241,15 @@ if($user) {
                                     <div class="col-5 pl-0 pr-0 h6 mt-auto mb-auto">Horaires de nuit </div>:
                                     <input id="h_night" class="bg-white border-0 p-0 mt-0 ml-auto mr-auto mb-0 w-50" />
                                 </div>
-                                    <div class="d-inline-flex w-100">
+                                <div class="d-inline-flex w-100">
                                     <div class="col-5 pl-0 pr-0 h6 mt-0 mb-auto d-inline">Commentaires </div><div class="h6 mt-0 mb-auto">:</div>
-                                    <textarea id="com" class="bg-white border-0 pt-0 pl-2 mt-0 ml-auto mb-0" cols="18" rows="2" style="resize: none;"></textarea>
+                                    <textarea id="com" class="bg-white border-0 p-0 mt-0 ml-auto mb-0 mr-auto w-50" cols="18" rows="2" style="resize: none;"></textarea>
                                 </div>';
                                 
                                 if ($_SESSION['id']) {
                                     if ($user) {
-                                        if (isset($date) && !empty($date)) {
+                                        if (isset($date_sql) && !empty($date_sql)) {
+                                            //echo $date_sql . '<br />';
 
                                             $recap="SELECT 
                                                 concat(month(g.updated)) AS `concat`,
@@ -267,17 +268,13 @@ if($user) {
                                                 u.id = '" . $_SESSION['id'] . "'
                                                 AND
                                                 updated = '" . $date_sql . "' 
-                                                AND
-                                                concat(month(g.updated)) = (
-                                                                        SELECT 
-                                                                            MAX(concat(month(updated)))
-                                                                        FROM
-                                                                            global_reference
-                                                                        )
                                             GROUP BY concat(month(g.updated)) , g.updated , u.id, c.name with ROLLUP";
+
+                                            //print_r($recap);
+                                            //echo '<br />';
                                         }
                                     } else if($admin) {
-                                        if (isset($date) && !empty($date)) {
+                                        if (isset($date_sql) && !empty($date_sql)) {
                                             
                                             $recap="SELECT 
                                                 concat(month(g.updated)) AS `concat`,
@@ -295,19 +292,14 @@ if($user) {
                                             WHERE
                                                 a.id = '" . $_SESSION['id'] . "'
                                                 AND
-                                                updated = '" . $date_sql . "' 
-                                                AND
-                                                concat(month(g.updated)) = (
-                                                                        SELECT 
-                                                                            MAX(concat(month(updated)))
-                                                                        FROM
-                                                                            global_reference
-                                                                        )
+                                                updated = '" . $date_sql . "'
                                             GROUP BY concat(month(g.updated)) , g.updated , a.id, c.name with ROLLUP";
                                         }
                                     }
 
                                     if ($result = mysqli_query($db, $recap)) {
+
+                                        //print_r($result);
 
                                         if (mysqli_num_rows($result) > 0) {
 
@@ -338,20 +330,22 @@ if($user) {
                                                     }
 
                                                     echo '<div class="d-inline-flex w-100 m-0">
-                                                        <div class="col-5 pl-0 pr-0 h6 mt-auto mb-auto">' . $row['name_chantier'] . '</div>:
-                                                        <input class="bg-white border-0 pt-0 pl-2 pb-0 pr-0 mt-0 ml-auto mr-auto mb-0 w-50" value="' . $hours . 'h' . $minutes . ' [' . $night_h . 'h' . $night_m . ' h/nuit]" /></div><br />';
+                                                        <div class="col-5 pl-0 pr-0 h6 mt-auto mb-auto h-50">' . $row['name_chantier'] . '</div><div class="mt-auto ml-0 mb-auto mr-0 p-0">:</div>
+                                                        <input class="bg-white border-0 pt-0 pl-2 pb-0 pr-0 mt-auto ml-auto mr-auto mb-auto w-50" value="' . $hours . 'h' . $minutes . ' [' . $night_h . 'h' . $night_m . ' h/nuit]" />
+                                                    </div>
+                                                    <br />';
                                                 }
                                             }
                                             echo '<br />';
                                             mysqli_free_result($result);
                                         }
                                     } else{
-                                        echo "ERROR: Could not able to execute $recap. " . mysqli_error($db);
+                                        echo '<p class="pb-2 text-center">Il n\'y a pas encore d\'intervention enregistrée à ce jour.</p>';
                                     }
                                 }
                             echo '</fieldset>';
                         echo '<div class="w-75 mt-3 ml-auto mr-auto">
-                            <input id="submit" type="submit" value="Soumettre" class="btn send border-0 bg-white z-depth-1a mt-3 mb-0 align-middle text-dark" />
+                            <input id="submit" type="submit" value="Soumettre" class="btn send border-0 bg-white z-depth-1a mt-4 mb-0 align-middle text-dark" />
                         </div>';
                         ?>
                     </div>

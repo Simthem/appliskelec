@@ -214,17 +214,21 @@ $('#chantier').change(function () {
 
     if ($("input[name='chantier']").is(":checked")) {
         $("input[name='chantier']").prop("checked", true);
+        document.getElementById('chantier').value = 1;
         $("div[name='flag_chant']").removeClass('d-none');
         $("div[name='flag_day']").removeClass('d-block');
         $("div[name='flag_day']").addClass('d-none');
         $("input[name='ab_day']").prop("checked", false);
+        document.getElementById('ab_day').value = null;
         $("div[name='flag_chant']").addClass('d-block');
-        console.log('entrée_chantier');
+        console.log('chantier = '+document.getElementById('chantier').value);
+        console.log('ab_day = '+document.getElementById('ab_day').value);
     }
     if (!($("input[name='chantier']").is(":checked"))) {
         $("div[name='flag_chant']").removeClass('d-block');
         $("div[name='flag_chant']").addClass('d-none');
-        console.log('sortie_chantier');
+        document.getElementById('chantier').value = null;
+        console.log('chantier = '+document.getElementById('chantier').value);
     }
 });
 
@@ -232,19 +236,24 @@ $('#ab_day').change(function () {
      
     if ($("input[name='ab_day']").is(":checked")) {
         $("input[name='ab_day']").prop('checked', true);
+        document.getElementById('ab_day').value = 1;
         $("div[name='flag_day']").removeClass('d-none');
         $("div[name='flag_chant']").removeClass('d-block');
         $("div[name='flag_chant']").addClass('d-none');
         $("input[name='chantier']").prop("checked", false);
+        document.getElementById('chantier').value = null;
         $("div[name='flag_day']").addClass('d-block');
-        console.log('entrée_day');
+        console.log('chantier = '+document.getElementById('chantier').value);
+        console.log('ab_day = '+document.getElementById('ab_day').value);
     }
     if (!($("input[name='ab_day']").is(":checked"))) {
         $("div[name='flag_day']").removeClass('d-block');
         $("div[name='flag_day']").addClass('d-none');
-        console.log('sortie_day');
+        document.getElementById('ab_day').value = null;
+        console.log('ab_day = '+document.getElementById('ab_day').value);
     }
 });
+
 
 
 //function PREVIEW_FORM_INDEX
@@ -260,14 +269,8 @@ function preview2() {
     //NORM_HOUR_RECAP _  AND _ PREPARE_SEND_FORM
     var h_index = document.getElementById('h_index').value;
     var total = 0;
+    total = h_index;
 
-    if (document.getElementById('h_index').textContent == '-' . h_index) {
-        total = h_index * -1;
-        //console.log(total);
-    } else {
-        total = h_index;
-    }
-    //total = h_index;
     document.getElementById("intervention_hours").value = total;
 
     var m_index = document.getElementById('m_index').value;
@@ -278,69 +281,76 @@ function preview2() {
     document.getElementById("intervention_hours").value = total;
     document.getElementById("intervention_hours").textContent = total;
     //console.log(document.getElementById("intervention_hours").value);
+    console.log(m_index);
+    console.log(h_index);
+    console.log(total);
 
     var inter_h = document.getElementById("inter_h");
     var temp = document.getElementById("intervention_hours").value;
     var temp_h = parseInt(temp, 10);
-    var temp_m = (temp * 100 - temp_h * 100) / 100 * 60;
+    if (temp_h < 0) {
+        var temp_m = (temp * -100 - temp_h * -100) / 100 * 60;
+    } else {
+        var temp_m = (temp * 100 - temp_h * 100) / 100 * 60;
+    }
+    console.log(temp);
+    console.log(temp_h);
+    console.log(temp_m);
 
     if (temp_m < 10) {
         temp_m = '0' + temp_m;
     }
     inter_h.value = temp_h +' h '+ temp_m;
 
-//_____________________________________________________________________________________________________________________________
-
-
-    //NIGHT_HOUR_RECAP _  AND _ PREPARE_SEND_FORM
-    var ni_h_index = document.getElementById('ni_h_index').value;
-    var ni_total = 0;
-
-    ni_total = ni_h_index;
-    document.getElementById("night_hours").value = ni_total;
-
-    var ni_m_index = document.getElementById('ni_m_index').value;
-    var ni_total = 0;
-    
-    ni_m_index /= 60;
-    ni_total = ni_h_index +'.'+ ni_m_index * 100;
-    document.getElementById("night_hours").value = ni_total;
-    document.getElementById("night_hours").textContent = ni_total;
-
-
-    if ($("input[name='coch_night']").is(":checked")) {
-        var h_night = document.getElementById("h_night");
-        var temp_ni = document.getElementById("night_hours").value;
-        var temp_h_ni = parseInt(temp_ni, 10);
-        var temp_m_ni = (temp_ni * 100 - temp_h_ni * 100) / 100 * 60;
-        //console.log(temp_ni);
-        //console.log(temp_h_ni);
-        //console.log(temp_m_ni);
-        if (temp_m_ni < 10) {
-            temp_m_ni = '0' + temp_m_ni;
-        }
-        h_night.value = temp_h_ni +' h '+ temp_m_ni;
-    };
-
-
-//_________________________________________________________________________________________________________________________
-    //THE_REST
 
     var chant_name = document.getElementById("chant_name");
     chant_name.value = document.getElementById("chantier_name").value;
-    var pan_rep = document.getElementById("pan_rep");
-    pan_rep.value = document.getElementById("panier_repas").value;
-
-    var pan_rep = document.getElementById("pan_rep");
-    if ($("input[name='panier_repas']").is(":checked")) {
-        pan_rep.value = document.getElementById("panier_repas").value;
-    } else {
-        pan_rep.value = 0;
-    }
+    //var pan_rep = document.getElementById("pan_rep");
+    //pan_rep.value = document.getElementById("panier_repas").value;
 
     var com = document.getElementById("com");
     com.value = document.getElementById("commit").value;
-    
+
+    if ($("input[name='panier_repas']").val()) {
+
+        //NIGHT_HOUR_RECAP _  AND _ PREPARE_SEND_FORM
+        var ni_h_index = document.getElementById('ni_h_index').value;
+        var ni_total = 0;
+
+        ni_total = ni_h_index;
+        document.getElementById("night_hours").value = ni_total;
+
+        var ni_m_index = document.getElementById('ni_m_index').value;
+        var ni_total = 0;
+        
+        ni_m_index /= 60;
+        ni_total = ni_h_index +'.'+ ni_m_index * 100;
+        document.getElementById("night_hours").value = ni_total;
+        document.getElementById("night_hours").textContent = ni_total;
+
+
+        if ($("input[name='coch_night']").is(":checked")) {
+            var h_night = document.getElementById("h_night");
+            var temp_ni = document.getElementById("night_hours").value;
+            var temp_h_ni = parseInt(temp_ni, 10);
+            var temp_m_ni = (temp_ni * 100 - temp_h_ni * 100) / 100 * 60;
+            //console.log(temp_ni);
+            //console.log(temp_h_ni);
+            //console.log(temp_m_ni);
+            if (temp_m_ni < 10) {
+                temp_m_ni = '0' + temp_m_ni;
+            }
+            h_night.value = temp_h_ni +' h '+ temp_m_ni;
+        };
+
+
+        var pan_rep = document.getElementById("pan_rep");
+        if ($("input[name='panier_repas']").is(":checked")) {
+            pan_rep.value = document.getElementById("panier_repas").value;
+        } else {
+            pan_rep.value = 0;
+        }
+    }
 }
 
 

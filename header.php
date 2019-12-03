@@ -55,7 +55,7 @@
                                                 if ($db === false){
                                                     die("ERROR: Could not connect. " . mysqli_connect_error());
                                                 }
-                                                while($row = $admin_result->fetch_array()) {
+                                                while ($row = $admin_result->fetch_array()) {
                                                     echo "<li class='rounded-0 p-0 menu-link' style='height: 60px;'><a href='modif_profil.php?id=" . $row['id'] . "' class='mt-auto ml-auto mb-auto mr-auto pr-3 pl-3 text-dark w-75'><div class='mt-auto mb-auto pr-3 float-left'> • </div>Profile</a></li>";
                                                     echo "<li><a href='absence.php?id=" . $row['id'] . "' class='pt-4 pr-3 pb-4 pl-3 mt-auto ml-auto mb-auto mr-auto text-dark w-75 d-flex border-top'><div class='mt-auto mb-auto pr-3 float-left'> • </div><div class='float-right text-left'>Signaler une <br />ou des absence(s)</div></a></li>";
                                                 }
@@ -90,7 +90,6 @@
                                     }
                                 ?>
                             </div>
-                        </li>
                         <li class="bg-dark border-top border-bottom border-warning rounded-0 p-0 menu-link"><a href="api/User/logout.php" class="text-warning">Déconnexion</a></li>
                     </ul>
                 </div>

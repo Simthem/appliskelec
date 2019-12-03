@@ -8,7 +8,7 @@ include '../config/db_connexion.php';
 include_once '../objects/user.php';
 
 //api_pass
-include '/m_p/password_compat-master/lib/password.php';
+include '../../m_p/password_compat-master/lib/password.php';
 
 // get database connection
 $database = new Database();
