@@ -60,7 +60,6 @@ function ext_link(start, stop, u_tot, admin) {
 //function CALCUL_VALID_DAY
 
 $('#verif').on('click', function() {
-    //function calcul() {
 
     //HOURS------------------------------
 
@@ -70,10 +69,14 @@ $('#verif').on('click', function() {
 
     var i, nb = totaux_h.length;
 
+    var up_ab = null;
+
     for (i = 0; i < nb; i += 1) {
         total_h += parseFloat(totaux_h[i].value);
+        if (totaux_h[i].value == null || totaux_h[i].value == 0) {
+            up_ab = i;
+        }
     }
-
 
     //MINUTES----------------------------
 
@@ -91,12 +94,15 @@ $('#verif').on('click', function() {
     var tot_h = new Array();
 
     for (i = 0; i < nb; i += 1) {
-        tot_h[i] = totaux_h[i].value + ':' + totaux_m[i].value;
 
+        tot_h[i] = totaux_h[i].value + ':' + totaux_m[i].value;
         document.getElementById('tot_h'+i).value = tot_h[i];
         document.getElementById('tot_h'+i).textContent = tot_h[i];
+        document.getElementById('tot_h_ab'+i).value = 0;
+        document.getElementById('tot_h_ab'+i).textContent = 0;
     }
 
+    
 
     //HOURS/NIGHT----------------------------
 
@@ -104,10 +110,10 @@ $('#verif').on('click', function() {
     var tot_h_night = 0;
     tot_h_night = document.querySelectorAll('.night_h');
 
-    var j, y = tot_h_night.length;
+    var y = tot_h_night.length;
 
-    for (j = 0; j < y; j += 1) {
-        night_h += parseFloat(tot_h_night[j].value);
+    for (i = 0; i < y; i += 1) {
+        night_h += parseFloat(tot_h_night[i].value);
     }
 
 
@@ -119,37 +125,93 @@ $('#verif').on('click', function() {
 
     var z = tot_m_night.length;
 
-    for (j = 0; j < z; j += 1) {
-        night_m += parseFloat(tot_m_night[j].value);
+    for (i = 0; i < z; i += 1) {
+        night_m += parseFloat(tot_m_night[i].value);
     }
 
 
-    var h_night = new Array();
+    var arr_night = new Array();
 
-    for (j = 0; j < z; j += 1) {
-        h_night[j] = tot_h_night[j].value + ':' + tot_m_night[j].value;
-        document.getElementById('tot_h_night'+j).value = h_night[j];
-        document.getElementById('tot_h_night'+j).value = h_night[j];
+    for (i = 0; i <= z; i += 1) {
+
+        if (tot_h_night[i] != null && tot_h_night[i] != 0) {
+            arr_night[i] = tot_h_night[i].value + ':' + tot_m_night[i].value;
+            document.getElementById('tot_h_night'+i).value = arr_night[i];
+            document.getElementById('tot_h_night'+i).text_content = arr_night[i];
+            document.getElementById('tot_h_ab'+i).value = 0;
+            document.getElementById('tot_h_ab'+i).textContent = 0;
+        }
     }
 
+    if (up_ab != null) {
 
-    //GLOBAL-----------------------------
+        //ABSENCE_HOURS----------------------
+        var total_h_ab = 0;
+        var totaux_h_ab = 0;
+        totaux_h_ab = document.querySelectorAll('.h_ab');
+
+        var i, ab = totaux_h_ab.length;
+
+        for (i = 0; i < ab; i += 1) {
+            total_h_ab += parseFloat(totaux_h_ab[i].value);
+            console.log(total_h_ab);
+        }
+
+
+        //ABSENCE_MINUTES--------------------
+
+
+        var total_m_ab = 0;
+        var totaux_m_ab = 0;
+        totaux_m_ab = document.querySelectorAll('.m_ab');
+
+        var k = totaux_m_ab.length;
+
+        for (i = 0; i < k; i += 1) {
+            total_m_ab += parseFloat(totaux_m_ab[i].value);
+            console.log(total_m_ab);
+        }
+
+        var tot_h_ab = new Array();
+
+        for (i = 0; i < ab; i += 1) {
+
+            tot_h_ab[i] = totaux_h_ab[i].value + ':' + totaux_m_ab[i].value;
+            document.getElementById('tot_h_ab'+(i)).value = tot_h_ab[i];
+            document.getElementById('tot_h_ab'+(i)).textContent = tot_h_ab[i];
+        }
+    }
+
+    if (up_ab != null) {
+        total_h_ab = Number(total_h_ab);
+        total_m_ab = Number(total_m_ab / 60);
+        total_h = Number(total_h).toFixed(0);
+        total_m /= 60;
+        total_m = Number(total_m);
+    } else {
+        total_h = Number(total_h).toFixed(0);
+        total_m = Number(total_m);
+    }
+
+    tot_ab_glo = Number(total_h_ab) +'.'+ Number(total_m_ab * 10);
+    tot_glo = Number(total_h) +'.'+ Number(total_m * 10);
+
+    global = Number(tot_glo) + Number(tot_ab_glo);
 
     var hours = 0;
-    hours = total_h.toFixed(0);
     var minutes = 0;
-    minutes = total_m.toFixed(0);
-    
-    if (minutes > 59) {
-        hours = (total_h + 1).toFixed(0);
-        minutes -= 60;
-    }
-    if (minutes > 10) {
-        minutes = minutes;
-    } else if (minutes < 10 && minutes > 0) {
-        minutes = "0" . minutes;
+
+    if (global < 0 && global > -1 && global != global.toFixed(0)) {
+        hours = "-0";
+        minutes = ((global.toFixed(0) - global) * 60) * -1;
     } else {
-        minutes = "00";
+        hours = parseInt(global);
+        minutes = (global.toFixed(0) - global) * 60;
+        if (minutes == 0) {
+            minutes = "00";
+        } else if (minutes < 0) {
+            minutes *= -1;
+        }
     }
 
     document.getElementById('recap_h').value = hours;
@@ -221,14 +283,20 @@ $('#chantier').change(function () {
         $("input[name='ab_day']").prop("checked", false);
         document.getElementById('ab_day').value = null;
         $("div[name='flag_chant']").addClass('d-block');
-        console.log('chantier = '+document.getElementById('chantier').value);
-        console.log('ab_day = '+document.getElementById('ab_day').value);
+        if ($("div[id='preview']").hasClass('in')) {
+            $("div[id='preview']").removeClass('in');
+        }
+        $("div[id='preview']").removeClass('d-none');
+        //console.log('chantier = '+document.getElementById('chantier').value);
+        //console.log('ab_day = '+document.getElementById('ab_day').value);
     }
     if (!($("input[name='chantier']").is(":checked"))) {
         $("div[name='flag_chant']").removeClass('d-block');
         $("div[name='flag_chant']").addClass('d-none');
+        $("div[id='preview']").addClass('d-none');
+        $("div[id='preview']").removeClass('in');
         document.getElementById('chantier').value = null;
-        console.log('chantier = '+document.getElementById('chantier').value);
+        //console.log('chantier = '+document.getElementById('chantier').value);
     }
 });
 
@@ -243,14 +311,20 @@ $('#ab_day').change(function () {
         $("input[name='chantier']").prop("checked", false);
         document.getElementById('chantier').value = null;
         $("div[name='flag_day']").addClass('d-block');
-        console.log('chantier = '+document.getElementById('chantier').value);
-        console.log('ab_day = '+document.getElementById('ab_day').value);
+        if ($("div[id='preview']").hasClass('in')) {
+            $("div[id='preview']").removeClass('in');
+        }
+        $("div[id='preview']").removeClass('d-none');
+        //console.log('chantier = '+document.getElementById('chantier').value);
+        //console.log('ab_day = '+document.getElementById('ab_day').value);
     }
     if (!($("input[name='ab_day']").is(":checked"))) {
         $("div[name='flag_day']").removeClass('d-block');
         $("div[name='flag_day']").addClass('d-none');
+        $("div[id='preview']").addClass('d-none');
+        $("div[id='preview']").removeClass('in');
         document.getElementById('ab_day').value = null;
-        console.log('ab_day = '+document.getElementById('ab_day').value);
+        //console.log('ab_day = '+document.getElementById('ab_day').value);
     }
 });
 

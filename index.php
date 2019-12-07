@@ -103,9 +103,9 @@ if($user) {
                     </div>
                     <?php echo "<input type='number' id='user_id' name='user_id' value='" . $_SESSION['id'] . "' style='display: none;'>"; ?>
                     <div class="text-center">
-                        <div class="bg-white border rounded m-auto" style="width: max-content">
+                        <div class="bg-white border rounded m-auto" style="width: 60%">
                             <?php
-                            echo '<select id="chantier_name" name="chantier_name" class="bg-white border-white" size="1" required>';
+                            echo '<select id="chantier_name" name="chantier_name" class="bg-white border-white" size="1" style="max-width: -webkit-fill-available;" required>';
 
                                 $sql = 
                                 "SELECT 
@@ -208,9 +208,12 @@ if($user) {
                                     <label class="col-4 mt-auto pl-0 mb-auto text-wrap text-left">heures de nuit</label>
                                 </div>
                             </div>
-                            <div class="mt-2 mb-2 pt-5 pb-4 w-75 m-auto">
+                            <div class="mt-2 mb-2 pt-5 pb-3 w-75 m-auto">
                                 <textarea class="form-control textarea" id="commit" name="commit" placeholder="Informations ?" maxlength="450"></textarea>
                             </div>
+                        </div>
+                        <div class="mt-2 w-75 pb-3 mr-auto ml-auto">
+                            <a data-toggle="collapse" href="#preview" role="button" aria-expanded="false" aria-controls="preview" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark" onClick="preview2()">Prévisualiser</a>
                         </div>
                     </div>
                     
@@ -256,6 +259,7 @@ if($user) {
                                                 g.updated as inter_chantier,
                                                 u.id,
                                                 c.name AS name_chantier,
+                                                SUM(absence) AS absence,
                                                 SUM(night_hours) AS h_night_tot,
                                                 SUM(intervention_hours) AS totalheure
                                             FROM
@@ -281,6 +285,7 @@ if($user) {
                                                 g.updated as inter_chantier,
                                                 a.id,
                                                 c.name AS name_chantier,
+                                                SUM(absence) AS  absence,
                                                 SUM(night_hours) AS h_night_tot,
                                                 SUM(intervention_hours) AS totalheure
                                             FROM
@@ -314,26 +319,43 @@ if($user) {
                                                 if ($row['name_chantier']) {
 
                                                     $total = $row['totalheure'];
-                                                    $hours = (int)$total;
-                                                    $minutes = ($total - $hours) * 60;
+                                                    $absence = $row['absence'];
 
-                                                    if ($minutes == 0) {
-                                                        $minutes = "00";
+                                                    if ((!empty($total) and $total != 0) and (empty($absence) or $absence == 0)) {
+                                                        $hours = (int)$total;
+                                                        $minutes = ($total - $hours) * 60;
+
+                                                        if ($minutes == 0) {
+                                                            $minutes = "00";
+                                                        }
+
+                                                        $night_tot = $row['h_night_tot'];
+                                                        $night_h = (int)$night_tot;
+                                                        $night_m = ($night_tot - $night_h) * 60;
+
+                                                        if ($night_m == 0) {
+                                                            $night_m = "00";
+                                                        }
+
+                                                        echo '<div class="d-inline-flex w-100 m-0">
+                                                            <div class="col-5 pl-0 pr-0 h6 mt-auto mb-auto h-50">' . $row['name_chantier'] . '</div><div class="mt-auto ml-0 mb-auto mr-0 p-0">:</div>
+                                                            <input class="bg-white border-0 pt-0 pl-2 pb-0 pr-0 mt-auto ml-auto mr-auto mb-auto w-50" value="' . $hours . 'h' . $minutes . ' [' . $night_h . 'h' . $night_m . ' h/nuit]" />
+                                                        </div>
+                                                        <br />';
+                                                    } elseif ($absence != 0 and !empty($absence)) {
+                                                        $h_ab = (int)$absence;
+                                                        $m_ab = ($absence - $h_ab) * 60;
+
+                                                        if ($m_ab == 0) {
+                                                            $m_ab = "00";
+                                                        }
+
+                                                        echo '<div class="d-inline-flex w-100 m-0">
+                                                            <div class="col-5 pl-0 pr-0 h6 mt-auto mb-auto h-50">' . $row['name_chantier'] . '</div><div class="mt-auto ml-0 mb-auto mr-0 p-0">:</div>
+                                                            <input class="bg-white border-0 p-0 mt-auto ml-auto mr-auto mb-auto w-50" value="' . $h_ab . 'h' . $m_ab . ' [heure(s) d\'absence]" />
+                                                        </div>
+                                                        <br />';
                                                     }
-
-                                                    $night_tot = $row['h_night_tot'];
-                                                    $night_h = (int)$night_tot;
-                                                    $night_m = ($night_tot - $night_h) * 60;
-
-                                                    if ($night_m == 0) {
-                                                        $night_m = "00";
-                                                    }
-
-                                                    echo '<div class="d-inline-flex w-100 m-0">
-                                                        <div class="col-5 pl-0 pr-0 h6 mt-auto mb-auto h-50">' . $row['name_chantier'] . '</div><div class="mt-auto ml-0 mb-auto mr-0 p-0">:</div>
-                                                        <input class="bg-white border-0 pt-0 pl-2 pb-0 pr-0 mt-auto ml-auto mr-auto mb-auto w-50" value="' . $hours . 'h' . $minutes . ' [' . $night_h . 'h' . $night_m . ' h/nuit]" />
-                                                    </div>
-                                                    <br />';
                                                 }
                                             }
                                             echo '<br />';
@@ -348,9 +370,6 @@ if($user) {
                             <input id="submit" type="submit" value="Soumettre" class="btn send border-0 bg-white z-depth-1a mt-4 mb-0 align-middle text-dark" />
                         </div>';
                         ?>
-                    </div>
-                    <div class="mt-4 w-75 pt-2 mr-auto ml-auto">
-                        <a data-toggle="collapse" href="#preview" role="button" aria-expanded="false" aria-controls="preview" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark" onClick="preview2()">Prévisualiser</a>
                     </div>
                 </form>
             </div>
