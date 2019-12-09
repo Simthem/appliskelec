@@ -70,11 +70,12 @@ if($user) {
                 concat(month(g.updated)) AS `concat`,
                 g.updated as inter_chantier,
                 u.id AS `user_id`,
+                night_hours,
                 SUM(intervention_hours) AS tot_glob,
                 SUM(night_hours) AS h_night_tot,
-                SUM(intervention_hours - night_hours) AS tothsnight,
-                if (SUM(intervention_hours - night_hours) - 151.4 > 0, if (SUM(intervention_hours - night_hours) - 151.4 > 34.4, 34.4, SUM(intervention_hours - night_hours) - 151.4), NULL) AS maj25,
-                if (SUM(intervention_hours - night_hours) > 186.2, if (SUM(night_hours) > 0, SUM(intervention_hours) - 186.2, SUM(intervention_hours - night_hours) - 186.2), if (SUM(intervention_hours - night_hours) < 186.2, if (SUM(night_hours) > 0, SUM(night_hours), NULL), NULL)) AS maj50
+                SUM(intervention_hours - night_hours) AS tothsnight
+                #if (SUM(intervention_hours - night_hours) - 151.4 > 0, if (SUM(intervention_hours - night_hours) - 151.4 > 34.4, 34.4, SUM(intervention_hours - night_hours) - 151.4), NULL) AS maj25,
+                #if (SUM(intervention_hours - night_hours) > 186.2, if (SUM(night_hours) > 0, SUM(intervention_hours) - 186.2, SUM(intervention_hours - night_hours) - 186.2), if (SUM(intervention_hours - night_hours) < 186.2, if (SUM(night_hours) > 0, SUM(night_hours), NULL), NULL)) AS maj50
             FROM
                 chantiers AS c
                 JOIN
@@ -90,9 +91,10 @@ if($user) {
                                         FROM
                                             global_reference
                                         )
-            GROUP BY concat(month(g.updated)) , g.updated , u.id with ROLLUP";
+            GROUP BY concat(month(g.updated)) , g.updated , u.id , night_hours  with ROLLUP";
 
 
+            $night = "SELECT night_hours FROM global_reference WHERE `user_id` = '" . $_GET['id'] . "'";
 
             
             if(($_GET['id'] != $admin['id'] and $_SESSION['id'] == $_GET['id'] and $_SESSION['id'] == $user['id']) or $_SESSION['id'] == $admin['id']) {
@@ -106,7 +108,8 @@ if($user) {
                                 $stmt = $bdd->prepare("SELECT * FROM users WHERE id = '". $_GET['id'] ."'");
                                 $stmt->execute();
                                 $user = $stmt->fetch();
-                                if($user) {
+                                
+                                if ($user) {
                                     $modif_user['id'] = $user['id'];
                                     $modif_user['username'] = $user['username'];
                                     $modif_user['first_name'] = $user['first_name'];
@@ -148,17 +151,17 @@ if($user) {
                                     </table>";
                                     echo '<div class="m-auto">
                                         <table class="table table-striped border ml-auto mb-1 mr-auto pb-3 w-100 text-center">';
-                                            if($result = mysqli_query($db, $month_sql)) {
+                                            if ($result = mysqli_query($db, $month_sql)) {
+
+                                                if( $db === false){
+                                                    die("ERROR: Could not connect. " . mysqli_connect_error());
+                                                }
 
                                                 if (mysqli_num_rows($result) > 0) {
                                                     
                                                     echo "<tbody>";
 
                                                         while ($row = $result->fetch_array()) {
-
-                                                            if( $db === false){
-                                                                die("ERROR: Could not connect. " . mysqli_connect_error());
-                                                            }
 
                                                             if (empty($row['concat']) && empty($row['inter_chantier']) && empty($row['user_id'])) {
                                                                 
@@ -182,20 +185,27 @@ if($user) {
                                                                         }
                                                                     echo '</td>';
                                                                     echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
-                                                                        $m50 = $row['maj50'];
-                                                                        $hours = (int)$m50;
-                                                                        $minutes = ($m50 - $hours);
-                                                                        $m50 = $hours + $minutes;
-                                                                        if ($m50 > 0) {
-                                                                            echo $m50;
-                                                                            if ($row['h_night_tot'] != 0) {
-                                                                                $hnight = $row['h_night_tot'];
-                                                                                $hours = (int)$hnight;
-                                                                                $minutes = ($hnight - $hours);
-                                                                                $hnight = $hours + $minutes;
-                                                                                echo '<div class="d-inline small text-success">&nbsp;&nbsp;&nbsp;[nuit =&nbsp;' . $hnight . ']</div>';
-                                                                            } 
-                                                                            echo '<br />' . $m50 * 50 / 100 . ' maj.';
+                                                                        if ($sql_night = mysqli_query($db, $night)) {
+                                                                            if (mysqli_num_rows($sql_night)) {
+                                                                                while ($temp = $sql_night->fetch_array()) {
+                                                                                    $m50 += $temp['night_hours'];
+                                                                                    $hours = (int)$m50;
+                                                                                    $minutes = ($m50 - $hours);
+                                                                                    $m50 = $hours + $minutes;
+                                                                                    if ($m50 > 0) {
+                                                                                        echo $m50;
+                                                                                        if ($row['h_night_tot'] != 0) {
+                                                                                            $hnight = $row['h_night_tot'];
+                                                                                            $hours = (int)$hnight;
+                                                                                            $minutes = ($hnight - $hours);
+                                                                                            $hnight = $hours + $minutes;
+                                                                                            echo '<div class="d-inline small text-success">&nbsp;&nbsp;&nbsp;[nuit =&nbsp;' . $hnight . ']</div>';
+                                                                                        } 
+                                                                                        echo '<br />= ';
+                                                                                        echo $m50 + ($m50 * 50 / 100) . ' maj.';
+                                                                                    }
+                                                                                }
+                                                                            }
                                                                         } else {
                                                                             echo '<div class="bg-secondary w-100 h-100"></div>';
                                                                         }
@@ -227,6 +237,10 @@ if($user) {
                                         <table class="table table-striped border ml-auto mb-3 mr-auto w-100 text-center">';
                                             if($result = mysqli_query($db, $sql)) {
 
+                                                if( $db === false){
+                                                    die("ERROR: Could not connect. " . mysqli_connect_error());
+                                                }
+
                                                 if (mysqli_num_rows($result) > 0) {
 
                                                     $flag = 1;
@@ -234,10 +248,6 @@ if($user) {
                                                     echo "<tbody>";
 
                                                         while ($row = $result->fetch_array()) {
-
-                                                            if( $db === false){
-                                                                die("ERROR: Could not connect. " . mysqli_connect_error());
-                                                            }
 
                                                             if (empty($row['date_chantier']) && empty($row['inter_chantier']) && empty($row['name_chantier']) && !empty($row['concat'])/*&& !empty($row['chantier_id'])*/ && $flag <= 4) {
                                                                 
@@ -275,7 +285,8 @@ if($user) {
                                                                                 $hnight = $hours + $minutes;
                                                                                 echo '<div class="d-inline small text-success">&nbsp;&nbsp;&nbsp;[nuit =&nbsp;' . $hnight . ']</div>';
                                                                             } 
-                                                                            echo '<br />' . $m50 * 50 / 100 . ' maj.';
+                                                                            echo '<br />= ';
+                                                                            echo $m50 + ($m50 * 50 / 100) . ' maj.';
                                                                         } else {
                                                                             echo '<div class="bg-secondary w-100 h-100"></div>';
                                                                         }
@@ -396,15 +407,15 @@ if($user) {
                                             <table class="table table-striped border ml-auto mb-1 mr-auto pb-3 w-100 text-center">';
                                                 if($result = mysqli_query($db, $month_admin)) {
 
+                                                    if( $db === false){
+                                                        die("ERROR: Could not connect. " . mysqli_connect_error());
+                                                    }
+
                                                     if (mysqli_num_rows($result) > 0) {
                                                         
                                                         echo "<tbody>";
 
                                                             while ($row = $result->fetch_array()) {
-
-                                                                if( $db === false){
-                                                                    die("ERROR: Could not connect. " . mysqli_connect_error());
-                                                                }
 
                                                                 if (empty($row['concat']) && empty($row['inter_chantier']) && empty($row['admin_id'])) {
                                                                     
@@ -441,7 +452,8 @@ if($user) {
                                                                                     $hnight = $hours + $minutes;
                                                                                     echo '<div class="d-inline small text-success">&nbsp;&nbsp;&nbsp;[nuit =&nbsp;' . $hnight . ']</div>';
                                                                                 } 
-                                                                                echo '<br />' . $m50 * 50 / 100 . ' maj.';
+                                                                                echo '<br />= ';
+                                                                                echo $m50 + ($m50 * 50 / 100) . ' maj.';
                                                                             } else {
                                                                                 echo '<div class="bg-secondary w-100 h-100"></div>';
                                                                             }
@@ -474,6 +486,10 @@ if($user) {
                                             <table class="table table-striped border ml-auto mb-3 mr-auto w-100 text-center">';
                                                 if($result = mysqli_query($db, $admin_sql)) {
 
+                                                    if( $db === false){
+                                                        die("ERROR: Could not connect. " . mysqli_connect_error());
+                                                    }
+
                                                     if (mysqli_num_rows($result) > 0) {
                                                         
                                                         $flag = 1;
@@ -481,10 +497,6 @@ if($user) {
                                                         echo "<tbody>";
                                                         
                                                             while ($row = $result->fetch_array()) {
-
-                                                                if( $db === false){
-                                                                    die("ERROR: Could not connect. " . mysqli_connect_error());
-                                                                }
 
                                                                 if (empty($row['date_chantier']) && empty($row['inter_chantier']) && empty($row['name_chantier']) && $flag <= 4) {
                                                                     
@@ -523,7 +535,8 @@ if($user) {
                                                                                     $hnight = $hours + $minutes;
                                                                                     echo '<div class="d-inline small text-success">&nbsp;&nbsp;&nbsp;[nuit =&nbsp;' . $hnight . ']</div>';
                                                                                 } 
-                                                                                echo '<br />' . $m50 * 50 / 100 . ' maj.';
+                                                                                echo '<br />= ';
+                                                                                echo $m50 + ($m50 * 50 / 100) . ' maj.';
                                                                             } else {
                                                                                 echo '<div class="bg-secondary w-100 h-100"></div>';
                                                                             }
@@ -618,15 +631,15 @@ if($user) {
                                         <table class="table table-striped border ml-auto mb-1 mr-auto pb-3 w-100 text-center">';
                                             if($result = mysqli_query($db, $month_sql)) {
 
+                                                if( $db === false){
+                                                    die("ERROR: Could not connect. " . mysqli_connect_error());
+                                                }
+
                                                 if (mysqli_num_rows($result) > 0) {
                                                     
                                                     echo "<tbody>";
 
                                                         while ($row = $result->fetch_array()) {
-
-                                                            if( $db === false){
-                                                                die("ERROR: Could not connect. " . mysqli_connect_error());
-                                                            }
 
                                                             if (empty($row['concat']) && empty($row['inter_chantier']) && empty($row['user_id'])) {
                                                                 
@@ -663,7 +676,8 @@ if($user) {
                                                                                 $hnight = $hours + $minutes;
                                                                                 echo '<div class="d-inline small text-success">&nbsp;&nbsp;&nbsp;[nuit =&nbsp;' . $hnight . ']</div>';
                                                                             } 
-                                                                            echo '<br />' . $m50 * 50 / 100 . ' maj.';
+                                                                            echo '<br />= ';
+                                                                            echo $m50 + ($m50 * 50 / 100) . ' maj.';
                                                                         } else {
                                                                             echo '<div class="bg-secondary w-100 h-100"></div>';
                                                                         }
@@ -695,6 +709,10 @@ if($user) {
                                         <table class="table table-striped border ml-auto mb-3 mr-auto w-100 text-center">';
                                             if($result = mysqli_query($db, $sql)) {
 
+                                                if( $db === false){
+                                                    die("ERROR: Could not connect. " . mysqli_connect_error());
+                                                }
+                                                
                                                 if (mysqli_num_rows($result) > 0) {
 
                                                     echo "<tbody>";
@@ -702,10 +720,6 @@ if($user) {
                                                         $flag = 1;
                                                         
                                                         while ($row = $result->fetch_array()) {
-                                                            
-                                                            if( $db === false){
-                                                                die("ERROR: Could not connect. " . mysqli_connect_error());
-                                                            }
 
                                                             if (empty($row['date_chantier']) && empty($row['inter_chantier']) && empty($row['name_chantier']) && !empty($row['concat'])/*&& !empty($row['chantier_id'])*/ && $flag <= 4) {
                                                                 
@@ -744,7 +758,8 @@ if($user) {
                                                                                 $hnight = $hours + $minutes;
                                                                                 echo '<div class="d-inline small text-success">&nbsp;&nbsp;&nbsp;[nuit =&nbsp;' . $hnight . ']</div>';
                                                                             } 
-                                                                            echo '<br />' . $m50 * 50 / 100 . ' maj.';
+                                                                            echo '<br />= ';
+                                                                            echo $m50 + ($m50 * 50 / 100) . ' maj.';
                                                                         } else {
                                                                             echo '<div class="bg-secondary w-100 h-100"></div>';
                                                                         }

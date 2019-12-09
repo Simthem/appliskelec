@@ -146,7 +146,7 @@ if($user) {
                                                 $pan = 1;
                                             }
 
-                                            if (isset($row['absence']) && !empty($row['absence'])) {
+                                            /*if (isset($row['absence']) && !empty($row['absence'])) {
 
                                                 $h_glo_ab += $row['absence'];
                                                 $h_ab = (int)($h_glo_ab);
@@ -162,6 +162,25 @@ if($user) {
                                                     $m_ab = "0" . $minutes;
                                                 }
                                                 if ($m_ab < 0) {
+                                                    $m_ab *= -1;
+                                                }
+                                            }*/
+
+                                            if (isset($row['absence']) && !empty($row['absence'])) {
+
+                                                $h_glo_ab += $row['absence'];
+                                                $h_ab = (int)($h_glo_ab);
+                                                $m_ab = ($h_glo_ab - $h_ab) * 60;
+
+                                                while ($m_ab > 59) {
+                                                    $h_ab += 1;
+                                                    $m_ab -= 60;
+                                                }
+                                                if ($m_ab < 10 and $m_ab > 0) {
+                                                    $m_ab = "0" . $minutes;
+                                                } elseif ($m_ab == 0 || empty($m_ab)) {
+                                                    $m_ab = "00";
+                                                } elseif ($h_ab == 0) {
                                                     $m_ab *= -1;
                                                 }
                                             }
@@ -255,7 +274,7 @@ if($user) {
                                                     <div class="w-75 p-0 text-center d-inline-flex">
                                                         <div class="p-0 mt-2 mb-2 float-left">&nbsp;:&nbsp;</div>';
 
-                                                            if (!isset($row['absence']) || empty($row['absence'])) {
+                                                            if (!isset($row['absence']) && empty($row['absence'])) {
                                                             echo '<div class="border-0 p-0 mt-2 ml-0 mr-0 mb-2 col-12 float-right d-inline-flex">
                                                                 <div class="col-5 p-0">
                                                                     <select id="hours" class="hours border-0 rounded bg-secondary text-white text-center" style="width: 40px;">
@@ -328,10 +347,15 @@ if($user) {
                                                                             $i--;
                                                                         }
                                                                     echo '</select>
-                                                                    <strong>h</strong>
-                                                                    <select class="m_ab border-0 rounded bg-secondary text-white text-center" style="width: 40px;">
-                                                                        <option value="' . $m_ab . '" selected disabled>' . $m_ab . '</option>
-                                                                        <option value="00">00</option>
+                                                                    <strong> h </strong>';
+                                                                    echo '<select class="m_ab border-0 rounded bg-secondary text-white text-center" style="width: 40px;">';
+
+                                                                        if ($m_ab < 0) {
+                                                                            echo '<option value="' . $m_ab . '" selected disabled>' . $m_ab * -1 . '</option>';
+                                                                        } else {
+                                                                            echo '<option value="' . $m_ab . '" selected disabled>' . $m_ab . '</option>';
+                                                                        }
+                                                                        echo '<option value="00">00</option>
                                                                         <option value="30">30</option>
                                                                     </select>
                                                                 </div>
@@ -366,6 +390,25 @@ if($user) {
                                                     $h_ab += 1;
                                                     $m_ab -= 60;
                                                 }
+                                                if ($m_ab < 10 and $m_ab > 0) {
+                                                    $m_ab = "0" . $minutes;
+                                                } elseif ($m_ab == 0 || empty($m_ab)) {
+                                                    $m_ab = "00";
+                                                } elseif ($h_ab == 0) {
+                                                    $m_ab *= -1;
+                                                }
+                                            }
+                                            /*
+                                            if (isset($row['absence']) && !empty($row['absence'])) {
+
+                                                $h_glo_ab += $row['absence'];
+                                                $h_ab = (int)($h_glo_ab);
+                                                $m_ab = ($h_glo_ab - $h_ab) * 60;
+
+                                                while ($m_ab > 59) {
+                                                    $h_ab += 1;
+                                                    $m_ab -= 60;
+                                                }
                                                 if ($m_ab > 10) {
                                                     $m_ab = $m_ab;
                                                 } elseif ($m_ab < 10 and $m_ab > 0) {
@@ -373,7 +416,7 @@ if($user) {
                                                 } else {
                                                     $m_ab = "00";
                                                 }
-                                            }
+                                            }*/
 
                                             if ($row['name_chantier']) {
 
@@ -526,10 +569,15 @@ if($user) {
                                                                             $i--;
                                                                         }
                                                                     echo '</select>
-                                                                    <strong>h</strong>
-                                                                    <select class="m_ab border-0 rounded bg-secondary text-white text-center">
-                                                                        <option value="' . $m_ab . '" selected disabled>' . $m_ab . '</option>
-                                                                        <option value="00">00</option>
+                                                                    <strong>h</strong>';
+                                                                    echo '<select class="m_ab border-0 rounded bg-secondary text-white text-center" style="width: 40px;">';
+
+                                                                        if ($m_ab < 0) {
+                                                                            echo '<option value="' . $m_ab . '" selected disabled>' . $m_ab * -1 . '</option>';
+                                                                        } else {
+                                                                            echo '<option value="' . $m_ab . '" selected disabled>' . $m_ab . '</option>';
+                                                                        }
+                                                                        echo '<option value="00">00</option>
                                                                         <option value="30">30</option>
                                                                     </select>
                                                                 </div>
@@ -553,7 +601,7 @@ if($user) {
                                         echo '<input id="tot_h' . $temp . '" name="tot_h' . $temp . '" style="display: none;" />';
                                         echo '<input id="tot_h_night' . $temp . '" name="tot_h_night' . $temp . '" style="display: none;" />';
                                         echo '<input id="chantier_id' . $temp . '" name="chantier_id' . $temp . '" style="display: none;" />';
-                                        echo '<input id="tot_h_ab' . $temp . '" name="tot_h_ab' . $temp . '"/>';
+                                        echo '<input id="tot_h_ab' . $temp . '" name="tot_h_ab' . $temp . '" style="display: none;" />';
                                         //echo $flag;
                                         $temp += 1;
                                     }

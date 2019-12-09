@@ -103,7 +103,7 @@ if($user) {
                     </div>
                     <?php echo "<input type='number' id='user_id' name='user_id' value='" . $_SESSION['id'] . "' style='display: none;'>"; ?>
                     <div class="text-center">
-                        <div class="bg-white border rounded m-auto" style="width: 60%">
+                        <div class="bg-white border rounded m-auto" style="width: max-content">
                             <?php
                             echo '<select id="chantier_name" name="chantier_name" class="bg-white border-white" size="1" style="max-width: -webkit-fill-available;" required>';
 
@@ -140,9 +140,9 @@ if($user) {
                     <div class="pt-5 w-75 m-auto text-center">
                         <label for="input_time m-auto">Heures réalisées</label>
                         <div class="w-100 m-auto pb-4">
-                            <div class="border-0 p-0 mt-2 ml-auto mr-auto mb-2 col-7">
+                            <div class="d-inline-flex justify-content-center border-0 p-0 mt-2 ml-auto mr-auto mb-2 col-7">
                                 <input id="intervention_hours" name="intervention_hours" value="" style="display: none;" />
-                                <select type="number" id="h_index" class="col-3 p-0 border-0 rounded bg-secondary text-white text-center" style="height: 19px;">
+                                <select type="number" id="h_index" class="col-3 p-0 border-0 rounded bg-secondary text-white text-center" style="height: 19px; max-width: 90px; min-width: 20px;">
                                     <option value="0">0</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
@@ -160,7 +160,7 @@ if($user) {
                                     <option value="14">14</option>
                                 </select><!--
                                 --><strong>&nbsp;h&nbsp;</strong><!--
-                                --><select type="number" id="m_index" class="col-3 p-0 border-0 rounded bg-secondary text-white text-center" style="height: 19px;">
+                                --><select type="number" id="m_index" class="col-3 p-0 border-0 rounded bg-secondary text-white text-center" style="height: 19px; max-width: 90px;">
                                     <option value="00">00</option>
                                     <option value="30">30</option>
                                 </select>
@@ -183,8 +183,8 @@ if($user) {
                                 </div>
                                 <div class="col-7 d-inline-flex m-auto text-center pr-0 pl-0 mt-auto mb-auto">
                                     <input id="night_hours" name="night_hours" value="" style="display: none;"/>
-                                    <div class="d-inline col-7 p-0 mt-auto mb-auto">
-                                        <select type="number" id="ni_h_index" class="col-4 p-0 border-0 rounded bg-secondary text-white mt-auto mb-auto text-center" style="height: 19px;">
+                                    <div class="d-inline-flex  justify-content-center col-7 p-0 mt-auto mb-auto">
+                                        <select type="number" id="ni_h_index" class="col-4 p-0 border-0 rounded bg-secondary text-white mt-auto mb-auto text-center" style="height: 19px; max-width: 90px;">
                                             <option value="0">0</option>
                                             <option value="1">1</option>
                                             <option value="2">2</option>
@@ -200,7 +200,7 @@ if($user) {
                                             <option value="12">12</option>
                                         </select><!--
                                         --><strong class="">&nbsp;h&nbsp;</strong><!--
-                                        --><select type="number" id="ni_m_index" class="col-4 p-0 border-0 rounded bg-secondary text-white mt-auto mb-auto text-center" style="height: 19px;">
+                                        --><select type="number" id="ni_m_index" class="col-4 p-0 border-0 rounded bg-secondary text-white mt-auto mb-auto text-center" style="height: 19px; max-width: 90px;">
                                             <option value="00">00</option>
                                             <option value="30">30</option>
                                         </select>

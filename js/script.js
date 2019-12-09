@@ -73,6 +73,7 @@ $('#verif').on('click', function() {
 
     for (i = 0; i < nb; i += 1) {
         total_h += parseFloat(totaux_h[i].value);
+        console.log(totaux_h[i].value);
         if (totaux_h[i].value == null || totaux_h[i].value == 0) {
             up_ab = i;
         }
@@ -182,21 +183,46 @@ $('#verif').on('click', function() {
         }
     }
 
+
     if (up_ab != null) {
         total_h_ab = Number(total_h_ab);
-        total_m_ab = Number(total_m_ab / 60);
+        console.log('first h_ab = '+total_h_ab);
+        if (total_m_ab < 0 && total_h_ab != 0) {
+            console.log(total_m_ab);
+            total_m_ab *= -1;
+            console.log(total_m_ab);
+            total_m_ab = Number(total_m_ab / 60);
+            console.log(total_m_ab);
+        } else {
+            console.log('tg');
+            total_m_ab = Number(total_m_ab / 60);
+        }
         total_h = Number(total_h).toFixed(0);
         total_m /= 60;
         total_m = Number(total_m);
+        while (total_m >= 1) {
+            total_h = Number(total_h) + 1;
+            total_m = Number(total_m) - 1;
+        }
+        console.log(total_m);
     } else {
         total_h = Number(total_h).toFixed(0);
         total_m = Number(total_m);
     }
 
-    tot_ab_glo = Number(total_h_ab) +'.'+ Number(total_m_ab * 10);
-    tot_glo = Number(total_h) +'.'+ Number(total_m * 10);
 
+    if (total_m_ab >= 0) {
+        tot_ab_glo = Number(total_h_ab) +'.'+ Number(total_m_ab * 10);
+    } else {
+        total_m_ab *= -1;
+        tot_ab_glo = (Number(total_h_ab) +'.'+ Number(total_m_ab * 10)) * -1;
+    }
+    tot_glo = Number(total_h) +'.'+ Number(total_m * 10);
     global = Number(tot_glo) + Number(tot_ab_glo);
+
+    console.log(tot_ab_glo);
+    console.log(tot_glo);
+    console.log(global);
 
     var hours = 0;
     var minutes = 0;

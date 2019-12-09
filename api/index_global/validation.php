@@ -78,7 +78,10 @@ if (isset($_POST['up_inter']) && !empty($_POST['up_inter'])) {
 
                     list($h_ab[0], $h_ab[1]) = explode(':', $_POST["tot_h_ab$i"]);
                     $m_ab = $h_ab[1] * (1 / 60);
-                    $h_ab = floatval($h_ab[0]) - floatval($m_ab);
+                    $h_ab = floatval($h_ab[0]) + floatval($m_ab);
+
+                    echo $h_ab . '<br />';
+                    echo $final['absence'];
 
                     if ($h_ab != $final['absence']) {
                         $newab = htmlspecialchars($h_ab);
@@ -146,7 +149,7 @@ if (isset($_POST['up_inter']) && !empty($_POST['up_inter'])) {
                         $insertpan = $bdd->prepare("UPDATE global_reference SET panier_repas = '" . $newpan . "' WHERE updated = '" . $_POST['up_inter'] . "' AND `user_id`= '" . $_SESSION['id'] . "' AND id = '" . $test[$i]['id'] . "'");
                         $insertpan->execute(array($newpan, $_POST['panier_repas']));
                     }
-                $i += 1;
+                $i++;
                 }
             }
         }
@@ -161,9 +164,9 @@ if (isset($_POST['up_inter']) && !empty($_POST['up_inter'])) {
             header("refresh:0; url= ../../valid_day.php?up_int=" . $_POST['up_inter']);
             exit ();
         } else {
-            echo '<script type="text/javascript">alert("Édition validée :)")</script>';
-            header("refresh:0; url= ../../valid_day.php?up_int=" . $_POST['up_inter']);
-            exit ();
+            //echo '<script type="text/javascript">alert("Édition validée :)")</script>';
+            //header("refresh:0; url= ../../valid_day.php?up_int=" . $_POST['up_inter']);
+            //exit ();
         }
     }
 }

@@ -91,7 +91,7 @@ if($user) {
                             echo '<div class="w-100 m-auto pb-4">
                             <div class="w-75 ml-auto mr-auto" id="default">
                                 <div class="w-100 pt-0 pb-3 border-top">
-                                    <h3 class="w-100 mt-3 ml-auto mb-3 mr-auto text-center">Exportation .CSV</h3>
+                                    <h3 class="w-100 mt-3 ml-auto mb-3 mr-auto text-center">Signaler une absence</h3>
                                     <h5 class="w-100 mt-3 ml-auto mb-0 mr-auto pt-4 border-top text-center">Faites votre choix :</h5>
                                 </div>
                             </div>';
@@ -102,13 +102,6 @@ if($user) {
                                 } else {
                                     echo '<div class="text-center w-75 mr-auto ml-auto pb-4"><input class="bg-white col-7 text-center pl-4" type="date" id="up_inter" name="up_inter"  placeholder="" onChange="date_ab(' . $_GET['id'] . ')" style="height: 26px;" required="required"></div>';
                                 }
-
-                            /*echo '<div class="w-100 m-auto pt-3 pb-4">
-                                <div class="w-75 ml-auto mr-auto" id="default">
-                                    <div class="w-100 pt-0 pb-3">
-                                        <h4 class="w-100 mt-3 ml-auto mb-3 mr-auto pt-3 border-top text-center">Faites votre choix :</h4>
-                                    </div>
-                                </div>';*/
                             echo '<div class="col-6 float-left">
                                     <input type="checkbox" id="chantier" name="chantier" class="form-check-input align-middle mt-1 mb-auto" />
                                     <label class="mb-auto mt-auto ml-4 pl-1 text-center" for="chantier">Par chantier</label>
@@ -155,7 +148,7 @@ if($user) {
                                             <div class="pt-2 pb-4 mt-4 ml-auto mr-auto mb-2 w-75">
                                                 <h6 class="w-100 text-center pb-3">Temps à soustraire :</h6>
                                                 <input id="intervention_hours" name="intervention_hours" value="" style="display: none;" />
-                                                <select type="number" id="h_index" class="col-3 p-0 rounded bg-secondary text-white text-center" style="height: 19px;">
+                                                <select type="number" id="h_index" class="col-3 p-0 border-0 rounded bg-secondary text-white text-center" style="height: 19px;">
                                                     <option value="0">0</option>
                                                     <option value="-1">-1</option>
                                                     <option value="-2">-2</option>
@@ -173,7 +166,7 @@ if($user) {
                                                     <option value="-14">-14</option>
                                                 </select><!--
                                                 --><strong>&nbsp;h&nbsp;</strong><!--
-                                                --><select type="number" id="m_index" class="col-3 p-0 rounded bg-secondary text-white text-center" style="height: 19px;">
+                                                --><select type="number" id="m_index" class="col-3 p-0 border-0 rounded bg-secondary text-white text-center" style="height: 19px;">
                                                     <option value="00">00</option>
                                                     <option value="30">30</option>
                                                 </select>
