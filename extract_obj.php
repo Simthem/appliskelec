@@ -16,6 +16,8 @@ if (isset($_COOKIE['id'])) {
         if ($user && $auth[1] === hash('sha512', $user['username'].'---'.$user['password'])) {
             $_SESSION['id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
+            $_SESSION['admin_name'] = null;
+            $admin['id'] = null;
         } else {
             header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
         }
@@ -34,30 +36,32 @@ if (isset($_COOKIE['id'])) {
             $_SESSION['username'] = "admin";
             $_SESSION['admin_name'] = $admin['admin_name'];
         } else {
-            header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
+            header("Location: signin.php"); 
         }
     }
 }
 
-if(!($_SESSION['username'])){// or !($_SESSION['admin_name'])) {  
+if(!($_SESSION['username'])){
   
-    header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
+    header("Location: signin.php");
 }
 
 $stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");
 $stmt->execute();
 $user = $stmt->fetch();
 
-$stmt_admin = $bdd->prepare("SELECT id FROM `admin` WHERE admin_name = '". $_SESSION['admin_name'] ."'");
-$stmt_admin->execute();
-$admin = $stmt_admin->fetch();
+if (isset($_SESSION['admin_name']) && !empty($_SESSION['admin_name'])) {
+
+    $stmt_admin = $bdd->prepare("SELECT id FROM `admin` WHERE admin_name = '". $_SESSION['admin_name'] ."'");
+    $stmt_admin->execute();
+    $admin = $stmt_admin->fetch();
+}
 
 if($user) {
     $_SESSION['id'] = $user['id'];
-} elseif ($admin) {
+} elseif (isset($admin) && !empty($admin)) {
     $_SESSION['id'] = $admin['id'];
 } else {
-    //echo "ERROR: Could not get 'id' of current user [first_method]";
     header("Location: signin.php");
 }
 
@@ -99,7 +103,7 @@ g.updated , c.name , night_hours with ROLLUP
 
 <!DOCTYPE html>
 
-<html class="overflow-y mb-0">
+<html class="overflow-y ml-auto mr-auto mb-0">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=0">

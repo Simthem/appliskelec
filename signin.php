@@ -1,9 +1,9 @@
 <?php
 include './api/config/database.php';
 
-if($_POST['username'] and $_POST['password']) {
+/*if($_POST['username'] and $_POST['password']) {
   $_SESSION['username'] = $_POST['username'];
-}
+}*/
 
 if (isset($_COOKIE['id'])) {
   setcookie('id', '', time()-7000000, '/');
@@ -14,7 +14,7 @@ if (isset($_COOKIE['id'])) {
 
 <!DOCTYPE html>
 
-<html>
+<html class="ml-auto mr-auto">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
