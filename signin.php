@@ -14,7 +14,7 @@ if (isset($_COOKIE['id'])) {
 
 <!DOCTYPE html>
 
-<html>
+<html class="ml-auto mr-auto">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">

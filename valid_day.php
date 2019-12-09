@@ -68,7 +68,7 @@ if($user) {
 
 <!DOCTYPE html>
 
-<html class="overflow-y mb-0">
+<html class="overflow-y ml-auto mr-auto mb-0">
 
     <?php include 'header.php'; ?>
 
@@ -550,10 +550,10 @@ if($user) {
                                 echo '<fieldset>';
 
                                     while ($temp < $flag) { 
-                                        echo '<input id="tot_h' . $temp . '" name="tot_h' . $temp . '"style="display: none;" />';
-                                        echo '<input id="tot_h_night' . $temp . '" name="tot_h_night' . $temp . '"style="display: none;" />';
-                                        echo '<input id="chantier_id' . $temp . '" name="chantier_id' . $temp . '"style="display: none;" />';
-                                        echo '<input id="tot_h_ab' . $temp . '" name="tot_h_ab' . $temp . '"style="display: none;" />';
+                                        echo '<input id="tot_h' . $temp . '" name="tot_h' . $temp . '" style="display: none;" />';
+                                        echo '<input id="tot_h_night' . $temp . '" name="tot_h_night' . $temp . '" style="display: none;" />';
+                                        echo '<input id="chantier_id' . $temp . '" name="chantier_id' . $temp . '" style="display: none;" />';
+                                        echo '<input id="tot_h_ab' . $temp . '" name="tot_h_ab' . $temp . '"/>';
                                         //echo $flag;
                                         $temp += 1;
                                     }

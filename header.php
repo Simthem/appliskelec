@@ -33,7 +33,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <title>S.K.elec</title>
 </head>
-<body>
+<body class="ml-auto mr-auto">
     <header class="header">
         <!-- Menu Button -->
         <div class="navbar-expand-md double-nav scrolling-navbar navbar-dark bg-dark">

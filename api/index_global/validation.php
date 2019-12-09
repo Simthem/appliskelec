@@ -76,11 +76,9 @@ if (isset($_POST['up_inter']) && !empty($_POST['up_inter'])) {
                     }
 
 
-                    $h_ab = explode(':', $_POST["tot_h_ab$i"]);
-                    $m_ab = $h_ab[1] / 60;
-                    $h_ab = $h_ab[0] + $m_ab;
-
-                    echo $h_ab . 'absence';
+                    list($h_ab[0], $h_ab[1]) = explode(':', $_POST["tot_h_ab$i"]);
+                    $m_ab = $h_ab[1] * (1 / 60);
+                    $h_ab = floatval($h_ab[0]) - floatval($m_ab);
 
                     if ($h_ab != $final['absence']) {
                         $newab = htmlspecialchars($h_ab);

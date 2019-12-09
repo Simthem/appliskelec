@@ -73,7 +73,7 @@ $cur_chant = $sql->fetch();
 
 <!DOCTYPE html>
 
-<html class="overflow-y mb-0">
+<html class="overflow-y ml-auto mr-auto mb-0">
 
     <?php include 'header.php'; ?>
 

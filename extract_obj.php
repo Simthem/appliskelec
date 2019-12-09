@@ -103,7 +103,7 @@ g.updated , c.name , night_hours with ROLLUP
 
 <!DOCTYPE html>
 
-<html class="overflow-y mb-0">
+<html class="overflow-y ml-auto mr-auto mb-0">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=0">
