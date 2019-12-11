@@ -120,7 +120,9 @@ $sql = "SELECT
                                 die("ERROR: Could not connect. " . mysqli_connect_error());
                             }
 
-                            echo '<h3 class="text-center mt-0 mb-3 pt-5">Détails du chantier</h3>';
+                            echo '<div class="pt-5 pb-3 mt-4 ml-auto mr-auto">
+                                <h3 class="text-center mb-5 pt-5">Détails du chantier</h3>
+                            </div>';
                             
                             while ($row = $result->fetch_array()) {
                                 if (!empty($row['date_chantier'])) {

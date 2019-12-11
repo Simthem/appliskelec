@@ -72,7 +72,7 @@ if($user) {
     
     <?php include 'header.php'; ?>
 
-                <div class="icons-navbar">
+                <div class="icons-navbar" style="z-index: 1;">
                     <div class="menu-btn-bars text-white"><button class="menu-btn fas fa-bars text-warning w-100 fa-3x p-0"></button></div>
                     <a href="index.php" class="text-warning d-inline-flex m-auto"><img class="mr-2 ml-2" src="img/ampoule_skelec.png" alt="logo S.K.elec" height="45" width="30"><h2 class="d-inline-flex mt-0 mr-2 mb-0 ml-0">S.K.elec</h2></a>
                     <a href="add_troubleshooting.php" class="text-white pl-3"><i class="menu-btn-plus fas fa-plus-circle text-warning fa-3x rounded-circle"></i></a>
@@ -84,23 +84,23 @@ if($user) {
         <div id="container">
             <div class="content">
                 <form id="inter" action="./api/index_global/create_intervention.php" method="POST">
-                    <div class="m-auto p-3">
-                        <?php
-                            if (isset($_GET['store']) && !empty($_GET['store'])) {
-                                $date = date_create($_GET['store']);
-                                echo '<div class="text-center w-75 mr-auto ml-auto pb-4"><input class="bg-white col-7 text-center pl-4" type="date" id="up_inter" name="up_inter" value="' . $_GET['store'] . '" placeholder="' . date_format($date, "d-m-Y") . '" onChange="preview1(this.form)" onfocus="(this.type=\'date\')" onblur="if(this.value==\'\'){this.type=\'text\'}" style="height: 26px;" required="required"></div>';
-                            } else {
-                                echo '<div class="text-center w-75 mr-auto ml-auto pb-4"><input class="bg-white col-7 text-center pl-4" type="date" id="up_inter" name="up_inter"  placeholder="" onChange="preview1(this.form)" style="height: 26px;" required="required"></div>';
-                            }
-                        ?>
-                        <div class="text-center pt-2"><?php echo $_SESSION['username']; ?></div>
-                        <div class="text-center"><?php 
+                    <div class="pt-5 pb-3 mt-5 ml-auto mr-auto">
+                        <div class="w-75 m-auto text-center pt-2"><?php echo $_SESSION['username']; ?></div>
+                            <div class="text-center"><?php 
                                                     if ($_SESSION['username'] == "admin") { 
                                                         echo "Administrateur de S.K.elec_app ;)";
                                                     }
                                                 ?>
+                            </div>
+                            <?php
+                                if (isset($_GET['store']) && !empty($_GET['store'])) {
+                                    $date = date_create($_GET['store']);
+                                    echo '<div class="text-center w-75 mt-4 mr-auto ml-auto pb-4"><input class="bg-white col-7 text-center pl-4" type="date" id="up_inter" name="up_inter" value="' . $_GET['store'] . '" placeholder="' . date_format($date, "d-m-Y") . '" onChange="preview1(this.form)" onfocus="(this.type=\'date\')" onblur="if(this.value==\'\'){this.type=\'text\'}" style="height: 26px;" required="required"></div>';
+                                } else {
+                                    echo '<div class="text-center w-75 mt-4 mr-auto ml-auto pb-4"><input class="bg-white col-7 text-center pl-4" type="date" id="up_inter" name="up_inter"  placeholder="" onChange="preview1(this.form)" style="height: 26px;" required="required"></div>';
+                                }
+                            ?>
                         </div>
-                    </div>
                     <?php echo "<input type='number' id='user_id' name='user_id' value='" . $_SESSION['id'] . "' style='display: none;'>"; ?>
                     <div class="text-center">
                         <div class="bg-white border rounded m-auto" style="width: max-content">
@@ -222,7 +222,7 @@ if($user) {
                         
                         echo '<div class="collapse" id="preview">
                             <h4 class="w-75 mt-3 ml-auto mb-3 mr-auto pt-3 border-top text-center">Récapitulatif</h4>
-                            <fieldset class="pl-3 text-dark bg-white border rounded w-75 m-auto" disabled>
+                            <fieldset class="pl-3 pr-3 text-dark bg-white border rounded w-75 m-auto" disabled>
                                 <br />
                                 <div class="d-inline-flex w-100">
                                     <div class="col-5 pl-0 pr-0 h6 mt-auto mb-auto">Date du jour </div>:
@@ -338,7 +338,7 @@ if($user) {
                                                         }
 
                                                         echo '<div class="d-inline-flex w-100 m-0">
-                                                            <div class="col-5 pl-0 pr-0 h6 mt-auto mb-auto h-50">' . $row['name_chantier'] . '</div><div class="mt-auto ml-0 mb-auto mr-0 p-0">:</div>
+                                                            <div class="col-5 pl-0 pr-0 h6 mt-auto mb-auto h-50 overflow-hidden">' . $row['name_chantier'] . '</div><div class="mt-auto ml-0 mb-auto mr-0 p-0">:</div>
                                                             <input class="bg-white border-0 pt-0 pl-2 pb-0 pr-0 mt-auto ml-auto mr-auto mb-auto w-50" value="' . $hours . 'h' . $minutes . ' [' . $night_h . 'h' . $night_m . ' h/nuit]" />
                                                         </div>
                                                         <br />';
@@ -346,12 +346,16 @@ if($user) {
                                                         $h_ab = (int)$absence;
                                                         $m_ab = ($absence - $h_ab) * 60;
 
+                                                        if ($h_ab == 0 && $m_ab < 0) {
+                                                            $h_ab = "-0";
+                                                            $m_ab *= -1;
+                                                        }
                                                         if ($m_ab == 0) {
                                                             $m_ab = "00";
                                                         }
 
                                                         echo '<div class="d-inline-flex w-100 m-0">
-                                                            <div class="col-5 pl-0 pr-0 h6 mt-auto mb-auto h-50">' . $row['name_chantier'] . '</div><div class="mt-auto ml-0 mb-auto mr-0 p-0">:</div>
+                                                            <div class="col-5 pl-0 pr-0 h6 mt-auto mb-auto h-50 overflow-hidden">' . $row['name_chantier'] . '</div><div class="mt-auto ml-0 mb-auto mr-0 p-0">:</div>
                                                             <input class="bg-white border-0 p-0 mt-auto ml-auto mr-auto mb-auto w-50" value="' . $h_ab . 'h' . $m_ab . ' [heure(s) d\'absence]" />
                                                         </div>
                                                         <br />';

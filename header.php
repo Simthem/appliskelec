@@ -34,9 +34,9 @@
     <title>S.K.elec</title>
 </head>
 <body class="ml-auto mr-auto">
-    <header class="header">
+    <header class="header position-fixed">
         <!-- Menu Button -->
-        <div class="navbar-expand-md double-nav scrolling-navbar navbar-dark bg-dark">
+        <div class="navbar-expand-md double-nav scrolling-navbar navbar-dark bg-dark position-relative">
             <!--Menu -->
             <nav class="menu left-menu">
                 <div class="menu-content">

@@ -30,7 +30,7 @@ if($user) {
     
     <?php include 'header.php'; ?>
 
-                <div class="icons-navbar">
+                <div class="icons-navbar" style="z-index: 1;">
                     <div class="menu-btn-bars text-white"><button class="menu-btn fas fa-bars text-warning w-100 fa-3x p-0"></button></div>
                     <a href="index.php" class="text-warning m-auto"><h2 class="m-0">S.K.elec</h2></a>
                     <a href="list_profil.php" class="text-white pl-3"><i class="menu-btn-plus fas fa-search text-warning fa-3x rounded-circle"></i></a>
@@ -102,8 +102,9 @@ if($user) {
         <!-- Content -->
                 <div id="container">
                     <div class="content">
-                        <h3 class="text-center mt-0 mb-3 pt-5">Édition du compte</h3>
                         <form class="w-100 pt-2 pl-4 pb-0 pr-4" action="api/user/edit_profil.php" method="POST">
+                            <div class="pt-5 pb-3 mt-4 ml-auto mr-auto">
+                                <h3 class="text-center mb-5 pt-5">Édition du compte</h3>
                             <?php
                                 $stmt = $bdd->prepare("SELECT * FROM users WHERE id = '". $_GET['id'] ."'");
                                 $stmt->execute();
@@ -573,6 +574,7 @@ if($user) {
                                 <input type="submit" value="Valider" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">
                                 <a href="javascript:history.go(-1)" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4 text-dark">Précédent</a>
                             </div>
+                        </div>
                         </form>
                         
                     </div>
@@ -582,8 +584,9 @@ if($user) {
         ?>
             <div id="container">
                 <div class="content">
-                    <h3 class="text-center mt-0 mb-3 pt-5">Détails d'un compte</h3>
                     <form class="w-100 pt-2 pl-4 pb-0 pr-4">
+                        <div class="pt-5 pb-3 mt-4 ml-auto mr-auto">
+                            <h3 class="text-center mb-5 pt-5">Détails d'un compte</h3>
                         <?php
                             $stmt = $bdd->prepare("SELECT * FROM users WHERE id = '". $_GET['id'] ."'");
                             $stmt->execute();
@@ -785,6 +788,7 @@ if($user) {
                         <div class="pt-5 w-75 m-auto">
                             <a href="javascript:history.go(-1)" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4 text-dark">Précédent</a>
                         </div>
+                    </div>
                     </form>
             <?php } ?>
 

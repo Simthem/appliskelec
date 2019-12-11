@@ -127,8 +127,9 @@ if($user) {
         <!-- Content -->
         <div id="container">
             <div class="content pt-0 overflow-hidden">
-                <h3 class="text-center mt-2 pb-4 pt-5">Liste des salariés</h3>
-                <table class="table table-striped mt-0 ml-0 mb-0 text-center" style="height: 50px;">
+                <div class="pt-5 pb-3 mt-4 ml-auto mr-auto">
+                    <h3 class="text-center mb-5 pt-5">Liste des salariés</h3>
+                    <table class="table table-striped mt-0 ml-0 mb-0 text-center" style="height: 50px;">
                     <?php
 
                     $sql = 
@@ -154,7 +155,7 @@ if($user) {
                                 echo '</tr>';
                             echo '</thead>';
                     ?>
-                </table>
+                    </table>
                 <div class="container-list m-auto">
                     <table class="table table-striped pr-4 pl-4 mt-3 ml-auto mr-auto text-center" action="api/user/edit_profil.php" method="GET">
                         <?php

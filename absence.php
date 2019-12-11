@@ -90,9 +90,11 @@ if($user) {
                             <?php
                             echo '<div class="w-100 m-auto pb-4">
                             <div class="w-75 ml-auto mr-auto" id="default">
-                                <div class="w-100 pt-0 pb-3 border-top">
-                                    <h3 class="w-100 mt-3 ml-auto mb-3 mr-auto text-center">Signaler une absence</h3>
-                                    <h5 class="w-100 mt-3 ml-auto mb-0 mr-auto pt-4 border-top text-center">Faites votre choix :</h5>
+                                <div class="pt-5 pb-3 mt-4 ml-auto mr-auto">
+                                    <div class="w-100 mt-3 pb-3 border-top">
+                                        <h3 class="w-100 mt-3 ml-auto mb-3 mr-auto text-center">Signaler une absence</h3>
+                                        <h5 class="w-100 mt-3 ml-auto mb-0 mr-auto pt-4 border-top text-center">Faites votre choix :</h5>
+                                    </div>
                                 </div>
                             </div>';
                                 echo '<div class="m-auto pt-2 pb-3">';

@@ -119,11 +119,13 @@ ORDER BY
         <!-- Content -->
         <div id="container">
             <div class="content pt-0 overflow-hidden">
-                <h3 class="text-center mt-0 pt-5 pb-3">Liste des chantiers</h3>
-                <ul class="nav nav-pills float-left pb-2">
-                    <li class="active h-50"><a href="#tab1" data-toggle="pill" data-id="tab1" class="h-75 tab-1">Chantiers</a></li>
-                    <li class="h-50"><a href="#tab2" data-toggle="pill" data-id="tab2" class="h-75 tab-2">Dépannages</a></li>
-                </ul>
+                <div class="pt-5 pb-3 mt-4 ml-auto mr-auto">
+                    <h3 class="text-center mb-5 pt-5">Liste des chantiers</h3>
+                    <ul class="nav nav-pills float-left pb-2">
+                        <li class="active h-50"><a href="#tab1" data-toggle="pill" data-id="tab1" class="h-75 tab-1">Chantiers</a></li>
+                        <li class="h-50"><a href="#tab2" data-toggle="pill" data-id="tab2" class="h-75 tab-2">Dépannages</a></li>
+                    </ul>
+                </div>
                 <table class="table table-striped mt-0 ml-0 mb-0 text-center" style="height: 50px;">
                     <?php
                         if($result_chant = mysqli_query($db, $sql)){

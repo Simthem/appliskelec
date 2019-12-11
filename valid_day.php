@@ -112,7 +112,9 @@ if($user) {
                         $date = date_create($_GET['up_int']);
                         echo '<input id="up_inter" name="up_inter" value="' . date_format($date, 'Y-m-d') . '" style="display: none" />';
 
-                        echo "<h3 class='mt-0 mb-3 pt-5 text-center'>Récapitulatif de la journée du<br />'" . date_format($date, 'd-m-Y') . "'</h3>";
+                        echo "<div class='mt-5 ml-auto mr-auto'>
+                            <h3 class='text-center mb-5 pt-5'>Récapitulatif de la journée du<br />'" . date_format($date, 'd-m-Y') . "'</h3>
+                        </div>";
                         #<div class='w-75 text-center ml-auto mb-5 mr-auto h4'><u>Récapitulatif de la journée du<br />'" . date_format($date, 'd-m-Y') . "'</u></div>";
 
                         if ($result = mysqli_query($db, $recap)) {
