@@ -25,8 +25,10 @@ $cur_chant = $sql->fetch();
         <!-- Content -->
         <div id="container">
             <div class="content">
-                <h3 class="text-center mt-0 mb-3 pt-5">Édition d'un chantier</h3>
-                <form class="w-100 pt-3 pl-4 pb-0 pr-4" action="./api/troubleshooting/edit_site.php" method="POST">
+                <div class="pt-5 pb-2 mt-4 ml-auto mr-auto">
+                    <h3 class="text-center mb-3 pt-5">Édition d'un chantier</h3>
+                </div>
+                <form class="w-100 p-0" action="./api/troubleshooting/edit_site.php" method="POST">
                     <?php
                         if ($_SESSION['id'] == $admin['id']) {
                             if ($cur_chant['state']) {
@@ -90,6 +92,8 @@ $cur_chant = $sql->fetch();
                             echo "<div class='md-form mt-1'>
                                 <div class='md-form mt-2'>
                                     <label for='num_chantier'>ID de chantier</label>
+                                    <input type='number' value='" . $cur_chant['state'] . "' id='state' name='state' style='display: none;'>
+                                    <input type='number' value='" . $cur_chant['id'] . "' id='id' name='id' style='display: none;'>
                                     <input type='number' id='num_chantier' name='num_chantier' class='form-control' value='" . $cur_chant['num_chantier'] . "' disabled>
                                 </div>
                                 <div class='md-form mt-4'>

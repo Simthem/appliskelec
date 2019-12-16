@@ -37,25 +37,29 @@ if($bdd === false){
     die("ERROR: Could not connect. " . mysqli_connect_error());
 }
 
-if(!empty($_POST['num_chantier']) AND $_POST['num_chantier'] != $chantier['num_chantier']) {
+if(!empty($_POST['num_chantier']) AND $_POST['num_chantier'] != $chantier['num_chantier'] AND $_SESSION['id'] == $admin['id']) {
 
     $reponse = $db->query('SELECT num_chantier FROM chantiers WHERE num_chantier = ' . $_POST['num_chantier']);
     $num_chantier = $reponse->fetch();
 
     if ($_POST['num_chantier'] == $num_chantier['num_chantier']) {
-        echo "Chantiers ID already exists !";
+        echo "Le numéro de chantier est déjà existant !";
         header('refresh:2; url=../../modif_troubleshooting.php?id=' . $_POST['id']);
-        exit();
+        exit ();
     } elseif ($_POST['num_chantier'] < 19001) {
-        echo "Chantiers ID should be greater .. !";
+        echo "Le numéro de chantier ne peut être strictement inférieur à 19001 et ne peut dépasser 99999";
         header('refresh:2; url=../../modif_troubleshooting.php?id=' . $_POST['id']);
-        exit();
+        exit ();
     } else {
         $newnum = htmlspecialchars($_POST['num_chantier']);
         $insertnum = $bdd->prepare("UPDATE chantiers SET num_chantier = '". $newnum ."' WHERE id = '". $_POST['id'] ."'");
         $insertnum->execute(array($newnum, $_POST['num_chantier']));
         header('Location: ../../modif_troubleshooting.php?id=' . $_POST['id']);
     }
+} else {
+    echo '<script type="text/javascript">alert("Vous n\'avez pas les permissions nécessaires aux changement d\'un numéro de chantier : veuillez contacter votre administrateur pour effectuer cette tâche.")</script>';
+    header('refresh:0; url=../../modif_troubleshooting.php?id=' . $_POST['id']);
+    exit ();
 }
 
 if (($_POST['num_chantier'] == NULL) or $_POST['num_chantier'] == 0 && $_POST['num_chantier'] != $chantier['num_chantier']) {
