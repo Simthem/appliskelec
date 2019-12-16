@@ -218,7 +218,7 @@ $('#verif').on('click', function() {
         tot_ab_glo = (Number(total_h_ab) +'.'+ Number(total_m_ab * 10)) * -1;
     }
     tot_glo = Number(total_h) +'.'+ Number(total_m * 10);
-    global = Number(tot_glo) + Number(tot_ab_glo);
+    global = Number(tot_glo) - Number(tot_ab_glo);
 
     console.log(tot_ab_glo);
     console.log(tot_glo);
