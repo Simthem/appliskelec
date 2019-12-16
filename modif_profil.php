@@ -1,5 +1,5 @@
 <?php
-session_start();
+/*session_start();
 include 'api/config/db_connexion.php';
 
 if(!($_SESSION['username'])) {  
@@ -21,7 +21,9 @@ if($user) {
     $_SESSION['id'] = $admin['id'];
 } else {
     echo "ERROR: Could not get 'id' of current user [first_method]";
-}
+}*/
+
+include 'auth.php';
 ?>
 
 <!DOCTYPE html>
@@ -369,8 +371,13 @@ if($user) {
                                                                 )
                                     GROUP BY concat(month(g.updated)) , g.updated , a.id with ROLLUP";
 
+
                                     
                                     if ($_SESSION['id'] == $admin['id'] and $admin['id'] == $_GET['id']) {
+
+                                        $stmt = $bdd->prepare("SELECT * FROM `admin` WHERE id = '". $_GET['id'] ."'");
+                                        $stmt->execute();
+                                        $admin = $stmt->fetch();
 
                                         echo '<input type="text" value="' . $admin['id'] . '" id="id" name="id" style="display: none;"">';
                                         echo '<div class="md-form mt-1">';

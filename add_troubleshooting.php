@@ -1,28 +1,4 @@
-<?php
-session_start();
-include './api/config/db_connexion.php';
-//require './api/troubleshooting/add_site.php';
-
-if (!($_SESSION['username'])) {
-
-    header("Location: signin.php");//redirect to login page to secure the welcome page without login access.
-}
-
-$stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");
-$stmt->execute();
-$user = $stmt->fetch();
-
-$stmt_admin = $bdd->prepare("SELECT id FROM `admin` WHERE admin_name = '". $_SESSION['admin_name'] ."'");
-$stmt_admin->execute();
-$admin = $stmt_admin->fetch();
-if($user) {
-    $_SESSION['id'] = $user['id'];
-} elseif ($admin and empty($user)) {
-    $_SESSION['id'] = $admin['id'];
-} else {
-    echo "ERROR: Could not get 'id' of current user [first_method]";
-}
-?>
+<?php include 'auth.php'; ?>
 
 <!DOCTYPE html>
 
@@ -32,7 +8,7 @@ if($user) {
     
                 <div class="icons-navbar">
                     <div class="menu-btn-bars text-white"><button class="menu-btn fas fa-bars text-warning w-100 fa-3x p-0"></button></div>
-                    <a href="index.php" class="text-warning m-auto"><h2 class="m-0">S.K.elec</h2></a>
+                    <a href="index.php" class="text-warning d-inline-flex m-auto"><img class="mr-2 ml-2" src="img/ampoule_skelec.png" alt="logo S.K.elec" height="45" width="30"><h2 class="d-inline-flex mt-0 mr-2 mb-0 ml-0">S.K.elec</h2></a>
                     <a href="troubleshooting_list.php" class="text-white pl-3"><i class="menu-btn-plus fas fa-search text-warning fa-3x rounded-circle"></i></a>
                 </div>
             </div>

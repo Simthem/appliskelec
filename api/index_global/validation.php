@@ -164,9 +164,9 @@ if (isset($_POST['up_inter']) && !empty($_POST['up_inter'])) {
             header("refresh:0; url= ../../valid_day.php?up_int=" . $_POST['up_inter']);
             exit ();
         } else {
-            //echo '<script type="text/javascript">alert("Édition validée :)")</script>';
-            //header("refresh:0; url= ../../valid_day.php?up_int=" . $_POST['up_inter']);
-            //exit ();
+            echo '<script type="text/javascript">alert("Édition validée :)")</script>';
+            header("refresh:0; url= ../../valid_day.php?up_int=" . $_POST['up_inter']);
+            exit ();
         }
     }
 }
