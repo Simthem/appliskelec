@@ -17,6 +17,7 @@ function request_hours($id) {
         SUM(intervention_hours) AS tot_h,
         SUM(night_hours) AS h_night_tot,
         SUM(intervention_hours) - SUM(night_hours) AS tot_glob,
+        SUM(absence) AS absence,
         if ((SUM(intervention_hours) - SUM(night_hours)) - 35 > 0, if ((SUM(intervention_hours) - SUM(night_hours)) - 35 > 8, 8, (SUM(intervention_hours) - SUM(night_hours)) - 35), NULL) AS maj25,
         if ((SUM(intervention_hours) - SUM(night_hours)) > 43, if (SUM(night_hours) > 0, SUM(intervention_hours) - 43, (SUM(intervention_hours) - SUM(night_hours)) - 43), if ((SUM(intervention_hours) - SUM(night_hours)) < 43, if (SUM(night_hours) > 0, SUM(night_hours), NULL), NULL)) AS maj50
     FROM
@@ -65,24 +66,25 @@ function week($id) {
                             
                             echo '<tr>';
                                 
-                                echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
+                                echo '<td class="small align-middle p-1 w-25" style="word-wrap: break-word;">';
                                     $total = $row['tot_glob'];
                                     echo $total;
                                 echo '</td>';
 
-                                calc_hours($row['maj25'], $row['maj50'], $row['h_night_tot']);  // Function called to calcul and display values
+                                calc_hours($total, $row['maj25'], $row['maj50'], $row['h_night_tot'], 0);  // Function called to calcul and display values
 
-                            }
+                        }
 
                             echo '</tr>';
-                        }
                     }
-                echo '</tbody>';
-                mysqli_free_result($result);
-            } else {
-                echo "Cette personne n'a pas encore effectué d'heure pour le moment.";
-            }
+                    $absence = $row['absence'];
+                }
+            echo '</tbody>';
+            mysqli_free_result($result);
+        } else {
+            echo "Cette personne n'a pas encore effectué d'heure pour le moment.";
         }
+    }
     echo '</table>
     </div>';
 
@@ -119,12 +121,16 @@ function week($id) {
 
                                 echo '<tr>';
                                     
-                                    echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
+                                    echo '<td class="small align-middle p-1 w-25" style="word-wrap: break-word;">';
                                         $total = $row['tot_h'];
                                         echo $total;
                                     '</td>';
 
-                                    calc_hours($t_25, $t_50, $row['h_night_tot']);  // Function called to calcul and display values
+                                    if (isset($absence) && !empty($absence)) {
+                                        calc_hours($total, $t_25, $t_50, $row['h_night_tot'], $absence);
+                                    } else {
+                                        calc_hours($total, $t_25, $t_50, $row['h_night_tot'], 0);  // Function called to calcul and display values
+                                    }
 
                                 echo '</tr>';
                             }
@@ -136,8 +142,16 @@ function week($id) {
                 }
             mysqli_close($db);
             }
-        echo '</table>
-    </div>';
+        echo '</table>';
+        if (isset($absence) && !empty($absence)) {
+                echo '</tr>';
+            echo '</tbody>';
+            echo '<div class="small text-right">Heure(s) d\'absence(s) = ' . $absence . ' h</div>';
+        } else {
+                echo '</tr>';
+            echo '</tbody>';
+        }
+    echo '</div>';
 
 }
 ?>
