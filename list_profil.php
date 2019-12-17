@@ -49,7 +49,7 @@
                                         echo "No records matching your query were found.";
                                     }
                                 } else {
-                                    echo "ERROR: Could not able to execute $admin_sql. " . mysqli_error($db);
+                                    echo "ERROR: Could not able to execute $user_result. " . mysqli_error($db);
                                 }
                             }
                         ?>

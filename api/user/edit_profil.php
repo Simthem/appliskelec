@@ -199,7 +199,7 @@ if (($_POST['id'] != $admin['id'] AND $_SESSION['id'] == $admin['id']) OR ($_POS
             exit ();
         } else {
             echo '<script type="text/javascript">alert("Vos deux mots de passent ne correspondent pas !")</script>';
-            header('refresh:5; url=../../modif_profil.php?id=' . $_POST['id']);
+            header('refresh:0; url=../../modif_profil.php?id=' . $_POST['id']);
             exit ();
         }
     } else {
@@ -208,8 +208,8 @@ if (($_POST['id'] != $admin['id'] AND $_SESSION['id'] == $admin['id']) OR ($_POS
         exit ();
     }
 } else {
-    echo "ERROR: Permissions default !";
-    header('refresh:5; url=../../signin.php');
+    echo '<script type="text/javascript">alert("ERROR: Permissions default !")</script>';
+    header('refresh:0; url=../../signin.php');
     exit ();
 }
 ?>

@@ -1,30 +1,4 @@
-<?php
-/*session_start();
-include 'api/config/db_connexion.php';
-
-if(!($_SESSION['username'])) {  
-  
-    header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
-}
-
-$stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");
-$stmt->execute();
-$user = $stmt->fetch();
-
-$stmt_admin = $bdd->prepare("SELECT * FROM `admin` WHERE admin_name = '". $_SESSION['admin_name'] ."'");
-$stmt_admin->execute();
-$admin = $stmt_admin->fetch();
-
-if($user) {
-    $_SESSION['id'] = $user['id'];
-} elseif ($admin and empty($user)) {
-    $_SESSION['id'] = $admin['id'];
-} else {
-    echo "ERROR: Could not get 'id' of current user [first_method]";
-}*/
-
-include 'auth.php';
-?>
+<?php include 'auth.php'; ?>
 
 <!DOCTYPE html>
 
@@ -34,7 +8,7 @@ include 'auth.php';
 
                 <div class="icons-navbar" style="z-index: 1;">
                     <div class="menu-btn-bars text-white"><button class="menu-btn fas fa-bars text-warning w-100 fa-3x p-0"></button></div>
-                    <a href="index.php" class="text-warning m-auto"><h2 class="m-0">S.K.elec</h2></a>
+                    <a href="index.php" class="text-warning d-inline-flex m-auto"><img class="mr-2 ml-2" src="img/ampoule_skelec.png" alt="logo S.K.elec" height="45" width="30"><h2 class="d-inline-flex mt-0 mr-2 mb-0 ml-0">S.K.elec</h2></a>
                     <a href="list_profil.php" class="text-white pl-3"><i class="menu-btn-plus fas fa-search text-warning fa-3x rounded-circle"></i></a>
                 </div>
             </div>
@@ -42,21 +16,20 @@ include 'auth.php';
 
         <?php
 
-            $sql = "SELECT 
-                concat(year(g.updated),
-                month(g.updated),
-                week(g.updated)) AS `concat`,
-                c.name AS name_chantier,
-                g.updated as inter_chantier,
-                c.created as date_chantier,
-                c.id AS chantier_id,
-                username,
+            $month_sql = "SELECT
+                concat(year(g.updated)) AS `year`,
+                concat(month(g.updated)) AS `month`,
+                concat(week(g.updated)) AS `week`,
+                concat(day(g.updated)) AS `day`,
+                g.updated AS inter_chantier,
                 u.id AS `user_id`,
                 night_hours,
+                intervention_hours,
+                SUM(intervention_hours) AS tot_h,
                 SUM(night_hours) AS h_night_tot,
-                SUM(intervention_hours - night_hours) AS tothsnight,
-                if (SUM(intervention_hours - night_hours) - 35 > 0, if (SUM(intervention_hours - night_hours) - 35 > 8, 8, SUM(intervention_hours - night_hours) - 35), NULL) AS maj25,
-                if (SUM(intervention_hours - night_hours) > 43, if (SUM(night_hours) > 0, SUM(intervention_hours) - 43, SUM(intervention_hours - night_hours) - 43), if (SUM(intervention_hours - night_hours) < 43, if (SUM(night_hours) > 0, SUM(night_hours), NULL), NULL)) AS maj50
+                SUM(intervention_hours) - SUM(night_hours) AS tot_glob,
+                if ((SUM(intervention_hours) - SUM(night_hours)) - 35 > 0, if ((SUM(intervention_hours) - SUM(night_hours)) - 35 > 8, 8, (SUM(intervention_hours) - SUM(night_hours)) - 35), NULL) AS maj25,
+                if ((SUM(intervention_hours) - SUM(night_hours)) > 43, if (SUM(night_hours) > 0, SUM(intervention_hours) - 43, (SUM(intervention_hours) - SUM(night_hours)) - 43), if ((SUM(intervention_hours) - SUM(night_hours)) < 43, if (SUM(night_hours) > 0, SUM(night_hours), NULL), NULL)) AS maj50
             FROM
                 chantiers AS c
                 JOIN
@@ -65,38 +38,15 @@ include 'auth.php';
                 users AS u ON g.user_id = u.id
             WHERE
                 u.id = '" . $_GET['id'] . "'
-            GROUP BY concat(year(g.updated) , month(g.updated), week(g.updated)) DESC , g.updated DESC, u.id , username , c.id , c.created , c.name , night_hours with ROLLUP #//u.id , //username , c//.id , //c.created , //g.updated , //c.name , //night_hours , //concat(year(g.updated) , month(g.updated), week(g.updated)) with ROLLUP";
+            GROUP BY concat(year(g.updated)) DESC, concat(month(g.updated)) DESC, concat(week(g.updated)) DESC , g.updated DESC, u.id , intervention_hours, night_hours  with ROLLUP";
 
 
-            $month_sql = "SELECT 
-                concat(month(g.updated)) AS `concat`,
-                g.updated as inter_chantier,
-                u.id AS `user_id`,
-                night_hours,
-                SUM(intervention_hours) AS tot_glob,
-                SUM(night_hours) AS h_night_tot,
-                SUM(intervention_hours - night_hours) AS tothsnight
-                #if (SUM(intervention_hours - night_hours) - 151.4 > 0, if (SUM(intervention_hours - night_hours) - 151.4 > 34.4, 34.4, SUM(intervention_hours - night_hours) - 151.4), NULL) AS maj25,
-                #if (SUM(intervention_hours - night_hours) > 186.2, if (SUM(night_hours) > 0, SUM(intervention_hours) - 186.2, SUM(intervention_hours - night_hours) - 186.2), if (SUM(intervention_hours - night_hours) < 186.2, if (SUM(night_hours) > 0, SUM(night_hours), NULL), NULL)) AS maj50
+            $night = "SELECT
+                SUM(night_hours) AS night_hours 
             FROM
-                chantiers AS c
-                JOIN
-                global_reference AS g ON c.id = chantier_id
-                JOIN
-                users AS u ON g.user_id = u.id
+                global_reference
             WHERE
-                u.id = '" . $_GET['id'] . "'
-                AND
-                concat(month(g.updated)) = (
-                                        SELECT 
-                                            MAX(concat(month(updated)))
-                                        FROM
-                                            global_reference
-                                        )
-            GROUP BY concat(month(g.updated)) , g.updated , u.id , night_hours  with ROLLUP";
-
-
-            $night = "SELECT night_hours FROM global_reference WHERE `user_id` = '" . $_GET['id'] . "'";
+                `user_id` = '" . $_GET['id'] . "'";
 
             
             if(($_GET['id'] != $admin['id'] and $_SESSION['id'] == $_GET['id'] and $_SESSION['id'] == $user['id']) or $_SESSION['id'] == $admin['id']) {
@@ -141,90 +91,7 @@ include 'auth.php';
                                         echo '<label for="phone">Téléphone</label>';
                                         echo '<input type="text" value="' . $modif_user['phone'] . '" id="phone" name="phone" class="form-control" placeholder="' . $modif_user['phone'] . '" />';
                                     echo '</div>';
-
-                                    echo '<h4 class="w-75 mt-5 ml-auto mb-4 mr-auto pb-2 text-center border-bottom">Heures globales du mois</h4>';
-                                    echo "<table class='table table-striped border mt-2 ml-auto mb-3 mr-auto w-100 text-center'>";
-                                        echo "<thead>
-                                            <tr>
-                                                <th scope='col' class='text-center border-right align-middle w-25 font-weight-normal'>H/totales<br />[<strong><u>avec</u></strong> h/nuit]</th>
-                                                <th scope='col' class='text-center border-right align-middle w-25 font-weight-normal'>H + 25%</th>
-                                                <th scope='col' class='text-center align-middle w-25 font-weight-normal'>H + 50%</th>
-                                            </tr>
-                                        </thead>
-                                    </table>";
-                                    echo '<div class="m-auto">
-                                        <table class="table table-striped border ml-auto mb-1 mr-auto pb-3 w-100 text-center">';
-                                            if ($result = mysqli_query($db, $month_sql)) {
-
-                                                if( $db === false){
-                                                    die("ERROR: Could not connect. " . mysqli_connect_error());
-                                                }
-
-                                                if (mysqli_num_rows($result) > 0) {
-                                                    
-                                                    echo "<tbody>";
-
-                                                        while ($row = $result->fetch_array()) {
-
-                                                            if (empty($row['concat']) && empty($row['inter_chantier']) && empty($row['user_id'])) {
-                                                                
-                                                                echo '<tr>';
-                                                                    
-                                                                    echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
-                                                                        $total = $row['tot_glob'];
-                                                                        $hours = (int)$total;
-                                                                        $minutes = ($total - $hours);
-                                                                        echo $hours + $minutes;
-                                                                    '</td>';
-                                                                    echo '<td class="align-middle border-left border-right p-1 w-25" style="word-wrap: break-word;">';
-                                                                        $m25 = $row['maj25'];
-                                                                        $hours = (int)$m25;
-                                                                        $minutes = ($m25 - $hours);
-                                                                        $m25 = $hours + $minutes;
-                                                                        if ($m25 > 0) {
-                                                                            echo $m25 . '<br />' . $m25 * 25 / 100 . ' maj.';
-                                                                        } else {
-                                                                            echo '<div class="bg-secondary w-100 h-100"></div>';
-                                                                        }
-                                                                    echo '</td>';
-                                                                    echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
-                                                                        if ($sql_night = mysqli_query($db, $night)) {
-                                                                            if (mysqli_num_rows($sql_night)) {
-                                                                                while ($temp = $sql_night->fetch_array()) {
-                                                                                    $m50 += $temp['night_hours'];
-                                                                                    $hours = (int)$m50;
-                                                                                    $minutes = ($m50 - $hours);
-                                                                                    $m50 = $hours + $minutes;
-                                                                                    if ($m50 > 0) {
-                                                                                        echo $m50;
-                                                                                        if ($row['h_night_tot'] != 0) {
-                                                                                            $hnight = $row['h_night_tot'];
-                                                                                            $hours = (int)$hnight;
-                                                                                            $minutes = ($hnight - $hours);
-                                                                                            $hnight = $hours + $minutes;
-                                                                                            echo '<div class="d-inline small text-success">&nbsp;&nbsp;&nbsp;[nuit =&nbsp;' . $hnight . ']</div>';
-                                                                                        } 
-                                                                                        echo '<br />= ';
-                                                                                        echo $m50 + ($m50 * 50 / 100) . ' maj.';
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        } else {
-                                                                            echo '<div class="bg-secondary w-100 h-100"></div>';
-                                                                        }
-                                                                    echo '</td>';
-
-                                                                echo '</tr>';
-                                                            }
-                                                        }
-                                                    echo '</tbody>';
-                                                    mysqli_free_result($result);
-                                                } else {
-                                                    echo "Cette personne n'a pas encore effectué d'heure pour le moment.";
-                                                }
-                                            }
-                                    echo '</table>
-                                    </div>';
+                                    
 
                                     echo '<h4 class="w-75 mt-5 ml-auto mb-4 mr-auto pt-3 pb-2 text-center border-bottom">Heures sur 4 semaines</h4>';
                                     echo "<table class='table table-striped border mt-4 ml-auto mb-3 mr-auto w-100 text-center'>";
@@ -238,7 +105,7 @@ include 'auth.php';
                                     </table>";
                                     echo '<div class="container-list-details m-auto">
                                         <table class="table table-striped border ml-auto mb-3 mr-auto w-100 text-center">';
-                                            if($result = mysqli_query($db, $sql)) {
+                                            if($result = mysqli_query($db, $month_sql)) {
 
                                                 if( $db === false){
                                                     die("ERROR: Could not connect. " . mysqli_connect_error());
@@ -247,49 +114,124 @@ include 'auth.php';
                                                 if (mysqli_num_rows($result) > 0) {
 
                                                     $flag = 1;
+                                                    $t_25 = 0;
+                                                    $t_50 = 0;
 
                                                     echo "<tbody>";
 
                                                         while ($row = $result->fetch_array()) {
 
-                                                            if (empty($row['date_chantier']) && empty($row['inter_chantier']) && empty($row['name_chantier']) && !empty($row['concat'])/*&& !empty($row['chantier_id'])*/ && $flag <= 4) {
+                                                            if (!empty($row['week']) && empty($row['day']) && !empty($row['tot_h'])) {
+                                                                
+                                                                $t_25 += $row['maj25'];
+                                                                $t_50 += $row['maj50'];
+
+                                                                if ($flag <= 4) {
+                                                                    
+                                                                    $flag += 1;
+                                                                    
+                                                                    echo '<tr>';
+                                                                        
+                                                                        echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
+                                                                            $total = $row['tot_glob'];
+                                                                            echo $total;
+                                                                        echo '</td>';
+
+                                                                        echo '<td class="align-middle border-left border-right p-1 w-25" style="word-wrap: break-word;">';
+                                                                            $m25 = $row['maj25'];
+                                                                            if ($m25 > 0) {
+                                                                                echo $m25;
+                                                                                echo ' <br /> = ';
+                                                                                echo $m25 + ($m25 / 4);
+                                                                                echo ' maj.';
+                                                                            } else {
+                                                                                echo '<div class="bg-secondary w-100 h-100"></div>';
+                                                                            }
+                                                                        echo '</td>';
+                                                                        echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
+                                                                            $m50 = $row['maj50'];
+                                                                            if ($m50 > 0) {
+                                                                                echo number_format($m50, 1);
+                                                                                if ($row['h_night_tot'] != 0) {
+                                                                                    $hnight = number_format($row['h_night_tot'], 1) . ' h';
+                                                                                    echo '<div class="d-inline small text-success">&nbsp;&nbsp;&nbsp;[nuit =&nbsp;' . $hnight . ']</div>';
+                                                                                } 
+                                                                                echo '<br />= ';
+                                                                                echo $m50 + ($m50 / 2) . ' maj.';
+                                                                            } else {
+                                                                                echo '<div class="bg-secondary w-100 h-100"></div>';
+                                                                            }
+                                                                        echo '</td>';
+                                                                    }
+
+                                                                echo '</tr>';
+                                                            }
+                                                        }
+                                                    echo '</tbody>';
+                                                    mysqli_free_result($result);
+                                                } else {
+                                                    echo "Cette personne n'a pas encore effectué d'heure pour le moment.";
+                                                }
+                                            }
+                                    echo '</table>
+                                    </div>';
+
+
+                                    echo '<h4 class="w-75 mt-5 ml-auto mb-4 mr-auto pb-2 text-center border-bottom">Heures globales du mois</h4>';
+
+                                    echo "<table class='table table-striped border mt-2 ml-auto mb-3 mr-auto w-100 text-center'>";
+                                        echo "<thead>
+                                            <tr>
+                                                <th scope='col' class='text-center border-right align-middle w-25 font-weight-normal'>H/totales<br />[<strong><u>avec</u></strong> h/nuit]</th>
+                                                <th scope='col' class='text-center border-right align-middle w-25 font-weight-normal'>H + 25%</th>
+                                                <th scope='col' class='text-center align-middle w-25 font-weight-normal'>H + 50%</th>
+                                            </tr>
+                                        </thead>
+                                    </table>";
+                                    echo '<div class="m-auto pb-5">
+                                        <table class="table table-striped border ml-auto mb-1 mr-auto pb-3 w-100 text-center">';
+                                            if ($result = mysqli_query($db, $month_sql)) {
+
+                                                if( $db === false){
+                                                    die("ERROR: Could not connect. " . mysqli_connect_error());
+                                                }
+
+                                                if (mysqli_num_rows($result) > 0) {
+                                                    
+                                                    echo "<tbody>";
+
+                                                        $flag = 0;
+
+                                                        while ($row = $result->fetch_array()) {
+                                                            
+                                                            if ($flag == 0 && empty($row['month'])) {
                                                                 
                                                                 $flag += 1;
-                                                                
+
                                                                 echo '<tr>';
                                                                     
                                                                     echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
-                                                                        $total = $row['tothsnight'];
+                                                                        $total = $row['tot_h'];
                                                                         $hours = (int)$total;
                                                                         $minutes = ($total - $hours);
                                                                         echo $hours + $minutes;
+                                                                    '</td>';
                                                                     echo '<td class="align-middle border-left border-right p-1 w-25" style="word-wrap: break-word;">';
-                                                                        $m25 = $row['maj25'];
-                                                                        $hours = (int)$m25;
-                                                                        $minutes = ($m25 - $hours);
-                                                                        $m25 = $hours + $minutes;
-                                                                        if ($m25 > 0) {
-                                                                            echo $m25 . '<br />' . $m25 * 25 / 100 . ' maj.';
+                                                                        if ($t_25 > 0) {
+                                                                            echo $t_25 . '<br />' . $t_25 * 25 / 100 . ' maj.';
                                                                         } else {
                                                                             echo '<div class="bg-secondary w-100 h-100"></div>';
                                                                         }
                                                                     echo '</td>';
                                                                     echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
-                                                                        $m50 = $row['maj50'];
-                                                                        $hours = (int)$m50;
-                                                                        $minutes = ($m50 - $hours);
-                                                                        $m50 = $hours + $minutes;
-                                                                        if ($m50 > 0) {
-                                                                            echo $m50;
+                                                                        if ($t_50 > 0) {
+                                                                            echo number_format($t_50, 1);
                                                                             if ($row['h_night_tot'] != 0) {
-                                                                                $hnight = $row['h_night_tot'];
-                                                                                $hours = (int)$hnight;
-                                                                                $minutes = ($hnight - $hours);
-                                                                                $hnight = $hours + $minutes;
+                                                                                $hnight = number_format($row['h_night_tot'], 1) . ' h';
                                                                                 echo '<div class="d-inline small text-success">&nbsp;&nbsp;&nbsp;[nuit =&nbsp;' . $hnight . ']</div>';
                                                                             } 
                                                                             echo '<br />= ';
-                                                                            echo $m50 + ($m50 * 50 / 100) . ' maj.';
+                                                                            echo $t_50 + ($t_50 / 2) . ' maj.';
                                                                         } else {
                                                                             echo '<div class="bg-secondary w-100 h-100"></div>';
                                                                         }
@@ -303,6 +245,7 @@ include 'auth.php';
                                                 } else {
                                                     echo "Cette personne n'a pas encore effectué d'heure pour le moment.";
                                                 }
+                                            mysqli_close($db);
                                             }
                                     echo '</table>
                                     </div>';
@@ -319,21 +262,20 @@ include 'auth.php';
                                     }
                                 } elseif ($admin) {
 
-                                    $admin_sql = "SELECT 
-                                        concat(year(g.updated),
-                                        month(g.updated),
-                                        week(g.updated)) AS `concat`,
-                                        c.name AS name_chantier,
-                                        g.updated as inter_chantier,
-                                        c.created as date_chantier,
-                                        c.id AS chantier_id,
-                                        admin_name,
-                                        a.id AS admin_id,
+                                    $month_admin = "SELECT
+                                        concat(year(g.updated)) AS `year`,
+                                        concat(month(g.updated)) AS `month`,
+                                        concat(week(g.updated)) AS `week`,
+                                        concat(day(g.updated)) AS `day`,
+                                        g.updated AS inter_chantier,
+                                        a.id AS `admin_id`,
                                         night_hours,
+                                        intervention_hours,
+                                        SUM(intervention_hours) AS tot_h,
                                         SUM(night_hours) AS h_night_tot,
-                                        SUM(intervention_hours - night_hours) AS tothsnight,
-                                        if (SUM(intervention_hours - night_hours) - 35 > 0, if (SUM(intervention_hours - night_hours) - 35 > 8, 8, SUM(intervention_hours - night_hours) - 35), NULL) AS maj25,
-                                        if (SUM(intervention_hours - night_hours) > 43, if (SUM(night_hours) > 0, SUM(intervention_hours) - 43, SUM(intervention_hours - night_hours) - 43), if (SUM(intervention_hours - night_hours) < 43, if (SUM(night_hours) > 0, SUM(night_hours), NULL), NULL)) AS maj50
+                                        SUM(intervention_hours) - SUM(night_hours) AS tot_glob,
+                                        if ((SUM(intervention_hours) - SUM(night_hours)) - 35 > 0, if ((SUM(intervention_hours) - SUM(night_hours)) - 35 > 8, 8, (SUM(intervention_hours) - SUM(night_hours)) - 35), NULL) AS maj25,
+                                        if ((SUM(intervention_hours) - SUM(night_hours)) > 43, if (SUM(night_hours) > 0, SUM(intervention_hours) - 43, (SUM(intervention_hours) - SUM(night_hours)) - 43), if ((SUM(intervention_hours) - SUM(night_hours)) < 43, if (SUM(night_hours) > 0, SUM(night_hours), NULL), NULL)) AS maj50
                                     FROM
                                         chantiers AS c
                                         JOIN
@@ -342,34 +284,7 @@ include 'auth.php';
                                         `admin` AS a ON g.user_id = a.id
                                     WHERE
                                         a.id = '" . $admin['id'] . "'
-                                    GROUP BY concat(year(g.updated) , month(g.updated), week(g.updated)) DESC, g.updated DESC, a.id , admin_name , c.id , c.created , c.name , night_hours with ROLLUP";
-
-
-                                    $month_admin = "SELECT 
-                                        concat(month(g.updated)) AS `concat`,
-                                        g.updated as inter_chantier,
-                                        a.id AS admin_id,
-                                        SUM(intervention_hours) AS tot_glob,
-                                        SUM(night_hours) AS h_night_tot,
-                                        SUM(intervention_hours - night_hours) AS tothsnight,
-                                        if (SUM(intervention_hours - night_hours) - 151.4 > 0, if (SUM(intervention_hours - night_hours) - 151.4 > 34.4, 34.4, SUM(intervention_hours - night_hours) - 151.4), NULL) AS maj25,
-                                        if (SUM(intervention_hours - night_hours) > 186.2, if (SUM(night_hours) > 0, SUM(intervention_hours) - 186.2, SUM(intervention_hours - night_hours) - 186.2), if (SUM(intervention_hours - night_hours) < 186.2, if (SUM(night_hours) > 0, SUM(night_hours), NULL), NULL)) AS maj50
-                                    FROM
-                                        chantiers AS c
-                                        JOIN
-                                        global_reference AS g ON c.id = chantier_id
-                                        JOIN
-                                        `admin` AS a ON g.user_id = a.id
-                                    WHERE
-                                        a.id = '" . $admin['id'] . "'
-                                        AND
-                                        concat(month(g.updated)) = (
-                                                                SELECT 
-                                                                    MAX(concat(month(updated)))
-                                                                FROM
-                                                                    global_reference
-                                                                )
-                                    GROUP BY concat(month(g.updated)) , g.updated , a.id with ROLLUP";
+                                    GROUP BY concat(year(g.updated)) DESC, concat(month(g.updated)) DESC, concat(week(g.updated)) DESC , g.updated DESC, a.id , intervention_hours, night_hours  with ROLLUP";
 
 
                                     
@@ -401,11 +316,97 @@ include 'auth.php';
                                             echo '<input type="text" value="' . $admin['phone'] . '" id="phone" name="phone" class="form-control" placeholder="' . $admin['phone'] . '">';
                                         echo '</div>';
 
+
+                                        echo '<h4 class="w-75 mt-5 ml-auto mb-4 mr-auto pt-3 pb-2 text-center border-bottom">Heures sur 4 semaines</h4>';
+
+                                        echo "<table class='table table-striped border mt-4 ml-auto mb-3 mr-auto w-100 text-center'>";
+                                            echo "<thead>
+                                                <tr>
+                                                <th scope='col' class='text-center border-right align-middle w-25 font-weight-normal'>H/totales<br />[<strong><u>sans</u></strong> h/nuit]</th>
+                                                <th scope='col' class='text-center border-right align-middle w-25 font-weight-normal'>H + 25%</th>
+                                                <th scope='col' class='text-center align-middle w-25 font-weight-normal'>H + 50%</th>
+                                                </tr>
+                                            </thead>
+                                        </table>";
+                                        echo '<div class="container-list-details m-auto">
+                                            <table class="table table-striped border ml-auto mb-3 mr-auto w-100 text-center">';
+                                                if($result = mysqli_query($db, $month_admin)) {
+
+                                                    if( $db === false){
+                                                        die("ERROR: Could not connect. " . mysqli_connect_error());
+                                                    }
+
+                                                    if (mysqli_num_rows($result) > 0) {
+                                                        
+                                                        $flag = 1;
+                                                        $t_25 = 0;
+                                                        $t_50 = 0;
+
+                                                        echo "<tbody>";
+
+                                                            while ($row = $result->fetch_array()) {
+
+                                                                if (!empty($row['week']) && empty($row['day']) && !empty($row['tot_h'])) {
+                                                                    
+                                                                    $t_25 += $row['maj25'];
+                                                                    $t_50 += $row['maj50'];
+
+                                                                    if ($flag <= 4) {
+                                                                        
+                                                                        $flag += 1;
+                                                                        
+                                                                        echo '<tr>';
+                                                                            
+                                                                            echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
+                                                                                $total = $row['tot_glob'];
+                                                                                echo $total;
+                                                                            echo '</td>';
+
+                                                                            echo '<td class="align-middle border-left border-right p-1 w-25" style="word-wrap: break-word;">';
+                                                                                $m25 = $row['maj25'];
+                                                                                if ($m25 > 0) {
+                                                                                    echo $m25;
+                                                                                    echo ' <br /> = ';
+                                                                                    echo $m25 + ($m25 / 4);
+                                                                                    echo ' maj.';
+                                                                                } else {
+                                                                                    echo '<div class="bg-secondary w-100 h-100"></div>';
+                                                                                }
+                                                                            echo '</td>';
+                                                                            echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
+                                                                                $m50 = $row['maj50'];
+                                                                                if ($m50 > 0) {
+                                                                                    echo number_format($m50, 1);
+                                                                                    if ($row['h_night_tot'] != 0) {
+                                                                                        $hnight = number_format($row['h_night_tot'], 1) . ' h';
+                                                                                        echo '<div class="d-inline small text-success">&nbsp;&nbsp;&nbsp;[nuit =&nbsp;' . $hnight . ']</div>';
+                                                                                    } 
+                                                                                    echo '<br />= ';
+                                                                                    echo $m50 + ($m50 / 2) . ' maj.';
+                                                                                } else {
+                                                                                    echo '<div class="bg-secondary w-100 h-100"></div>';
+                                                                                }
+                                                                            echo '</td>';
+                                                                        }
+
+                                                                    echo '</tr>';
+                                                                }
+                                                            }
+                                                        echo '</tbody>';
+                                                        mysqli_free_result($result);
+                                                    } else {
+                                                        echo "Cette personne n'a pas encore effectué d'heure pour le moment.";
+                                                    }
+                                                }
+                                        echo '</table>
+                                        </div>';
+
+
                                         echo '<h4 class="w-75 mt-5 ml-auto mb-4 mr-auto pb-2 text-center border-bottom">Heures globales du mois</h4>';
                                         echo "<table class='table table-striped border mt-2 ml-auto mb-3 mr-auto w-100 text-center'>";
                                             echo "<thead>
                                                 <tr>
-                                                    <th scope='col' class='text-center border-right align-middle w-25 font-weight-normal'>H/totales<br />[avec h/nuit]</th>
+                                                    <th scope='col' class='text-center border-right align-middle w-25 font-weight-normal'>H/totales<br />[<strong><u>avec</u></strong> h/nuit]</th>
                                                     <th scope='col' class='text-center border-right align-middle w-25 font-weight-normal'>H + 25%</th>
                                                     <th scope='col' class='text-center align-middle w-25 font-weight-normal'>H + 50%</th>
                                                 </tr>
@@ -423,133 +424,43 @@ include 'auth.php';
                                                         
                                                         echo "<tbody>";
 
-                                                            while ($row = $result->fetch_array()) {
-
-                                                                if (empty($row['concat']) && empty($row['inter_chantier']) && empty($row['admin_id'])) {
-                                                                    
-                                                                    echo '<tr>';
-                                                                        
-                                                                        echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
-                                                                            $total = $row['tot_glob'];
-                                                                            $hours = (int)$total;
-                                                                            $minutes = ($total - $hours);
-                                                                            echo $hours + $minutes; 
-                                                                        '</td>';
-                                                                        echo '<td class="align-middle border-left border-right p-1 w-25" style="word-wrap: break-word;">';
-                                                                            $m25 = $row['maj25'];
-                                                                            $hours = (int)$m25;
-                                                                            $minutes = ($m25 - $hours);
-                                                                            $m25 = $hours + $minutes;
-                                                                            if ($m25 > 0) {
-                                                                                echo $m25 . '<br />' . $m25 * 25 / 100 . ' maj.';
-                                                                            } else {
-                                                                                echo '<div class="bg-secondary w-100 h-100"></div>';
-                                                                            }
-                                                                        echo '</td>';
-                                                                        echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
-                                                                            $m50 = $row['maj50'];
-                                                                            $hours = (int)$m50;
-                                                                            $minutes = ($m50 - $hours);
-                                                                            $m50 = $hours + $minutes;
-                                                                            if ($m50 > 0) {
-                                                                                echo $m50;
-                                                                                if ($row['h_night_tot'] != 0) {
-                                                                                    $hnight = $row['h_night_tot'];
-                                                                                    $hours = (int)$hnight;
-                                                                                    $minutes = ($hnight - $hours);
-                                                                                    $hnight = $hours + $minutes;
-                                                                                    echo '<div class="d-inline small text-success">&nbsp;&nbsp;&nbsp;[nuit =&nbsp;' . $hnight . ']</div>';
-                                                                                } 
-                                                                                echo '<br />= ';
-                                                                                echo $m50 + ($m50 * 50 / 100) . ' maj.';
-                                                                            } else {
-                                                                                echo '<div class="bg-secondary w-100 h-100"></div>';
-                                                                            }
-                                                                        echo '</td>';
-
-                                                                    echo '</tr>';
-                                                                }
-                                                            }
-                                                        echo '</tbody>';
-                                                        mysqli_free_result($result);
-                                                    } else {
-                                                        echo "Cette personne n'a pas encore effectué d'heure pour le moment.";
-                                                    }
-                                                }
-                                        echo '</table>
-                                        </div>';
-
-                                        echo '<h4 class="w-75 mt-5 ml-auto mb-4 mr-auto pt-3 pb-2 text-center border-bottom">Heures sur 4 semaines</h4>';
-
-                                        echo "<table class='table table-striped border mt-4 ml-auto mb-3 mr-auto w-100 text-center'>";
-                                            echo "<thead>
-                                                <tr>
-                                                    <th scope='col' class='text-center border-right align-middle w-25'>H/totales</th>
-                                                    <th scope='col' class='text-center border-right align-middle w-25'>H + 25%</th>
-                                                    <th scope='col' class='text-center align-middle w-25'>H + 50%</th>
-                                                </tr>
-                                            </thead>
-                                        </table>";
-                                        echo '<div class="container-list-details m-auto">
-                                            <table class="table table-striped border ml-auto mb-3 mr-auto w-100 text-center">';
-                                                if($result = mysqli_query($db, $admin_sql)) {
-
-                                                    if( $db === false){
-                                                        die("ERROR: Could not connect. " . mysqli_connect_error());
-                                                    }
-
-                                                    if (mysqli_num_rows($result) > 0) {
-                                                        
-                                                        $flag = 1;
-
-                                                        echo "<tbody>";
+                                                        $flag = 0;
                                                         
                                                             while ($row = $result->fetch_array()) {
-
-                                                                if (empty($row['date_chantier']) && empty($row['inter_chantier']) && empty($row['name_chantier']) && $flag <= 4) {
+                                                                
+                                                                if ($flag == 0 && empty($row['month'])) {
                                                                     
                                                                     $flag += 1;
-                                                                    
+
                                                                     echo '<tr>';
                                                                         
                                                                         echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
-                                                                            $total = $row['tothsnight'];
+                                                                            $total = $row['tot_h'];
                                                                             $hours = (int)$total;
                                                                             $minutes = ($total - $hours);
-                                                                            $total = $hours + $minutes;
-                                                                        echo $total . '</td>';
+                                                                            echo $hours + $minutes;
+                                                                        '</td>';
                                                                         echo '<td class="align-middle border-left border-right p-1 w-25" style="word-wrap: break-word;">';
-                                                                            $m25 = $row['maj25'];
-                                                                            $hours = (int)$m25;
-                                                                            $minutes = ($m25 - $hours);
-                                                                            $m25 = $hours + $minutes;
-                                                                            if ($m25 > 0) {
-                                                                                echo $m25 . '<br />' . $m25 * 25 / 100 . ' maj.';
+                                                                            if ($t_25 > 0) {
+                                                                                echo $t_25 . '<br />' . $t_25 * 25 / 100 . ' maj.';
                                                                             } else {
                                                                                 echo '<div class="bg-secondary w-100 h-100"></div>';
                                                                             }
                                                                         echo '</td>';
                                                                         echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
-                                                                            $m50 = $row['maj50'];
-                                                                            $hours = (int)$m50;
-                                                                            $minutes = ($m50 - $hours);
-                                                                            $m50 = $hours + $minutes;
-                                                                            if ($m50 > 0) {
-                                                                                echo $m50;
+                                                                            if ($t_50 > 0) {
+                                                                                echo number_format($t_50, 1);
                                                                                 if ($row['h_night_tot'] != 0) {
-                                                                                    $hnight = $row['h_night_tot'];
-                                                                                    $hours = (int)$hnight;
-                                                                                    $minutes = ($hnight - $hours);
-                                                                                    $hnight = $hours + $minutes;
+                                                                                    $hnight = number_format($row['h_night_tot'], 1) . ' h';
                                                                                     echo '<div class="d-inline small text-success">&nbsp;&nbsp;&nbsp;[nuit =&nbsp;' . $hnight . ']</div>';
                                                                                 } 
                                                                                 echo '<br />= ';
-                                                                                echo $m50 + ($m50 * 50 / 100) . ' maj.';
+                                                                                echo $t_50 + ($t_50 / 2) . ' maj.';
                                                                             } else {
                                                                                 echo '<div class="bg-secondary w-100 h-100"></div>';
                                                                             }
                                                                         echo '</td>';
-                                                                        
+
                                                                     echo '</tr>';
                                                                 }
                                                             }
@@ -627,168 +538,158 @@ include 'auth.php';
                                     echo '<input type="text" value="' . $modif_user['phone'] . '" id="phone" name="phone" class="form-control" placeholder="' . $modif_user['phone'] . '" disabled>';
                                 echo '</div>';
 
-                                echo '<h4 class="w-75 mt-5 ml-auto mb-4 mr-auto pb-2 text-center border-bottom">Heures globales du mois</h4>';
-                                    echo "<table class='table table-striped border mt-2 ml-auto mb-3 mr-auto w-100 text-center'>";
-                                        echo "<thead>
-                                            <tr>
-                                                <th scope='col' class='text-center border-right align-middle w-25 font-weight-normal'>H/totales<br />[avec h/nuit]</th>
-                                                <th scope='col' class='text-center border-right align-middle w-25 font-weight-normal'>H + 25%</th>
-                                                <th scope='col' class='text-center align-middle w-25 font-weight-normal'>H + 50%</th>
-                                            </tr>
-                                        </thead>
-                                    </table>";
-                                    echo '<div class="m-auto">
-                                        <table class="table table-striped border ml-auto mb-1 mr-auto pb-3 w-100 text-center">';
-                                            if($result = mysqli_query($db, $month_sql)) {
 
-                                                if( $db === false){
-                                                    die("ERROR: Could not connect. " . mysqli_connect_error());
-                                                }
+                                echo '<h4 class="w-75 mt-5 ml-auto mb-4 mr-auto pt-3 pb-2 text-center border-bottom">Heures sur 4 semaines</h4>';
+                                echo "<table class='table table-striped border mt-4 ml-auto mb-3 mr-auto w-100 text-center'>";
+                                    echo "<thead>
+                                        <tr>
+                                        <th scope='col' class='text-center border-right align-middle w-25 font-weight-normal'>H/totales<br />[<strong><u>sans</u></strong> h/nuit]</th>
+                                        <th scope='col' class='text-center border-right align-middle w-25 font-weight-normal'>H + 25%</th>
+                                        <th scope='col' class='text-center align-middle w-25 font-weight-normal'>H + 50%</th>
+                                        </tr>
+                                    </thead>
+                                </table>";
+                                echo '<div class="container-list-details m-auto">
+                                    <table class="table table-striped border ml-auto mb-3 mr-auto w-100 text-center">';
+                                        if($result = mysqli_query($db, $month_sql)) {
 
-                                                if (mysqli_num_rows($result) > 0) {
-                                                    
-                                                    echo "<tbody>";
+                                            if( $db === false){
+                                                die("ERROR: Could not connect. " . mysqli_connect_error());
+                                            }
+                                            
+                                            if (mysqli_num_rows($result) > 0) {
+
+                                                echo "<tbody>";
 
                                                         while ($row = $result->fetch_array()) {
 
-                                                            if (empty($row['concat']) && empty($row['inter_chantier']) && empty($row['user_id'])) {
+                                                            if (!empty($row['week']) && empty($row['day']) && !empty($row['tot_h'])) {
                                                                 
-                                                                echo '<tr>';
+                                                                $t_25 += $row['maj25'];
+                                                                $t_50 += $row['maj50'];
+
+                                                                if ($flag <= 4) {
                                                                     
-                                                                    echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
-                                                                        $total = $row['tot_glob'];
-                                                                        $hours = (int)$total;
-                                                                        $minutes = ($total - $hours);
-                                                                        echo $hours + $minutes; 
-                                                                    '</td>';
-                                                                    echo '<td class="align-middle border-left border-right p-1 w-25" style="word-wrap: break-word;">';
-                                                                        $m25 = $row['maj25'];
-                                                                        $hours = (int)$m25;
-                                                                        $minutes = ($m25 - $hours);
-                                                                        $m25 = $hours + $minutes;
-                                                                        if ($m25 > 0) {
-                                                                            echo $m25 . '<br />' . $m25 * 25 / 100 . ' maj.';
-                                                                        } else {
-                                                                            echo '<div class="bg-secondary w-100 h-100"></div>';
-                                                                        }
-                                                                    echo '</td>';
-                                                                    echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
-                                                                        $m50 = $row['maj50'];
-                                                                        $hours = (int)$m50;
-                                                                        $minutes = ($m50 - $hours);
-                                                                        $m50 = $hours + $minutes;
-                                                                        if ($m50 > 0) {
-                                                                            echo $m50;
-                                                                            if ($row['h_night_tot'] != 0) {
-                                                                                $hnight = $row['h_night_tot'];
-                                                                                $hours = (int)$hnight;
-                                                                                $minutes = ($hnight - $hours);
-                                                                                $hnight = $hours + $minutes;
-                                                                                echo '<div class="d-inline small text-success">&nbsp;&nbsp;&nbsp;[nuit =&nbsp;' . $hnight . ']</div>';
-                                                                            } 
-                                                                            echo '<br />= ';
-                                                                            echo $m50 + ($m50 * 50 / 100) . ' maj.';
-                                                                        } else {
-                                                                            echo '<div class="bg-secondary w-100 h-100"></div>';
-                                                                        }
-                                                                    echo '</td>';
+                                                                    $flag += 1;
+                                                                    
+                                                                    echo '<tr>';
+                                                                        
+                                                                        echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
+                                                                            $total = $row['tot_glob'];
+                                                                            echo $total;
+                                                                        echo '</td>';
+
+                                                                        echo '<td class="align-middle border-left border-right p-1 w-25" style="word-wrap: break-word;">';
+                                                                            $m25 = $row['maj25'];
+                                                                            if ($m25 > 0) {
+                                                                                echo $m25;
+                                                                                echo ' <br /> = ';
+                                                                                echo $m25 + ($m25 / 4);
+                                                                                echo ' maj.';
+                                                                            } else {
+                                                                                echo '<div class="bg-secondary w-100 h-100"></div>';
+                                                                            }
+                                                                        echo '</td>';
+                                                                        echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
+                                                                            $m50 = $row['maj50'];
+                                                                            if ($m50 > 0) {
+                                                                                echo number_format($m50, 1);
+                                                                                if ($row['h_night_tot'] != 0) {
+                                                                                    $hnight = number_format($row['h_night_tot'], 1) . ' h';
+                                                                                    echo '<div class="d-inline small text-success">&nbsp;&nbsp;&nbsp;[nuit =&nbsp;' . $hnight . ']</div>';
+                                                                                } 
+                                                                                echo '<br />= ';
+                                                                                echo $m50 + ($m50 / 2) . ' maj.';
+                                                                            } else {
+                                                                                echo '<div class="bg-secondary w-100 h-100"></div>';
+                                                                            }
+                                                                        echo '</td>';
+                                                                    }
 
                                                                 echo '</tr>';
                                                             }
                                                         }
                                                     echo '</tbody>';
-                                                    mysqli_free_result($result);
-                                                } else {
-                                                    echo "Cette personne n'a pas encore effectué d'heure pour le moment.";
-                                                }
+                                                mysqli_free_result($result);
+                                            } else {
+                                                echo "Cette personne n'a pas encore effectué d'heure pour le moment.";
                                             }
-                                    echo '</table>
-                                    </div>';
+                                        } else {
+                                            echo "ERROR: Could not get 'id' of current user [third_method]";
+                                        }
+                                echo '</table>
+                                </div>';
 
-                                echo '<h4 class="w-75 mt-5 ml-auto mb-4 mr-auto pt-3 pb-2 text-center border-bottom">Heures sur 4 semaines</h4>';
-                                echo "<table class='table table-striped border mt-4 ml-auto mb-3 mr-auto w-100 text-center'>";
-                                        echo "<thead>
-                                            <tr>
-                                                <th scope='col' class='text-center border-right align-middle w-25'>H/totales</th>
-                                                <th scope='col' class='text-center border-right align-middle w-25'>H + 25%</th>
-                                                <th scope='col' class='text-center align-middle w-25'>H + 50%</th>
-                                            </tr>
-                                        </thead>
-                                    </table>";
-                                    echo '<div class="container-list-details m-auto">
-                                        <table class="table table-striped border ml-auto mb-3 mr-auto w-100 text-center">';
-                                            if($result = mysqli_query($db, $sql)) {
+                                echo '<h4 class="w-75 mt-5 ml-auto mb-4 mr-auto pb-2 text-center border-bottom">Heures globales du mois</h4>';
+                                echo "<table class='table table-striped border mt-2 ml-auto mb-3 mr-auto w-100 text-center'>";
+                                    echo "<thead>
+                                        <tr>
+                                            <th scope='col' class='text-center border-right align-middle w-25 font-weight-normal'>H/totales<br />[avec h/nuit]</th>
+                                            <th scope='col' class='text-center border-right align-middle w-25 font-weight-normal'>H + 25%</th>
+                                            <th scope='col' class='text-center align-middle w-25 font-weight-normal'>H + 50%</th>
+                                        </tr>
+                                    </thead>
+                                </table>";
+                                echo '<div class="m-auto">
+                                    <table class="table table-striped border ml-auto mb-1 mr-auto pb-3 w-100 text-center">';
+                                        if($result = mysqli_query($db, $month_sql)) {
 
-                                                if( $db === false){
-                                                    die("ERROR: Could not connect. " . mysqli_connect_error());
-                                                }
+                                            if( $db === false){
+                                                die("ERROR: Could not connect. " . mysqli_connect_error());
+                                            }
+
+                                            if (mysqli_num_rows($result) > 0) {
                                                 
-                                                if (mysqli_num_rows($result) > 0) {
+                                                echo "<tbody>";
 
-                                                    echo "<tbody>";
+                                                        $flag = 0;
 
-                                                        $flag = 1;
-                                                        
                                                         while ($row = $result->fetch_array()) {
-
-                                                            if (empty($row['date_chantier']) && empty($row['inter_chantier']) && empty($row['name_chantier']) && !empty($row['concat'])/*&& !empty($row['chantier_id'])*/ && $flag <= 4) {
+                                                            
+                                                            if ($flag == 0 && empty($row['month'])) {
                                                                 
                                                                 $flag += 1;
 
                                                                 echo '<tr>';
-
+                                                                    
                                                                     echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
-                                                                        $total = $row['tothsnight'];
+                                                                        $total = $row['tot_h'];
                                                                         $hours = (int)$total;
                                                                         $minutes = ($total - $hours);
-                                                                        $total = $hours + $minutes;
-                                                                    echo $total . '</td>';
+                                                                        echo $hours + $minutes;
+                                                                    '</td>';
                                                                     echo '<td class="align-middle border-left border-right p-1 w-25" style="word-wrap: break-word;">';
-                                                                        $m25 = $row['maj25'];
-                                                                        $hours = (int)$m25;
-                                                                        $minutes = ($m25 - $hours);
-                                                                        $m25 = $hours + $minutes;
-                                                                        if ($m25 > 0) {
-                                                                            echo $m25 . '<br />' . $m25 * 25 / 100 . ' maj.';
+                                                                        if ($t_25 > 0) {
+                                                                            echo $t_25 . '<br />' . $t_25 * 25 / 100 . ' maj.';
                                                                         } else {
                                                                             echo '<div class="bg-secondary w-100 h-100"></div>';
                                                                         }
                                                                     echo '</td>';
                                                                     echo '<td class="align-middle p-1 w-25" style="word-wrap: break-word;">';
-                                                                        $m50 = $row['maj50'];
-                                                                        $hours = (int)$m50;
-                                                                        $minutes = ($m50 - $hours);
-                                                                        $m50 = $hours + $minutes;
-                                                                        if ($m50 > 0) {
-                                                                            echo $m50;
+                                                                        if ($t_50 > 0) {
+                                                                            echo number_format($t_50, 1);
                                                                             if ($row['h_night_tot'] != 0) {
-                                                                                $hnight = $row['h_night_tot'];
-                                                                                $hours = (int)$hnight;
-                                                                                $minutes = ($hnight - $hours);
-                                                                                $hnight = $hours + $minutes;
+                                                                                $hnight = number_format($row['h_night_tot'], 1) . ' h';
                                                                                 echo '<div class="d-inline small text-success">&nbsp;&nbsp;&nbsp;[nuit =&nbsp;' . $hnight . ']</div>';
                                                                             } 
                                                                             echo '<br />= ';
-                                                                            echo $m50 + ($m50 * 50 / 100) . ' maj.';
+                                                                            echo $t_50 + ($t_50 / 2) . ' maj.';
                                                                         } else {
                                                                             echo '<div class="bg-secondary w-100 h-100"></div>';
                                                                         }
                                                                     echo '</td>';
-                                                                    
+
                                                                 echo '</tr>';
                                                             }
                                                         }
                                                     echo '</tbody>';
-                                                    mysqli_free_result($result);
-                                                } else {
-                                                    echo "Cette personne n'a pas encore effectué d'heure pour le moment.";
-                                                }
+                                                mysqli_free_result($result);
                                             } else {
-                                                echo "ERROR: Could not get 'id' of current user [third_method]";
+                                                echo "Cette personne n'a pas encore effectué d'heure pour le moment.";
                                             }
-                                    echo '</table>
+                                        }
+                                echo '</table>
                                 </div>';
-                
                             }
                         mysqli_close($db);
                         ?>
