@@ -40,10 +40,10 @@
                                     $modif_user['e_mail'] = $user['e_mail'];
                                     $modif_user['phone'] = $user['phone'];
 
-                                    echo '<input type="text" value="' . $modif_user['id'] . '" id="id" name="id" style="display: none;"">';
+                                    echo '<input type="text" value="' . $modif_user['id'] . '" id="id" name="id" style="display: none;">';
                                     echo '<div class="md-form mt-1">';
                                         echo '<label for="fusername">Username</label>';
-                                        echo '<input type="text" value="' . $modif_user['username'] . '" id="username" name="username" class="form-control" placeholder="' . $modif_user['username'] . '"" />';
+                                        echo '<input type="text" value="' . $modif_user['username'] . '" id="username" name="username" class="form-control" placeholder="' . $modif_user['username'] . '" />';
                                     echo '</div>';
                                     echo '<div class="md-form mt-4">';
                                         echo '<label for="first-name">First name</label>';
@@ -97,26 +97,26 @@
                                         $stmt->execute();
                                         $admin = $stmt->fetch();
 
-                                        echo '<input type="text" value="' . $admin['id'] . '" id="id" name="id" style="display: none;"">';
+                                        echo '<input type="text" value="' . $admin['id'] . '" id="id" name="id" style="display: none;" />';
                                         echo '<div class="md-form mt-1">';
                                             echo '<label for="fusername">Username</label>';
-                                            echo '<input type="text" value="' . $admin['admin_name'] . '" id="username" name="username" class="form-control" placeholder="' . $admin['admin_name'] . '"">';
+                                            echo '<input type="text" value="' . $admin['admin_name'] . '" id="username" name="username" class="form-control" placeholder="' . $admin['admin_name'] . '" />';
                                         echo '</div>';
                                         echo '<div class="md-form mt-4">';
                                             echo '<label for="first-name">First name</label>';
-                                            echo '<input type="text" value="' . $admin['first_name'] . '" id="first_name" name="first_name" class="form-control" placeholder="' . $admin['first_name'] . '">';
+                                            echo '<input type="text" value="' . $admin['first_name'] . '" id="first_name" name="first_name" class="form-control" placeholder="' . $admin['first_name'] . '" />';
                                         echo '</div>';
                                         echo '<div class="md-form mt-4">';
                                             echo '<label for="last_name">Last name</label>';
-                                            echo '<input type="text" value="' . $admin['last_name'] . '" id="last_name" name="last_name" class="form-control" placeholder="' . $admin['last_name'] . '">';
+                                            echo '<input type="text" value="' . $admin['last_name'] . '" id="last_name" name="last_name" class="form-control" placeholder="' . $admin['last_name'] . '" />';
                                         echo '</div>';
                                         echo '<div class="md-form mt-4">';
                                             echo '<label for="e_mail">E_mail</label>';
-                                            echo '<input type="email" value="' . $admin['e_mail'] . '" id="e-mail" name="e_mail" class="form-control" placeholder="' . $admin['e_mail'] . '">';
+                                            echo '<input type="email" value="' . $admin['e_mail'] . '" id="e-mail" name="e_mail" class="form-control" placeholder="' . $admin['e_mail'] . '" />';
                                         echo '</div>';
                                         echo '<div class="md-form mt-4 pb-3">';
                                             echo '<label for="phone">Téléphone</label>';
-                                            echo '<input type="text" value="' . $admin['phone'] . '" id="phone" name="phone" class="form-control" placeholder="' . $admin['phone'] . '">';
+                                            echo '<input type="text" value="' . $admin['phone'] . '" id="phone" name="phone" class="form-control" placeholder="' . $admin['phone'] . '" />';
                                         echo '</div>';
 
 
@@ -182,23 +182,23 @@
 
                                 echo '<div class="md-form mt-1">';
                                     echo '<label for="fusername" class="text-secondary">Username</label>';
-                                    echo '<input type="text" value="' . $modif_user['username'] . '" id="username" name="username" class="form-control" placeholder="' . $modif_user['username'] . '"" disabled>';
+                                    echo '<input type="text" value="' . $modif_user['username'] . '" id="username" name="username" class="form-control" placeholder="' . $modif_user['username'] . '" disabled />';
                                 echo '</div>';
                                 echo '<div class="md-form mt-4">';
                                     echo '<label for="first-name" class="text-secondary">First name</label>';
-                                    echo '<input type="text" value="' . $modif_user['first_name'] . '" id="first_name" name="first_name" class="form-control" placeholder="' . $modif_user['first_name'] . '" disabled>';
+                                    echo '<input type="text" value="' . $modif_user['first_name'] . '" id="first_name" name="first_name" class="form-control" placeholder="' . $modif_user['first_name'] . '" disabled />';
                                 echo '</div>';
                                 echo '<div class="md-form mt-4">';
                                     echo '<label for="last_name" class="text-secondary">Last name</label>';
-                                    echo '<input type="text" value="' . $modif_user['last_name'] . '" id="last_name" name="last_name" class="form-control" placeholder="' . $modif_user['last_name'] . '" disabled>';
+                                    echo '<input type="text" value="' . $modif_user['last_name'] . '" id="last_name" name="last_name" class="form-control" placeholder="' . $modif_user['last_name'] . '" disabled />';
                                 echo '</div>';
                                 echo '<div class="md-form mt-4">';
                                     echo '<label for="e_mail" class="text-secondary">E_mail</label>';
-                                    echo '<input type="email" value="' . $modif_user['e_mail'] . '" id="e-mail" name="e_mail" class="form-control" placeholder="' . $modif_user['e_mail'] . '" disabled>';
+                                    echo '<input type="email" value="' . $modif_user['e_mail'] . '" id="e-mail" name="e_mail" class="form-control" placeholder="' . $modif_user['e_mail'] . '" disabled />';
                                 echo '</div>';
                                 echo '<div class="md-form mt-4 pb-3">';
                                     echo '<label for="phone" class="text-secondary">Téléphone</label>';
-                                    echo '<input type="text" value="' . $modif_user['phone'] . '" id="phone" name="phone" class="form-control" placeholder="' . $modif_user['phone'] . '" disabled>';
+                                    echo '<input type="text" value="' . $modif_user['phone'] . '" id="phone" name="phone" class="form-control" placeholder="' . $modif_user['phone'] . '" disabled />';
                                 echo '</div>';
 
 
@@ -223,15 +223,15 @@
                                 </div>';
                             }
                         ?>
-                        <div class="pt-5 w-75 m-auto">
-                            <a href="javascript:history.go(-1)" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4 text-dark">Précédent</a>
+                            <div class="pt-5 w-75 m-auto">
+                                <a href="javascript:history.go(-1)" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4 text-dark">Précédent</a>
+                            </div>
                         </div>
-                    </div>
                     </form>
             <?php } ?>
 
+                </div>
             </div>
-        </div>
     </body>
 
     <?php include 'footer.php'; ?>
