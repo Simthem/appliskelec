@@ -1,5 +1,5 @@
 <?php
-session_start();
+//session_start();
 //print_r(session_get_cookie_params());
 
 include 'api/config/db_connexion.php';
