@@ -1,7 +1,4 @@
 <?php
-//session_start();
-//print_r(session_get_cookie_params());
-
 include 'api/config/db_connexion.php';
 
 if (isset($_COOKIE['id'])) {
@@ -42,7 +39,6 @@ if (isset($_COOKIE['id'])) {
 }
 
 if(!($_SESSION['username'])){
-  
     header("Location: signin.php");
 }
 
@@ -57,7 +53,7 @@ if (isset($_SESSION['admin_name']) && !empty($_SESSION['admin_name'])) {
     $admin = $stmt_admin->fetch();
 }
 
-if($user) {
+if ($user) {
     $_SESSION['id'] = $user['id'];
 } elseif (isset($admin) && !empty($admin)) {
     $_SESSION['id'] = $admin['id'];

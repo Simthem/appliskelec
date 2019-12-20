@@ -185,61 +185,9 @@
                                         echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . $row['username'] . '</td>';
                                         echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . $row['phone'] . '</td>';
                                         $id_user_row = $row['id'];
-                                        
-                                        $sql_hours = 
-                                        "SELECT 
-                                            username,
-                                            c.id AS chantier_id,
-                                            u.id AS `user_id`,
-                                            SUM(intervention_hours) AS totalheure
-                                        FROM
-                                            chantiers AS c
-                                            JOIN
-                                            global_reference AS g ON c.id = chantier_id
-                                            JOIN
-                                            users AS u ON g.user_id = u.id
-                                        WHERE
-                                            concat(month(g.updated)) = (
-																	SELECT 
-																		MAX(concat(month(updated)))
-																	FROM
-																		global_reference
-																	)
-											AND
-                                            u.id = $id_user_row
-                                        GROUP BY username , c.id , u.id WITH ROLLUP";
-                                        
-                                        if ($result_hours = mysqli_query($db, $sql_hours)){
-                                            if (mysqli_num_rows($result_hours) > 0){
 
-                                                while ($row_hours = $result_hours->fetch_array()) {
-
-                                                    if (!empty($row_hours['username']) and empty($row_hours['chantier_id'])) {
-                                                        $total = $row_hours['totalheure'];
-                                                        $hours = (int)$total;
-                                                        $minutes = ($total - $hours) * 60;
-                                                        if ($minutes > 59) {
-                                                            $hours += 1;
-                                                            $minutes -= 60;
-                                                        }
-                                                        if ($minutes > 10) {
-                                                            $minutes = $minutes;
-                                                        } elseif ($minutes < 10 and $minutes > 0) {
-                                                            $minutes = "0" . $minutes;
-                                                        } else {
-                                                            $minutes = "00";
-                                                        }
-                                                        echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . $hours . ':' . $minutes . '</td>';
-                                                    }
-                                                }
-                                            } else {
-                                                echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">00:00</td>';
-                                            }
-                                        } else {
-                                            echo "ERROR: Could not able to execute $result_hours. " . mysqli_error($db);
-                                        }
-
-
+                                        include_once './api/view/user_view.php';
+                                        month($row['id']);
 
                                         if ($_SESSION['id'] == $admin['id']) {
                                             echo '<td class="p-0 align-middle w-25>';
@@ -256,7 +204,6 @@
                                         }
                                     echo '</tr>';
                                 }
-                            mysqli_free_result($result_hours);
                             mysqli_free_result($result);
                             echo '</tbody>';
                         } else {

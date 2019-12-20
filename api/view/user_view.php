@@ -3,7 +3,7 @@
 function request_hours($id) {
     
     include 'auth.php';
-
+    
     $month_sql = "SELECT
         concat(year(g.updated)) AS `year`,
         concat(month(g.updated)) AS `month`,
@@ -15,10 +15,12 @@ function request_hours($id) {
         intervention_hours,
         SUM(intervention_hours) AS tot_h,
         SUM(night_hours) AS h_night_tot,
-        SUM(intervention_hours) - SUM(night_hours) AS tot_glob,
+        if (SUM(night_hours > 0), SUM(intervention_hours) - SUM(night_hours), SUM(intervention_hours)) AS tot_glob,
         SUM(absence) AS absence,
-        if ((SUM(intervention_hours) - SUM(night_hours)) - 35 > 0, if ((SUM(intervention_hours) - SUM(night_hours)) - 35 > 8, 8, (SUM(intervention_hours) - SUM(night_hours)) - 35), NULL) AS maj25,
-        if ((SUM(intervention_hours) - SUM(night_hours)) > 43, if (SUM(night_hours) > 0, SUM(intervention_hours) - 43, (SUM(intervention_hours) - SUM(night_hours)) - 43), if ((SUM(intervention_hours) - SUM(night_hours)) < 43, if (SUM(night_hours) > 0, SUM(night_hours), NULL), NULL)) AS maj50
+        if (SUM(night_hours), if ((SUM(intervention_hours) - SUM(night_hours)) - 35 > 0, if ((SUM(intervention_hours) - SUM(night_hours)) - 35 > 8, 8, (SUM(intervention_hours) - SUM(night_hours)) - 35), NULL), if (SUM(intervention_hours) - 35 > 0, if (SUM(intervention_hours) - 35 > 8, 8, SUM(intervention_hours) - 35), NULL)) AS maj25,
+        if (SUM(night_hours), if ((SUM(intervention_hours) - SUM(night_hours)) > 43, if (SUM(night_hours) > 0, SUM(intervention_hours) - 43, (SUM(intervention_hours) - SUM(night_hours)) - 43), if ((SUM(intervention_hours) - SUM(night_hours)) < 43, if (SUM(night_hours) > 0, SUM(night_hours), NULL), NULL)), if (SUM(intervention_hours) > 43, SUM(intervention_hours) - 43, NULL)) AS maj50
+        /*if ((SUM(intervention_hours) - SUM(night_hours)) - 35 > 0, if ((SUM(intervention_hours) - SUM(night_hours)) - 35 > 8, 8, (SUM(intervention_hours) - SUM(night_hours)) - 35), NULL) AS maj25,
+        if ((SUM(intervention_hours) - SUM(night_hours)) > 43, if (SUM(night_hours) > 0, SUM(intervention_hours) - 43, (SUM(intervention_hours) - SUM(night_hours)) - 43), if ((SUM(intervention_hours) - SUM(night_hours)) < 43, if (SUM(night_hours) > 0, SUM(night_hours), NULL), NULL)) AS maj50*/
     FROM
         chantiers AS c
         JOIN
@@ -29,8 +31,12 @@ function request_hours($id) {
         u.id = '" . $id . "'
     GROUP BY concat(year(g.updated)) DESC, concat(month(g.updated)) DESC, concat(week(g.updated)) DESC , g.updated DESC, u.id , intervention_hours, night_hours  with ROLLUP";
 
-    return $month_sql;
 
+    if (isset($month_sql) && !empty($month_sql)) {
+        return $month_sql;
+    } else {
+        return false;
+    }
 }
 
 
@@ -41,7 +47,7 @@ function week($id) {
     
     $month_sql = request_hours($id);
 
-    if($result = mysqli_query($db, $month_sql)) {
+    if ($result = mysqli_query($db, $month_sql)) {
 
         if ($db === false){
             die("ERROR: Could not connect. " . mysqli_connect_error());
@@ -67,13 +73,8 @@ function week($id) {
                             $flag += 1;
                             
                             echo '<tr>';
-                                
-                                echo '<td class="small align-middle p-1 w-25" style="word-wrap: break-word;">';
-                                    $total = $row['tot_glob'];
-                                    echo $total;
-                                echo '</td>';
 
-                                calc_hours($total, $row['maj25'], $row['maj50'], $row['h_night_tot'], 0);  // Function called to calcul and display values
+                                calc_hours($row['tot_glob'], $row['maj25'], $row['maj50'], $row['h_night_tot'], 0, 0);  // Function called to calcul and display values
                         }
 
                             echo '</tr>';
@@ -122,16 +123,11 @@ function week($id) {
                                 $flag += 1;
         
                                 echo '<tr>';
-                                    
-                                    echo '<td class="small align-middle p-1 w-25" style="word-wrap: break-word;">';
-                                        $total = $row['tot_h'];
-                                        echo $total;
-                                    '</td>';
 
                                     if (isset($absence) && !empty($absence)) {
-                                        calc_hours($total, $t_25, $t_50, $row['h_night_tot'], $absence);
+                                        calc_hours($row['tot_h'], $t_25, $t_50, $row['h_night_tot'], $absence, 1);
                                     } else {
-                                        calc_hours($total, $t_25, $t_50, $row['h_night_tot'], 0);  // Function called to calcul and display values
+                                        calc_hours($row['tot_h'], $t_25, $t_50, $row['h_night_tot'], 0, 0);  // Function called to calcul and display values
                                     }
                             }
                         }
@@ -152,6 +148,46 @@ function week($id) {
             echo '</tbody>';
         }
     echo '</div>';
+}
+
+
+
+function month($id) {
+
+    include 'auth.php';
+
+    $month_sql = request_hours($id);
+
+    $absence = 0;
+
+    if ($result_hours = mysqli_query($db, $month_sql)){
+        
+        if (mysqli_num_rows($result_hours) > 0){
+
+            $flag = 0;
+
+            while ($row_hours = $result_hours->fetch_array()) {
+
+                if (empty($row_hours['week']) && !empty($row_hours['month']) && $flag == 0) {
+
+                    if (isset($row_hours['absence']) && !empty($row_hours['absence'])) {
+                        $absence += $row_hours['absence'];
+                    }
+                        
+                    include_once './api/view/hours_view.php';
+                    $rep = value_h($row_hours['tot_h'], $row_hours['maj25'], $row_hours['maj50'], $absence, 1);
+                    
+                    convert_h($rep[0]);
+                    
+                    $flag = 1;
+                }
+            }
+        } else {
+            echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">00:00</td>';
+        }
+    } else {
+        echo "ERROR: Could not able to execute $result_hours. " . mysqli_error($db);
+    }
 }
 
 ?>

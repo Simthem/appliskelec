@@ -33,6 +33,7 @@ function request_hours($id) {
     return $month_admin;
 }
 
+
 function week($id) {
 
     include 'auth.php';
@@ -71,7 +72,7 @@ function week($id) {
                                     echo $total;
                                 echo '</td>';
 
-                                calc_hours($total, $row['maj25'], $row['maj50'], $row['h_night_tot'], 0);  // Function called to calcul and display values
+                                calc_hours($total, $row['maj25'], $row['maj50'], $row['h_night_tot'], 0, 0);  // Function called to calcul and display values
 
                         }
 
@@ -127,9 +128,9 @@ function week($id) {
                                     '</td>';
 
                                     if (isset($absence) && !empty($absence)) {
-                                        calc_hours($total, $t_25, $t_50, $row['h_night_tot'], $absence);
+                                        calc_hours($total, $t_25, $t_50, $row['h_night_tot'], $absence, 1);
                                     } else {
-                                        calc_hours($total, $t_25, $t_50, $row['h_night_tot'], 0);  // Function called to calcul and display values
+                                        calc_hours($total, $t_25, $t_50, $row['h_night_tot'], 0, 0);  // Function called to calcul and display values
                                     }
 
                                 echo '</tr>';
