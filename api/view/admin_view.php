@@ -67,12 +67,7 @@ function week($id) {
                             
                             echo '<tr>';
                                 
-                                echo '<td class="small align-middle p-1 w-25" style="word-wrap: break-word;">';
-                                    $total = $row['tot_glob'];
-                                    echo $total;
-                                echo '</td>';
-
-                                calc_hours($total, $row['maj25'], $row['maj50'], $row['h_night_tot'], 0, 0);  // Function called to calcul and display values
+                                calc_hours($row['tot_glob'], $row['maj25'], $row['maj50'], $row['h_night_tot'], 0, 0);  // Function called to calcul and display values
 
                         }
 
@@ -121,16 +116,11 @@ function week($id) {
                                 $flag += 1;
 
                                 echo '<tr>';
-                                    
-                                    echo '<td class="small align-middle p-1 w-25" style="word-wrap: break-word;">';
-                                        $total = $row['tot_h'];
-                                        echo $total;
-                                    '</td>';
 
                                     if (isset($absence) && !empty($absence)) {
-                                        calc_hours($total, $t_25, $t_50, $row['h_night_tot'], $absence, 1);
+                                        calc_hours($row['tot_h'], $t_25, $t_50, $row['h_night_tot'], $absence, 1);
                                     } else {
-                                        calc_hours($total, $t_25, $t_50, $row['h_night_tot'], 0, 0);  // Function called to calcul and display values
+                                        calc_hours($row['tot_h'], $t_25, $t_50, $row['h_night_tot'], 0, 0);  // Function called to calcul and display values
                                     }
 
                                 echo '</tr>';
