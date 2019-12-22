@@ -73,7 +73,7 @@
                                             </tr>
                                         </thead>
                                     </table>";
-                                    echo '<div class="container-list-details m-auto">
+                                    echo '<div class="m-auto">
                                         <table class="table table-striped border ml-auto mb-3 mr-auto w-100 text-center">';
                                             
                                             include_once './api/view/user_view.php';
@@ -135,7 +135,7 @@
                                             <table class="table table-striped border ml-auto mb-3 mr-auto w-100 text-center">';
                                             
                                             include_once './api/view/admin_view.php';
-                                            week($_GET['id']);  // Call function to display all hours of the user
+                                            week_a($_GET['id']);  // Call function to display all hours of the user
 
                                     echo '<div class="md-form mt-4">';
                                         echo '<label for="pass1">Password</label>';
@@ -151,15 +151,12 @@
                                     echo "ERROR : Could not get 'id' of current user [second_method]";
                                 }
                             ?>
-                            <div class="pt-5 w-75 m-auto">
-                                <input type="submit" value="Valider" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">
-                                <a href="javascript:history.go(-1)" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4 text-dark">Précédent</a>
+                                <div class="pt-5 w-75 m-auto">
+                                    <input type="submit" value="Valider" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">
+                                    <a href="javascript:history.go(-1)" value="return" class="btn finish border-0 bg-white z-depth-1a mt-1 mb-4 text-dark">Précédent</a>
+                                </div>
                             </div>
-                        </div>
                         </form>
-                        
-                    </div>
-                </div>
         <?php 
             } else { 
         ?>
@@ -212,7 +209,7 @@
                                         </tr>
                                     </thead>
                                 </table>";
-                                echo '<div class="container-list-details m-auto">
+                                echo '<div class="m-auto">
                                     <table class="table table-striped border ml-auto mb-3 mr-auto w-100 text-center">';
                                         
 
@@ -232,6 +229,5 @@
 
                 </div>
             </div>
-    </body>
 
     <?php include 'footer.php'; ?>

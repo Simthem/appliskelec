@@ -45,50 +45,51 @@ function week($id) {
     include 'auth.php';
     include './api/view/hours_view.php';
     
-    $month_sql = request_hours($id);
+    if ($month_sql = request_hours($id)) {
 
-    if ($result = mysqli_query($db, $month_sql)) {
+        if ($result = mysqli_query($db, $month_sql)) {
 
-        if ($db === false){
-            die("ERROR: Could not connect. " . mysqli_connect_error());
-        }
+            if ($db === false){
+                die("ERROR: Could not connect. " . mysqli_connect_error());
+            }
 
-        if (mysqli_num_rows($result) > 0) {
+            if (mysqli_num_rows($result) > 0) {
 
-            $flag = 1;
-            $t_25 = 0;
-            $t_50 = 0;
+                $flag = 1;
+                $t_25 = 0;
+                $t_50 = 0;
 
-            echo "<tbody>";
+                echo "<tbody>";
 
-                while ($row = $result->fetch_array()) {
+                    while ($row = $result->fetch_array()) {
 
-                    if (!empty($row['week']) && empty($row['day']) && !empty($row['tot_h'])) {
-                        
-                        $t_25 += $row['maj25'];
-                        $t_50 += $row['maj50'];
-
-                        if ($flag <= 4) {
+                        if (!empty($row['week']) && empty($row['day']) && !empty($row['tot_h'])) {
                             
-                            $flag += 1;
-                            
-                            echo '<tr>';
+                            $t_25 += $row['maj25'];
+                            $t_50 += $row['maj50'];
 
-                                calc_hours($row['tot_glob'], $row['maj25'], $row['maj50'], $row['h_night_tot'], 0, 0);  // Function called to calcul and display values
+                            if ($flag <= 4) {
+                                
+                                $flag += 1;
+                                
+                                echo '<tr>';
+
+                                    calc_hours($row['tot_glob'], $row['maj25'], $row['maj50'], $row['h_night_tot'], 0, 0);  // Function called to calcul and display values
+                            }
+
+                                echo '</tr>';
                         }
-
-                            echo '</tr>';
+                        $absence = $row['absence'];
                     }
-                    $absence = $row['absence'];
-                }
-            echo '</tbody>';
-            mysqli_free_result($result);
-        } else {
-            echo "Cette personne n'a pas encore effectué d'heure pour le moment.";
+                echo '</tbody>';
+                mysqli_free_result($result);
+            } else {
+                echo "Cette personne n'a pas encore effectué d'heure pour le moment.";
+            }
         }
+        echo '</table>
+        </div>';
     }
-    echo '</table>
-    </div>';
 
 
     echo '<h4 class="w-75 mt-5 ml-auto mb-4 mr-auto pb-2 text-center border-bottom">Heures globales du mois</h4>';
@@ -118,7 +119,7 @@ function week($id) {
         
                         while ($row = $result->fetch_array()) {
                             
-                            if ($flag == 0 && empty($row['month'])) {
+                            if ($flag == 0 && empty($row['week'])) {
                                 
                                 $flag += 1;
         
@@ -140,12 +141,7 @@ function week($id) {
 
         echo '</table>';
         if (isset($absence) && !empty($absence)) {
-                echo '</tr>';
-            echo '</tbody>';
             echo '<div class="small text-right">Heure(s) d\'absence(s) = ' . $absence . ' h</div>';
-        } else {
-                echo '</tr>';
-            echo '</tbody>';
         }
     echo '</div>';
 }
@@ -189,5 +185,4 @@ function month($id) {
         echo "ERROR: Could not able to execute $result_hours. " . mysqli_error($db);
     }
 }
-
 ?>

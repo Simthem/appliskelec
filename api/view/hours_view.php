@@ -69,8 +69,10 @@ function calc_hours($pretotal, $rm_25, $rm_50, $rh_n_tot, $absence, $temp) {
 
     echo '<td class="small align-middle border-left border-right p-1 w-25" style="word-wrap: break-word;">';
         if ($result[1] > 0) {
+
             echo $result[1];
             echo ' <br /> = ';
+            
             if (!isset($result[2]) && (!empty($result[2]) || $result[2] != 0)) {
                 echo $result[3] . ' maj.-abs.';
             } else {
@@ -82,7 +84,9 @@ function calc_hours($pretotal, $rm_25, $rm_50, $rh_n_tot, $absence, $temp) {
     echo '</td>';
     echo '<td class="small align-middle p-1 w-25" style="word-wrap: break-word;">';
         if ($result[4] > 0) {
+
             echo number_format($result[4], 1);
+
             if ($rh_n_tot != 0) {
                 $hnight = number_format($rh_n_tot, 1) . ' h';
                 echo '<div class="d-inline small text-success">&nbsp;&nbsp;&nbsp;[nuit =&nbsp;' . $hnight . ']</div>';
