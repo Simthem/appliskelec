@@ -41,7 +41,36 @@
                             u.id = '" . $_SESSION['id'] . "'
                             AND
                             updated = '" . $_GET['up_int'] . "'
-                        GROUP BY g.id, g.updated, u.id, c.name, c.id, absence, panier_repas, g.state";
+                        GROUP BY 
+                            g.id, g.updated, u.id, c.name, c.id, absence, panier_repas, g.state";
+
+
+                        $recap_2= "SELECT
+                            g.id AS gid,
+                            g.updated as inter_chantier,
+                            a.id,
+                            c.name AS name_chantier,
+                            c.id AS chantier_id,
+                            absence,
+                            SUM(night_hours) AS h_night_tot,
+                            SUM(intervention_hours - night_hours) AS tothsnight,
+                            SUM(intervention_hours) AS tot_glob,
+                            panier_repas,
+                            g.state AS `state`
+                        FROM
+                            chantiers AS c
+                            JOIN
+                            global_reference AS g ON c.id = chantier_id
+                            JOIN
+                            `admin` AS a ON g.user_id = a.id
+                        WHERE
+                            a.id = '" . $_SESSION['id'] . "'
+                            AND
+                            updated = '" . $_GET['up_int'] . "'
+                        GROUP BY 
+                            g.id, g.updated, a.id, c.name, c.id, absence, panier_repas, g.state";
+
+
 
                         $date = date_create($_GET['up_int']);
                         echo '<input id="up_inter" name="up_inter" value="' . date_format($date, 'Y-m-d') . '" style="display: none" />';
@@ -442,7 +471,7 @@
                                                             echo '<div class="border-0 p-0 mt-2 ml-0 mr-0 mb-2 col-12 float-right d-inline-flex">
                                                                 <div class="col-5 p-0">
                                                                     <select class="hours border-0 rounded bg-secondary text-white text-center">
-                                                                        <option value="' . $hours . '" selected disabled>' . $hours . '</option>
+                                                                        <option value="' . $hours . '" selected>' . $hours . '</option>
                                                                         <option value="0">0</option>
                                                                         <option value="1">1</option>
                                                                         <option value="2">2</option>
@@ -461,7 +490,7 @@
                                                                     </select>
                                                                     <strong>h</strong>
                                                                     <select class="minutes border-0 rounded bg-secondary text-white text-center">
-                                                                        <option value="' . $minutes . '" selected disabled>' . $minutes . '</option>
+                                                                        <option value="' . $minutes . '" selected>' . $minutes . '</option>
                                                                         <option value="00">00</option>
                                                                         <option value="30">30</option>
                                                                     </select>
@@ -469,7 +498,7 @@
                                                                 <div class="col-7 p-0">
                                                                     <strong>[</strong>
                                                                     <select class="night_h border-0 rounded bg-secondary text-white text-center">
-                                                                        <option value="' . $night_h . '" selected disabled>' . $night_h . '</option>
+                                                                        <option value="' . $night_h . '" selected>' . $night_h . '</option>
                                                                         <option value="0">0</option>
                                                                         <option value="1">1</option>
                                                                         <option value="2">2</option>
@@ -488,7 +517,7 @@
                                                                     </select>
                                                                     <strong>h </strong>';
                                                                     echo '<select class="night_m border-0 rounded bg-secondary text-white text-center" />
-                                                                        <option value="' . $night_m . '" selected disabled>' . $night_m . '</option>
+                                                                        <option value="' . $night_m . '" selected>' . $night_m . '</option>
                                                                         <option value="00">00</option>
                                                                         <option value="30">30</option>
                                                                     </select>
@@ -498,7 +527,7 @@
                                                             echo '<div class="border-0 p-0 mt-2 ml-0 mr-0 mb-2 col-12 float-left d-inline-flex">
                                                                 <div class="float-left col-5 p-0">
                                                                     <select class="h_ab border-0 rounded bg-secondary text-white text-center">
-                                                                        <option value="' . $h_ab . '" selected disabled>' . $h_ab . '</option>';
+                                                                        <option value="' . $h_ab . '" selected>' . $h_ab . '</option>';
                                                                         $i = 0;
                                                                         while ($i >= 0 and $i <= 14) {
                                                                             echo '<option value=' . $i . '>' . $i . '</option>';
@@ -509,9 +538,9 @@
                                                                     echo '<select class="m_ab border-0 rounded bg-secondary text-white text-center" style="width: 40px;">';
 
                                                                         if ($m_ab < 0) {
-                                                                            echo '<option value="' . $m_ab . '" selected disabled>' . $m_ab * -1 . '</option>';
+                                                                            echo '<option value="' . $m_ab . '" selected>' . $m_ab * -1 . '</option>';
                                                                         } else {
-                                                                            echo '<option value="' . $m_ab . '" selected disabled>' . $m_ab . '</option>';
+                                                                            echo '<option value="' . $m_ab . '" selected>' . $m_ab . '</option>';
                                                                         }
                                                                         echo '<option value="00">00</option>
                                                                         <option value="30">30</option>
@@ -637,7 +666,7 @@
                                     mysqli_free_result($result);
                                 echo '</fieldset>';
                             } else {
-                                echo "No records matching your query were found.";
+                                echo "No records matching your query were found.1";
                             }
                         } else{
                             echo "ERROR: Could not able to execute $recap. " . mysqli_error($db);

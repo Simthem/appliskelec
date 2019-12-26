@@ -26,6 +26,8 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,400italic,700,700italic" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.1/css/all.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
     <script src="https://kit.fontawesome.com/f14bbc71a6.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
@@ -48,7 +50,7 @@
                         <li data-toggle="collapse" href="#preview2" role="button" aria-expanded="false" aria-controls="preview2" class="bg-dark border-top border-warning rounded-0 p-0 collapsed text-warning"><a class="mt-auto mb-auto">+ Options <img src="img/fleche_menu.png" class="float-right mt-auto pt-1 color-warning" alt="Fleche du menu indiquant ce dernier comme deroulant" height="18" width="16"></a></li>
                             <div id="preview2" class="bg-light collapse" action='api/user/edit_profil.php' method='GET'>
                                 <?php
-                                    if ($_SESSION['id'] == $admin['id']) {
+                                    if (isset($_SESSION['id']) && !empty($_SESSION['id']) && isset($admin['id']) && !empty($admin['id']) &&  $_SESSION['id'] == $admin['id']) {
                                         $admin_sql = "SELECT * FROM `admin`";
                                         if ($admin_result = mysqli_query($db, $admin_sql)){
                                             if (mysqli_num_rows($admin_result) > 0){
@@ -75,7 +77,7 @@
                                                     die("ERROR: Could not connect. " . mysqli_connect_error());
                                                 }
                                                 while ($row = $user_result->fetch_array()){
-                                                    if ($row['id'] == $_SESSION['id']) {
+                                                    if (isset($_SESSION['id']) && !empty($_SESSION['id']) && $row['id'] == $_SESSION['id']) {
                                                         echo "<li><a href='modif_profil.php?id=" . $row['id'] . "' class='mt-auto ml-auto mb-auto mr-auto pl-3 pr-3 text-dark w-75'><div class='mt-auto mb-auto pr-3 float-left'> • </div>Profile</a></li>";
                                                         echo "<li><a href='absence.php?id=" . $row['id'] . "' class='pt-4 pr-3 pb-4 pl-3 mt-auto ml-auto mb-auto mr-auto text-dark w-75 d-flex border-top'><div class='mt-auto mb-auto pr-3 float-left'> • </div><div class='float-right text-left'>Signaler une <br />ou des absence(s)</div></a></li>";
                                                     }

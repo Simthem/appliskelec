@@ -38,13 +38,13 @@ if (isset($_COOKIE['id'])) {
     }
 }
 
-if(!($_SESSION['username'])){
+if (isset($_SESSION['username']) && !empty($_SESSION['username'])) {
+    $stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");
+    $stmt->execute();
+    $user = $stmt->fetch();
+} else {
     header("Location: signin.php");
 }
-
-$stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");
-$stmt->execute();
-$user = $stmt->fetch();
 
 if (isset($_SESSION['admin_name']) && !empty($_SESSION['admin_name'])) {
 
@@ -53,7 +53,7 @@ if (isset($_SESSION['admin_name']) && !empty($_SESSION['admin_name'])) {
     $admin = $stmt_admin->fetch();
 }
 
-if ($user) {
+if (isset($user) && !empty($user)) {
     $_SESSION['id'] = $user['id'];
 } elseif (isset($admin) && !empty($admin)) {
     $_SESSION['id'] = $admin['id'];

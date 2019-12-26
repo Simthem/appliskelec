@@ -19,8 +19,6 @@ function request_hours($id) {
         SUM(absence) AS absence,
         if (SUM(night_hours), if ((SUM(intervention_hours) - SUM(night_hours)) - 35 > 0, if ((SUM(intervention_hours) - SUM(night_hours)) - 35 > 8, 8, (SUM(intervention_hours) - SUM(night_hours)) - 35), NULL), if (SUM(intervention_hours) - 35 > 0, if (SUM(intervention_hours) - 35 > 8, 8, SUM(intervention_hours) - 35), NULL)) AS maj25,
         if (SUM(night_hours), if ((SUM(intervention_hours) - SUM(night_hours)) > 43, if (SUM(night_hours) > 0, SUM(intervention_hours) - 43, (SUM(intervention_hours) - SUM(night_hours)) - 43), if ((SUM(intervention_hours) - SUM(night_hours)) < 43, if (SUM(night_hours) > 0, SUM(night_hours), NULL), NULL)), if (SUM(intervention_hours) > 43, SUM(intervention_hours) - 43, NULL)) AS maj50
-        /*if ((SUM(intervention_hours) - SUM(night_hours)) - 35 > 0, if ((SUM(intervention_hours) - SUM(night_hours)) - 35 > 8, 8, (SUM(intervention_hours) - SUM(night_hours)) - 35), NULL) AS maj25,
-        if ((SUM(intervention_hours) - SUM(night_hours)) > 43, if (SUM(night_hours) > 0, SUM(intervention_hours) - 43, (SUM(intervention_hours) - SUM(night_hours)) - 43), if ((SUM(intervention_hours) - SUM(night_hours)) < 43, if (SUM(night_hours) > 0, SUM(night_hours), NULL), NULL)) AS maj50*/
     FROM
         chantiers AS c
         JOIN
@@ -124,7 +122,6 @@ function week($id) {
                                 $flag += 1;
         
                                 echo '<tr>';
-
                                     if (isset($absence) && !empty($absence)) {
                                         calc_hours($row['tot_h'], $t_25, $t_50, $row['h_night_tot'], $absence, 1);
                                     } else {
@@ -169,7 +166,7 @@ function month($id) {
                     if (isset($row_hours['absence']) && !empty($row_hours['absence'])) {
                         $absence += $row_hours['absence'];
                     }
-                        
+                    
                     include_once './api/view/hours_view.php';
                     $rep = value_h($row_hours['tot_h'], $row_hours['maj25'], $row_hours['maj50'], $absence, 1);
                     

@@ -7,35 +7,15 @@ $sql =
     id,
     `name`,
     e_mail,
-    #contact_address,
     num_chantier,
     `state`
 FROM
     appli_skelec.chantiers
-WHERE
-    num_chantier is not NULL 
-    AND
-    num_chantier != 0
 GROUP BY
     id, num_chantier, `name`, contact_address, `state`
 ORDER BY
-    num_chantier DESC";
+    num_chantier DESC, id DESC";
 
-$stmt =
-"SELECT 
-    id,
-    #created,
-    `name`,
-    e_mail,
-    #contact_address,
-    num_chantier,
-    `state`
-FROM
-    appli_skelec.chantiers
-WHERE
-    num_chantier is NULL
-ORDER BY
-    id DESC";
 ?>
 
 <!DOCTYPE html>
@@ -88,7 +68,7 @@ ORDER BY
                                 echo '<tbody>';
                                     while($row = $result_chant->fetch_array()){
                                         echo '<tr>';
-                                            if ($row['num_chantier'] != 0 or !empty($row['num_chantier'])) {
+                                            if ($row['num_chantier'] != 0 and $row['num_chantier']!= -1 and !empty($row['num_chantier'])) {
                                                 if ($row['state']) {
                                                     echo '<td class="align-middle p-4 w-25">' . $row['num_chantier'] . '</td>';
                                                     echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 85px;">' . $row['name'] . '</td>';
@@ -100,7 +80,7 @@ ORDER BY
                                                     //echo '<td class="align-middle p-4 w-25 border-top border-bottom border-danger" style="word-wrap: break-word; max-width: 85px;">' . $row['contact_address'] . '</td>';
                                                     echo '<td class="align-middle p-4 w-25 border-top border-bottom border-danger overflow-hidden" style="max-width: 85px;">' . $row['e_mail'] . '</td>';
                                                 }
-                                                if ($_SESSION['id'] == $admin['id']) {
+                                                if (isset($_SESSION['id']) and !empty($_SESSION['id']) and isset($admin['id']) and !empty($admin['id']) and $_SESSION['id'] == $admin['id']) {
                                                     if ($row['state']) {
                                                         echo '<td class="p-0 align-middle w-25">';
                                                         ?>
@@ -146,14 +126,15 @@ ORDER BY
                     <div id="tab2" class="container-list m-auto tab-pane">
                         <table class="table table-striped pr-4 pl-4 mt-3 ml-auto mr-auto text-center" action="" method="POST">
                     <?php
-                        if($result = mysqli_query($db, $stmt)){
+                        if($result = mysqli_query($db, $sql)){
                             if(mysqli_num_rows($result) > 0){
-
+                                
                                 if($db === false){
                                     die("ERROR: Could not connect. " . mysqli_connect_error());
                                 }
                                 echo '<tbody>';
                                     while($row = $result->fetch_array()){
+                                        
                                         echo '<tr>';
                                             if($row['num_chantier'] == 0 or empty($row['num_chantier'])) {
                                                 if ($row['state']) {
@@ -206,7 +187,7 @@ ORDER BY
                                 echo "No records matching your query were found.";
                             }
                         } else {
-                            echo "ERROR: Could not able to execute $stmt. " . mysqli_error($db);
+                            echo "ERROR: Could not able to execute $sql. " . mysqli_error($db);
                         }
                         mysqli_close($db);
                     ?>

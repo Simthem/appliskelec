@@ -19,7 +19,7 @@
         <?php
 
             
-            if(($_GET['id'] != $admin['id'] and $_SESSION['id'] == $_GET['id'] and $_SESSION['id'] == $user['id']) or $_SESSION['id'] == $admin['id']) {
+            if(isset($_SESSION['id']) and !empty($_SESSION['id']) and isset ($admin['id']) and !empty($admin['id']) and (($_GET['id'] != $admin['id'] and $_SESSION['id'] == $_GET['id'] and $_SESSION['id'] == $user['id']) or $_SESSION['id'] == $admin['id'])) {
         ?>
         <!-- Content -->
                 <div id="container">
@@ -79,7 +79,7 @@
                                             include_once './api/view/user_view.php';
                                             week($_GET['id']);  // Call function to display all hours of the user
 
-                                    if (($_SESSION['id'] == $admin['id']) or ($_SESSION['id'] == $user['id'] and $_GET['id'] == $user['id'])) {
+                                    if (isset($_SESSION['id']) and !empty($_SESSION['id']) and isset ($admin['id']) and !empty($admin['id']) and (($_SESSION['id'] == $admin['id']) or ($_SESSION['id'] == $user['id'] and $_GET['id'] == $user['id']))) {
                                         echo '<div class="md-form mt-4">';
                                             echo '<label for="pass1">Password</label>';
                                             echo '<input type="password" id="pass1" name="pass1" class="form-control" data-type="password" required>';

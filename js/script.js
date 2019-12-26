@@ -309,6 +309,8 @@ $('#chantier').change(function () {
         $("input[name='ab_day']").prop("checked", false);
         document.getElementById('ab_day').value = null;
         $("div[name='flag_chant']").addClass('d-block');
+        $("div[name='flag_desc']").removeClass('d-block');
+        $("div[name='flag_desc']").addClass('d-none');
         if ($("div[id='preview']").hasClass('in')) {
             $("div[id='preview']").removeClass('in');
         }
@@ -324,6 +326,11 @@ $('#chantier').change(function () {
         document.getElementById('chantier').value = null;
         //console.log('chantier = '+document.getElementById('chantier').value);
     }
+
+    if (!($("input[name='ab_day']").is(":checked")) && !($("input[name='chantier']").is(":checked"))) {
+        $("div[name='flag_desc']").removeClass('d-none');
+        $("div[name='flag_desc']").addClass('d-block');
+    }
 });
 
 $('#ab_day').change(function () {
@@ -337,6 +344,8 @@ $('#ab_day').change(function () {
         $("input[name='chantier']").prop("checked", false);
         document.getElementById('chantier').value = null;
         $("div[name='flag_day']").addClass('d-block');
+        $("div[name='flag_desc']").removeClass('d-block');
+        $("div[name='flag_desc']").addClass('d-none');
         if ($("div[id='preview']").hasClass('in')) {
             $("div[id='preview']").removeClass('in');
         }
@@ -352,6 +361,11 @@ $('#ab_day').change(function () {
         document.getElementById('ab_day').value = null;
         //console.log('ab_day = '+document.getElementById('ab_day').value);
     }
+
+    if (!($("input[name='ab_day']").is(":checked")) && !($("input[name='chantier']").is(":checked"))) {
+        $("div[name='flag_desc']").removeClass('d-none');
+        $("div[name='flag_desc']").addClass('d-block');
+    }
 });
 
 
@@ -364,52 +378,84 @@ function preview1() {
 }
 
 
-function preview2() {
+function preview2(day) {
 
-    //NORM_HOUR_RECAP _  AND _ PREPARE_SEND_FORM
-    var h_index = document.getElementById('h_index').value;
-    var total = 0;
-    total = h_index;
+    if (!day) {
+        //NORM_HOUR_RECAP _  AND _ PREPARE_SEND_FORM
+        var h_index = document.getElementById('h_index').value;
+        var total = 0;
+        total = h_index;
 
-    document.getElementById("intervention_hours").value = total;
+        document.getElementById("intervention_hours").value = total;
 
-    var m_index = document.getElementById('m_index').value;
-    var total = 0;
-    
-    m_index /= 60;
-    total = h_index +'.'+ m_index * 100;
-    document.getElementById("intervention_hours").value = total;
-    document.getElementById("intervention_hours").textContent = total;
-    //console.log(document.getElementById("intervention_hours").value);
-    console.log(m_index);
-    console.log(h_index);
-    console.log(total);
+        var m_index = document.getElementById('m_index').value;
+        var total = 0;
+        
+        m_index /= 60;
+        total = h_index +'.'+ m_index * 100;
+        document.getElementById("intervention_hours").value = total;
+        document.getElementById("intervention_hours").textContent = total;
+        //console.log(document.getElementById("intervention_hours").value);
+        console.log(m_index);
+        console.log(h_index);
+        console.log(total);
 
-    var inter_h = document.getElementById("inter_h");
-    var temp = document.getElementById("intervention_hours").value;
-    var temp_h = parseInt(temp, 10);
-    if (temp_h < 0) {
-        var temp_m = (temp * -100 - temp_h * -100) / 100 * 60;
+        var inter_h = document.getElementById("inter_h");
+        var temp = document.getElementById("intervention_hours").value;
+        var temp_h = parseInt(temp, 10);
+        if (temp_h < 0) {
+            var temp_m = (temp * -100 - temp_h * -100) / 100 * 60;
+        } else {
+            var temp_m = (temp * 100 - temp_h * 100) / 100 * 60;
+        }
+        console.log(temp);
+        console.log(temp_h);
+        console.log(temp_m);
+
+        if (temp_m < 10) {
+            temp_m = '0' + temp_m;
+        }
+        inter_h.value = temp_h +' h '+ temp_m;
+
+        var chant_name = document.getElementById("chant_name");
+        chant_name.value = document.getElementById("chantier_name").value;
+
+        var com = document.getElementById("com");
+        com.value = document.getElementById("commit").value;
+
     } else {
-        var temp_m = (temp * 100 - temp_h * 100) / 100 * 60;
+        document.getElementById("intervention_hours").value = 7;
+        document.getElementById("intervention_hours").textContent = 7.0;
+
+        var inter_h = document.getElementById("inter_h");
+        /*var temp = document.getElementById("intervention_hours").value;
+        var temp_h = parseInt(temp, 10);
+        if (temp_h < 0) {
+            var temp_m = (temp * -100 - temp_h * -100) / 100 * 60;
+        } else {
+            var temp_m = (temp * 100 - temp_h * 100) / 100 * 60;
+        }
+        console.log(temp);
+        console.log(temp_h);
+        console.log(temp_m);
+
+        if (temp_m < 10) {
+            temp_m = '0' + temp_m;
+        }*/
+        inter_h.value = "7 h 00";
+
+        var chant_name = document.getElementById("chant_name");
+        document.getElementById("chantier_name").value = document.getElementById("day").value;
+        console.log(document.getElementById("chantier_name").value);
+        chant_name.value = document.getElementById("day").value;
+        console.log(chant_name);
+
+        var com = document.getElementById("com");
+        com.value = document.getElementById("com_day").value;
     }
-    console.log(temp);
-    console.log(temp_h);
-    console.log(temp_m);
-
-    if (temp_m < 10) {
-        temp_m = '0' + temp_m;
-    }
-    inter_h.value = temp_h +' h '+ temp_m;
-
-
-    var chant_name = document.getElementById("chant_name");
-    chant_name.value = document.getElementById("chantier_name").value;
     //var pan_rep = document.getElementById("pan_rep");
     //pan_rep.value = document.getElementById("panier_repas").value;
 
-    var com = document.getElementById("com");
-    com.value = document.getElementById("commit").value;
 
     if ($("input[name='panier_repas']").val()) {
 

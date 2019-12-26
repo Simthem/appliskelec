@@ -56,8 +56,10 @@
                                         if ($db === false){
                                             die("ERROR: Could not connect. " . mysqli_connect_error());
                                         }
-                                        while ($row = $result->fetch_array()){
-                                            echo "<option value='" . $row['name'] . "'>" . $row['num_chantier'] . ' / '. $row['name'] .  "</option>";
+                                        while ($row = $result->fetch_array()) {
+                                            if ($row['num_chantier'] != -1) {
+                                                echo "<option value='" . $row['name'] . "'>" . $row['num_chantier'] . ' / '. $row['name'] .  "</option>";
+                                            }
                                         }
                                         mysqli_free_result($result);
                                     } else {

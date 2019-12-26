@@ -44,85 +44,14 @@
                                 <div class="col-6 float-right">
                                     <input type="checkbox" id="ab_day" name="ab_day" class="form-check-input align-middle mt-1 mb-auto" />
                                     <label class="mb-auto mt-auto ml-4 pl-1 text-center" for="ab_day">Par journée</label>
-                                </div>
+                                </div>';
+
+                                include './api/view/absence_chant.php';
+
+                                ab_chant();
                                 
-                                <div name="flag_chant" class="pt-5 d-none">
-                                    <h5 class="w-100 text-center pt-3 pb-3">Choix : [Par chantier]</h5>
-                                    <div class="border bg-white rounded mt-auto ml-auto mr-auto mb-5 w-50">
-                                        <select id="chantier_name" name="chantier_name" class="bg-white border-white w-100" size="1" style="max-width: -webkit-fill-available;"required>';
 
-                                            $sql = 
-                                            "SELECT 
-                                                id, `name`, `state`, num_chantier
-                                            FROM 
-                                                chantiers
-                                            WHERE
-                                                `state`
-                                            ORDER BY 
-                                                id DESC";
-
-                                            if ($result = mysqli_query($db, $sql)) {
-                                                if (mysqli_num_rows($result) > 0) {
-                                                    if ($db === false){
-                                                        die("ERROR: Could not connect. " . mysqli_connect_error());
-                                                    }
-                                                    while ($row = $result->fetch_array()){
-                                                        echo "<option value='" . $row['name'] . "'>" . $row['num_chantier'] . ' / '. $row['name'] .  "</option>";
-                                                    }
-                                                    mysqli_free_result($result);
-                                                } else {
-                                                    echo "No records matching your query were found.";
-                                                }
-                                            } else{
-                                                echo "ERROR: Could not able to execute $sql. " . mysqli_error($db);
-                                            }
-                                        echo '</select>
-                                    </div>';
-
-                                        echo '<div class="border-top border-bottom w-75 ml-auto mr-auto">
-                                            <div class="pt-2 pb-4 mt-4 ml-auto mr-auto mb-2 w-75">
-                                                <h6 class="w-100 text-center pb-3">Temps à soustraire :</h6>
-                                                <input id="intervention_hours" name="intervention_hours" value="" style="display: none;" />
-                                                <select type="number" id="h_index" class="col-3 p-0 border-0 rounded bg-secondary text-white text-center" style="height: 19px;">
-                                                    <option value="0">0</option>
-                                                    <option value="1">-1</option>
-                                                    <option value="2">-2</option>
-                                                    <option value="3">-3</option>
-                                                    <option value="4">-4</option>
-                                                    <option value="5">-5</option>
-                                                    <option value="6">-6</option>
-                                                    <option value="7">-7</option>
-                                                    <option value="8">-8</option>
-                                                    <option value="9">-9</option>
-                                                    <option value="10">-10</option>
-                                                    <option value="11">-11</option>
-                                                    <option value="12">-12</option>
-                                                    <option value="13">-13</option>
-                                                    <option value="14">-14</option>
-                                                </select><!--
-                                                --><strong>&nbsp;h&nbsp;</strong><!--
-                                                --><select type="number" id="m_index" class="col-3 p-0 border-0 rounded bg-secondary text-white text-center" style="height: 19px;">
-                                                    <option value="00">00</option>
-                                                    <option value="30">30</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                    <div class="mt-2 mb-2 pt-5 pb-3 w-75 m-auto">
-                                        <textarea class="form-control textarea" id="commit" name="commit" placeholder="Informations ?" maxlength="450"></textarea>
-                                    </div>
-
-                                    <div class="mt-4 w-75 mr-auto ml-auto">
-                                        <a data-toggle="collapse" href="#preview" role="button" aria-expanded="false" aria-controls="preview" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark" onClick="preview2()">Prévisualiser</a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div name="flag_day" class="d-none">
-                                <h5 class="w-100 text-center">Ca fonctionne ! [jour]</h5>
-                            </div>
-
-                            <div class="w-75 ml-auto mr-auto collapse" id="preview">
+                            echo '<div class="w-75 ml-auto mr-auto collapse" id="preview">
                                 <div class="w-100 pt-0 pb-3">
                                     <h4 class="w-100 mt-3 ml-auto mb-3 mr-auto pt-3 border-top text-center">Récapitulatif</h4>
                                     <fieldset class="pl-3 pr-3 text-dark bg-white border rounded w-100 m-auto text-left" disabled>
@@ -148,7 +77,30 @@
                                         <input id="submit" type="submit" value="Soumettre" class="btn send border-0 bg-white z-depth-1a mt-4 mb-0 align-middle text-dark" />
                                     </div>
                                 </div>
+                            </div>
+                            
+                            <div id="flag_desc" name="flag_desc" class="d-block">
+                                <div class="w-100 m-auto pt-5 pl-3 pb-3 pr-3">
+                                    <h4 class="text-center">Par chantier</h4>
+                                    <ul class="text-left pl-4" style="list-style-type:none">
+                                        <li>- Séléctionnez votre jour</li>
+                                        <li>- Cochez la case "Par chantier"</li>
+                                        <li>- Séléctionnez le chantier correspondant</li>
+                                        <li>- Sélectionnez la durée correspondante à celle de votre absence</li>
+                                        <li>- Vous avez aussi la possibilité de rajouter un commentaire (à votre convenance)</li>
+                                    </ul>
+                                </div>
+                                <div class="w-100 m-auto pt-3 pl-3 pb-3 pr-3">
+                                    <h4 class="text-center">Par journée</h4>
+                                    <ul class="text-left pl-4" style="list-style-type:none">
+                                        <li>- Séléctionnez votre jour</li>
+                                        <li>- Cochez la case "Par journée"</li>
+                                        <li>- La durée est automatiquement sur la durée d\'une journée de travail [donc 7h]</li>
+                                        <li>- Vous avez aussi la possibilité de rajouter un commentaire (à votre convenance)</li>
+                                    </ul>
+                                </div>
                             </div>';
+
                             ?>
                 </form>
             </div>

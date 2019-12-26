@@ -13,23 +13,20 @@ function value_h($pretotal, $rm_25, $rm_50, $absence, $temp) {
     $flag = 0;
     $flag_25 = 0;
     $flag_50 = 0;
-
+    
     if ($temp == 1) {
         $total = $pretotal;
-
+        
         if ($absence != 0) {
             $flag_50 = 1;
-
             if ($m50_ok > 0) {
-
                 if ($m50_ok - $absence <= 0) {
-
                     if ($m25_ok >= 0) {
                         $flag_25 = 1;
+                        $absence -= $m50_ok;
                         $m50_ok = 0;
-                        $absence -= $m50;
                         $m25_ok -= $absence;
-                        if ($m25_ok >= 0 && isset($total)) {
+                        if ($m25_ok <= 0 && isset($total)) {
                             $m25_ok = 0;
                             $total -= $absence;
                         }
