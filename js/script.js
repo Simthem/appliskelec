@@ -499,6 +499,17 @@ function preview2(day) {
     }
 }
 
+$("input[id='submit_int']").on('click', function () {
+    console.log('ca passe');
+    var temp = document.getElementById("intervention_hours").value;
+
+    if (!temp || temp == null || temp == 0) {
+        alert("Vous n'avez complété aucune heure dans le champ réservé, aucune intervention/absence n'aura donc été enregistrée.");
+        //location.reload(-1);
+        return false;
+    }
+});
+
 
 
 

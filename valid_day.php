@@ -80,7 +80,7 @@
                         </div>";
                         #<div class='w-75 text-center ml-auto mb-5 mr-auto h4'><u>Récapitulatif de la journée du<br />'" . date_format($date, 'd-m-Y') . "'</u></div>";
 
-                        if ($result = mysqli_query($db, $recap)) {
+                        if ($result = mysqli_query($db, $recap_2)) {
 
                             if (mysqli_num_rows($result) > 0) {
 

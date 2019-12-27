@@ -18,8 +18,12 @@
         <div id="container">
             <div class="content">
                 <form id="inter" action="./api/index_global/create_intervention.php" method="POST">
-                    <div class="pt-5 pb-3 mt-5 ml-auto mr-auto">
-                        <div class="w-75 m-auto text-center pt-2"><?php echo $_SESSION['username']; ?></div>
+                    <div class="pt-5 pb-5 mt-5 ml-auto mr-auto">
+                        <div class="w-75 m-auto text-center pt-2"><?php if (isset($_SESSION['username']) && !empty($_SESSION['username'])) {
+                                                                            echo $_SESSION['username'];
+                                                                        } 
+                                                                    ?>
+                        </div>
                             <div class="text-center"><?php 
                                                     if ($_SESSION['username'] == "admin") { 
                                                         echo "Administrateur de S.K.elec_app ;)";
@@ -37,43 +41,13 @@
                         </div>
                     <?php echo "<input type='number' id='user_id' name='user_id' value='" . $_SESSION['id'] . "' style='display: none;'>"; ?>
                     <div class="text-center">
-                        <div class="bg-white border rounded m-auto" style="width: max-content">
-                            <?php
-                            echo '<select id="chantier_name" name="chantier_name" class="bg-white border-white" size="1" style="max-width: -webkit-fill-available;" required>';
+                        <?php
+                            include 'api/view/troubleshooting_view.php';
 
-                                $sql = 
-                                "SELECT 
-                                    id, `name`, `state`, num_chantier
-                                FROM 
-                                    chantiers
-                                WHERE
-                                    `state`
-                                ORDER BY 
-                                    id DESC";
-
-                                if ($result = mysqli_query($db, $sql)) {
-                                    if (mysqli_num_rows($result) > 0) {
-                                        if ($db === false){
-                                            die("ERROR: Could not connect. " . mysqli_connect_error());
-                                        }
-                                        while ($row = $result->fetch_array()) {
-                                            if ($row['num_chantier'] != -1) {
-                                                echo "<option value='" . $row['name'] . "'>" . $row['num_chantier'] . ' / '. $row['name'] .  "</option>";
-                                            }
-                                        }
-                                        mysqli_free_result($result);
-                                    } else {
-                                        echo "No records matching your query were found.";
-                                    }
-                                } else{
-                                    echo "ERROR: Could not able to execute $sql. " . mysqli_error($db);
-                                }
-
-                            echo '</select>';
-                            ?>
-                        </div>
+                            trouble_list();
+                        ?>
                     </div>
-                    <div class="pt-5 w-75 m-auto text-center">
+                    <div class="pt-3 w-75 m-auto text-center">
                         <label for="input_time m-auto">Heures réalisées</label>
                         <div class="w-100 m-auto pb-4">
                             <div class="d-inline-flex justify-content-center border-0 p-0 mt-2 ml-auto mr-auto mb-2 col-7">
@@ -307,7 +281,7 @@
                                 }
                             echo '</fieldset>';
                         echo '<div class="w-75 mt-3 ml-auto mr-auto">
-                            <input id="submit" type="submit" value="Soumettre" class="btn send border-0 bg-white z-depth-1a mt-4 mb-0 align-middle text-dark" />
+                            <input id="submit_int" type="submit" value="Soumettre" class="btn send border-0 bg-white z-depth-1a mt-4 mb-0 align-middle text-dark" />
                         </div>';
                         ?>
                     </div>

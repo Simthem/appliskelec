@@ -1,10 +1,15 @@
 <?php
 
-function ab_chant() {
+function ab_view() {
 
-    include 'auth.php';
+    include_once 'troubleshooting_view.php';
+
 
     echo '<div name="flag_chant" class="pt-5 d-none">
+        <h5 class="w-100 text-center pt-3 pb-3">Choix : [Par chantier]</h5>';
+    
+        trouble_list();
+    /*echo '<div name="flag_chant" class="pt-5 d-none">
         <h5 class="w-100 text-center pt-3 pb-3">Choix : [Par chantier]</h5>
         <div class="border bg-white rounded mt-auto ml-auto mr-auto mb-5 w-50">
             <select id="chantier_name" name="chantier_name" class="bg-white border-white w-100" size="1" style="max-width: -webkit-fill-available;"required>';
@@ -38,7 +43,7 @@ function ab_chant() {
                     echo "ERROR: Could not able to execute $sql. " . mysqli_error($db);
                 }
             echo '</select>
-        </div>';
+        </div>';*/
 
         echo '<div class="border-top border-bottom w-75 ml-auto mr-auto">
             <div class="pt-2 pb-4 mt-4 ml-auto mr-auto mb-2 w-75">
@@ -46,20 +51,20 @@ function ab_chant() {
                 <input id="intervention_hours" name="intervention_hours" value="" style="display: none;" />
                 <select type="number" id="h_index" class="col-3 p-0 border-0 rounded bg-secondary text-white text-center" style="height: 19px;">
                     <option value="0">0</option>
-                    <option value="1">-1</option>
-                    <option value="2">-2</option>
-                    <option value="3">-3</option>
-                    <option value="4">-4</option>
-                    <option value="5">-5</option>
-                    <option value="6">-6</option>
-                    <option value="7">-7</option>
-                    <option value="8">-8</option>
-                    <option value="9">-9</option>
-                    <option value="10">-10</option>
-                    <option value="11">-11</option>
-                    <option value="12">-12</option>
-                    <option value="13">-13</option>
-                    <option value="14">-14</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
+                    <option value="14">14</option>
                 </select><!--
                 --><strong>&nbsp;h&nbsp;</strong><!--
                 --><select type="number" id="m_index" class="col-3 p-0 border-0 rounded bg-secondary text-white text-center" style="height: 19px;">
@@ -81,7 +86,7 @@ function ab_chant() {
 
     echo '<div name="flag_day" class="pt-5 d-none">
         <h5 class="w-100 text-center pt-3 pb-3">Choix : [Par journée]</h5>';
-        echo "<input id='day' value='Journée complète' class='text-center' disabled/>";
+        echo "<input id='day' value='Journée complète' class='text-center mb-4' disabled/>";
 
         echo '<div class="border-top border-bottom w-75 ml-auto mr-auto">
             <div class="pt-2 pb-4 mt-4 ml-auto mr-auto mb-2 w-75">

@@ -33,9 +33,9 @@
                                 echo '<div class="m-auto pt-2 pb-3">';
                                 if (isset($_GET['store']) && !empty($_GET['store'])) {
                                     $date = date_create($_GET['store']);
-                                    echo '<div class="text-center w-75 mr-auto ml-auto pb-4"><input class="bg-white col-7 text-center pl-4" type="date" id="up_inter" name="up_inter" value="' . $_GET['store'] . '" placeholder="' . date_format($date, "d-m-Y") . '" onChange="date_ab(' . $_GET['id'] . ')" onfocus="(this.type=\'date\')" onblur="if(this.value==\'\'){this.type=\'text\'}" style="height: 26px;" required="required"></div>';
+                                    echo '<div class="text-center w-75 mr-auto ml-auto mb-3 pb-4"><input class="bg-white col-7 text-center pl-4" type="date" id="up_inter" name="up_inter" value="' . $_GET['store'] . '" placeholder="' . date_format($date, "d-m-Y") . '" onChange="date_ab(' . $_GET['id'] . ')" onfocus="(this.type=\'date\')" onblur="if(this.value==\'\'){this.type=\'text\'}" style="height: 26px;" required="required"></div>';
                                 } else {
-                                    echo '<div class="text-center w-75 mr-auto ml-auto pb-4"><input class="bg-white col-7 text-center pl-4" type="date" id="up_inter" name="up_inter"  placeholder="" onChange="date_ab(' . $_GET['id'] . ')" style="height: 26px;" required="required"></div>';
+                                    echo '<div class="text-center w-75 mr-auto ml-auto mb-3 pb-4"><input class="bg-white col-7 text-center pl-4" type="date" id="up_inter" name="up_inter"  placeholder="" onChange="date_ab(' . $_GET['id'] . ')" style="height: 26px;" required="required"></div>';
                                 }
                             echo '<div class="col-6 float-left">
                                     <input type="checkbox" id="chantier" name="chantier" class="form-check-input align-middle mt-1 mb-auto" />
@@ -46,9 +46,9 @@
                                     <label class="mb-auto mt-auto ml-4 pl-1 text-center" for="ab_day">Par journée</label>
                                 </div>';
 
-                                include './api/view/absence_chant.php';
+                                include './api/view/absence_view.php';
 
-                                ab_chant();
+                                ab_view();
                                 
 
                             echo '<div class="w-75 ml-auto mr-auto collapse" id="preview">
@@ -74,7 +74,7 @@
                                         </div>
                                     </fieldset>';
                                     echo '<div class="w-100 mt-3 ml-auto mr-auto">
-                                        <input id="submit" type="submit" value="Soumettre" class="btn send border-0 bg-white z-depth-1a mt-4 mb-0 align-middle text-dark" />
+                                        <input id="submit_int" type="submit" value="Soumettre" class="btn send border-0 bg-white z-depth-1a mt-4 mb-0 align-middle text-dark" />
                                     </div>
                                 </div>
                             </div>
