@@ -184,4 +184,46 @@ function month_a($id) {
         echo "ERROR: Could not able to execute $result_hours. " . mysqli_error($db);
     }
 }
+
+function select_a() {
+
+    include_once 'auth.php';
+
+    $sql_a = "SELECT
+        id, admin_name, phone
+    FROM
+        `admin`";
+
+    if (isset($sql_a) && !empty($sql_a)) {
+        return ($sql_a);
+    } else {
+        return false;
+    }
+}
+
+
+function admin_list() {
+
+    include 'auth.php';
+    
+    $sql_a = select_a();
+
+    if ($reponse = mysqli_query($db, $sql_a)) {
+        if (mysqli_num_rows($reponse)) {
+            if ($db === false) {
+                die("ERROR: Could not connect. " . mysqli_connect_error());
+            }
+
+            while ($admin = $reponse->fetch_array()) {
+                echo '<option>' . $admin['admin_name'] . '</option>';
+            }
+
+            mysqli_free_result($reponse);
+        } else {
+            echo "No records matching your query were found.";
+        }
+    } else {
+        echo "ERROR: Could not able to execute $sql_a. " . mysqli_error($db);
+    }
+}
 ?>

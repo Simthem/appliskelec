@@ -1,20 +1,34 @@
 <?php
 
+function select_t() {
+
+    include_once 'auth.php';
+
+    $sql = 
+    "SELECT 
+        id, `name`, `state`, num_chantier
+    FROM 
+        chantiers
+    WHERE
+        `state`
+    ORDER BY 
+        id DESC";
+
+    if (isset($sql) && !empty($sql)) {
+        return $sql;
+    } else {
+        return false;
+    }
+}
+
 function trouble_list() {
+    
     include 'auth.php';
+    
+    echo '<div class="text-center border rounded mt-4 ml-auto mb-5 mr-auto w-50">
+        <select id="chantier_name" name="chantier_name" class="w-100 border bg-white" size="1" style="max-width: -webkit-fill-available;"required>';
 
-    echo '<div class="border bg-white rounded mt-auto ml-auto mr-auto mb-5 w-50">
-        <select id="chantier_name" name="chantier_name" class="bg-white border-white w-100" size="1" style="max-width: -webkit-fill-available;"required>';
-
-            $sql = 
-            "SELECT 
-                id, `name`, `state`, num_chantier
-            FROM 
-                chantiers
-            WHERE
-                `state`
-            ORDER BY 
-                id DESC";
+            $sql = select_t();
 
             if ($result = mysqli_query($db, $sql)) {
                 if (mysqli_num_rows($result) > 0) {
@@ -23,7 +37,7 @@ function trouble_list() {
                     }
                     while ($row = $result->fetch_array()) {
                         if ($row['num_chantier'] != -1) {
-                            echo "<option value='" . $row['name'] . "'>" . $row['num_chantier'] . ' / '. $row['name'] .  "</option>";
+                            echo "<option class='w-100' value='" . $row['name'] . "'>" . $row['num_chantier'] . ' / '. $row['name'] .  "</option>";
                         }
                     }
                     echo '<option value="Journée complète" hidden>Journée complète</option>';

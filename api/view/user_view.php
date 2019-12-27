@@ -182,4 +182,46 @@ function month($id) {
         echo "ERROR: Could not able to execute $result_hours. " . mysqli_error($db);
     }
 }
+
+function select_u() {
+
+    include_once 'auth.php';
+
+    $sql = "SELECT 
+        id, username, phone 
+    FROM 
+        users";
+
+    if (isset($sql) && !empty($sql)) {
+        return $sql;
+    } else {
+        return false;
+    }
+}
+
+function user_list() {
+
+    include 'auth.php';
+
+    $sql = select_u();
+
+    if ($result = mysqli_query($db, $sql)) {
+        if (mysqli_num_rows($result)) {
+            if ($db === false) {
+                die("ERROR: Could not connect. " . mysqli_connect_error());
+            }
+
+
+            while ($user = $result->fetch_array()) {
+                echo '<option>' . $user['username'] . '</option>';
+            }
+
+            mysqli_free_result($result);
+        } else {
+            echo "No records matching your query were found.";
+        }
+    } else {
+        echo "ERROR: Could not able to execute $sql. " . mysqli_error($db);
+    }
+}
 ?>

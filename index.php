@@ -18,7 +18,7 @@
         <div id="container">
             <div class="content">
                 <form id="inter" action="./api/index_global/create_intervention.php" method="POST">
-                    <div class="pt-5 pb-5 mt-5 ml-auto mr-auto">
+                    <div class="pt-5 pb-4 mt-5 ml-auto mr-auto">
                         <div class="w-75 m-auto text-center pt-2"><?php if (isset($_SESSION['username']) && !empty($_SESSION['username'])) {
                                                                             echo $_SESSION['username'];
                                                                         } 
