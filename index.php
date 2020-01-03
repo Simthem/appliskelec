@@ -42,9 +42,14 @@
                     <?php echo "<input type='number' id='user_id' name='user_id' value='" . $_SESSION['id'] . "' style='display: none;'>"; ?>
                     <div class="text-center">
                         <?php
-                            include 'api/view/troubleshooting_view.php';
+                            echo '<div class="text-center border rounded mt-4 ml-auto mb-5 mr-auto w-50">
+                                <select id="chantier_name" name="chantier_name" class="w-100 border bg-white" size="1" style="max-width: -webkit-fill-available;" required>';
+                                    include 'api/view/troubleshooting_view.php';
 
-                            trouble_list();
+                                    trouble_list(1);
+                                    
+                                echo '</select>
+                            </div>';
                         ?>
                     </div>
                     <div class="pt-3 w-75 m-auto text-center">

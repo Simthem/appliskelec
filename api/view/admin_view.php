@@ -185,14 +185,23 @@ function month_a($id) {
     }
 }
 
-function select_a() {
+function select_a($id) {
 
     include_once 'auth.php';
 
-    $sql_a = "SELECT
-        id, admin_name, phone
-    FROM
-        `admin`";
+    if (isset($id) && !empty($id)) {
+        $sql_a = "SELECT
+            id, admin_name, phone
+        FROM
+            `admin`
+        WHERE
+            id = '" . $id . "'";
+    } else {
+        $sql_a = "SELECT
+            id, admin_name, phone
+        FROM
+            `admin`";
+    }
 
     if (isset($sql_a) && !empty($sql_a)) {
         return ($sql_a);
@@ -202,28 +211,43 @@ function select_a() {
 }
 
 
-function admin_list() {
+function admin_list($id) {
 
     include 'auth.php';
     
-    $sql_a = select_a();
+    if (isset($id) && !empty($id)) {
 
-    if ($reponse = mysqli_query($db, $sql_a)) {
-        if (mysqli_num_rows($reponse)) {
-            if ($db === false) {
-                die("ERROR: Could not connect. " . mysqli_connect_error());
+        $sql_a = select_a($id);
+
+        if ($reponse = mysqli_query($db, $sql_a)) {
+            if (mysqli_num_rows($reponse) > 0) {
+                while ($chk = $reponse->fetch_array()) {
+                    $name_a = $chk['admin_name'];
+                }
             }
-
-            while ($admin = $reponse->fetch_array()) {
-                echo '<option>' . $admin['admin_name'] . '</option>';
-            }
-
-            mysqli_free_result($reponse);
-        } else {
-            echo "No records matching your query were found.";
         }
+        return $name_a;
     } else {
-        echo "ERROR: Could not able to execute $sql_a. " . mysqli_error($db);
+
+        $sql_a = select_a(0);
+
+        if ($reponse = mysqli_query($db, $sql_a)) {
+            if (mysqli_num_rows($reponse)) {
+                if ($db === false) {
+                    die("ERROR: Could not connect. " . mysqli_connect_error());
+                }
+
+                while ($admin = $reponse->fetch_array()) {
+                    echo '<option>' . $admin['admin_name'] . '</option>';
+                }
+
+                mysqli_free_result($reponse);
+            } else {
+                echo "Aucun résultat ne correspond à votre requête.";
+            }
+        } else {
+            echo "ERROR: Could not able to execute $sql_a. " . mysqli_error($db);
+        }
     }
 }
 ?>

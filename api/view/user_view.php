@@ -183,14 +183,23 @@ function month($id) {
     }
 }
 
-function select_u() {
+function select_u($id) {
 
     include_once 'auth.php';
 
-    $sql = "SELECT 
-        id, username, phone 
-    FROM 
-        users";
+    if (isset($id) && !empty($id)) {
+        $sql = "SELECT 
+            id, username, phone 
+        FROM 
+            users
+        WHERE
+            id = '" . $id . "'";
+    } else {
+        $sql = "SELECT 
+            id, username, phone 
+        FROM 
+            users";
+    }
 
     if (isset($sql) && !empty($sql)) {
         return $sql;
@@ -199,29 +208,41 @@ function select_u() {
     }
 }
 
-function user_list() {
+function user_list($id) {
 
     include 'auth.php';
 
-    $sql = select_u();
-
-    if ($result = mysqli_query($db, $sql)) {
-        if (mysqli_num_rows($result)) {
-            if ($db === false) {
-                die("ERROR: Could not connect. " . mysqli_connect_error());
+    if ($id != 0) {
+        $sql = select_u($id);
+        if ($reponse = mysqli_query($db, $sql)) {
+            if (mysqli_num_rows($reponse) > 0) {
+                while ($chk = $reponse->fetch_array()) {
+                    $name_u = $chk['username'];
+                }
+                return $name_u;
             }
-
-
-            while ($user = $result->fetch_array()) {
-                echo '<option>' . $user['username'] . '</option>';
-            }
-
-            mysqli_free_result($result);
-        } else {
-            echo "No records matching your query were found.";
         }
     } else {
-        echo "ERROR: Could not able to execute $sql. " . mysqli_error($db);
+        $sql = select_u(0);
+
+        if ($result = mysqli_query($db, $sql)) {
+            if (mysqli_num_rows($result)) {
+                if ($db === false) {
+                    die("ERROR: Could not connect. " . mysqli_connect_error());
+                }
+
+
+                while ($user = $result->fetch_array()) {
+                    echo '<option>' . $user['username'] . '</option>';
+                }
+
+                mysqli_free_result($result);
+            } else {
+                echo "Aucun résultat ne correspond à votre requête.";
+            }
+        } else {
+            echo "ERROR: Could not able to execute $sql. " . mysqli_error($db);
+        }
     }
 }
 ?>

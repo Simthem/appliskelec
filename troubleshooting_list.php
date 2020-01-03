@@ -66,7 +66,7 @@ ORDER BY
                                     die("ERROR: Could not connect. " . mysqli_connect_error());
                                 }
                                 echo '<tbody>';
-                                    while($row = $result_chant->fetch_array()){
+                                    while ($row = $result_chant->fetch_array()) {
                                         echo '<tr>';
                                             if ($row['num_chantier'] != 0 and $row['num_chantier']!= -1 and !empty($row['num_chantier'])) {
                                                 if ($row['state']) {
