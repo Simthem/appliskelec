@@ -233,7 +233,7 @@ function user_list($id) {
 
 
                 while ($user = $result->fetch_array()) {
-                    echo '<option>' . $user['username'] . '</option>';
+                    echo '<option value="' . $user['id'] . '">' . $user['username'] . '</option>';
                 }
 
                 mysqli_free_result($result);

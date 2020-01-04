@@ -224,9 +224,9 @@ function admin_list($id) {
                 while ($chk = $reponse->fetch_array()) {
                     $name_a = $chk['admin_name'];
                 }
+                return $name_a;
             }
         }
-        return $name_a;
     } else {
 
         $sql_a = select_a(0);
@@ -238,7 +238,7 @@ function admin_list($id) {
                 }
 
                 while ($admin = $reponse->fetch_array()) {
-                    echo '<option>' . $admin['admin_name'] . '</option>';
+                    echo '<option value="' . $admin['id'] . '">' . $admin['admin_name'] . '</option>';
                 }
 
                 mysqli_free_result($reponse);

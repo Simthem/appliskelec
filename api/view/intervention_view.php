@@ -1,30 +1,4 @@
 <?php
-function select_inter($date) {
-
-    include_once 'auth.php';
-    
-    $sql = "SELECT 
-        user_id,
-        chantier_id,
-        e_mail,
-        updated,
-        `name`
-    FROM 
-        global_reference AS g
-        JOIN
-        chantiers AS c ON g.chantier_id = c.id
-    WHERE
-        updated = '" . $date . "'
-    GROUP BY
-        user_id, chantier_id, name, updated, e_mail";
-    
-    if (isset($sql) && !empty($sql)) {
-        return $sql;
-    } else {
-        return false;
-    }
-}
-
 
 function select_inter_a($date) {
 
@@ -44,15 +18,165 @@ function select_inter_a($date) {
     }
 }
 
+function res_us($chk_id) {
 
-function list_inter($date) {
+    include_once 'auth.php';
+
+    $sql = "SELECT 
+            user_id,
+            chantier_id,
+            e_mail,
+            updated,
+            `name`
+        FROM 
+            global_reference AS g
+            JOIN
+            chantiers AS c ON g.chantier_id = c.id
+        WHERE
+            user_id = '" . $chk_id . "'
+        GROUP BY
+            user_id, chantier_id, name, updated, e_mail";
+
+    if (isset($sql) && !empty($sql)) {
+        return $sql;
+    } else {
+        return false;
+    }
+}
+
+function res_date($date, $chk_id) {
+
+    include_once 'auth.php';
+
+    if (isset($chk_id) && !empty($chk_id) && $chk_id != 0) {
+        $sql = "SELECT 
+                user_id,
+                chantier_id,
+                e_mail,
+                updated,
+                `name`
+            FROM 
+                global_reference AS g
+                JOIN
+                chantiers AS c ON g.chantier_id = c.id
+            WHERE
+                updated = '" . $date . "'
+                AND
+                user_id = '" . $chk_id . "'
+            GROUP BY
+                user_id, chantier_id, name, updated, e_mail";
+    } else {
+        $sql = "SELECT 
+                user_id,
+                chantier_id,
+                e_mail,
+                updated,
+                `name`
+            FROM 
+                global_reference AS g
+                JOIN
+                chantiers AS c ON g.chantier_id = c.id
+            WHERE
+                updated = '" . $date . "'
+            GROUP BY
+                user_id, chantier_id, name, updated, e_mail";
+    }
+
+    if (isset($sql) && !empty($sql)) {
+        return $sql;
+    } else {
+        return false;
+    }
+}
+
+
+function between($date, $between, $chk_id) {
+
+    include_once 'auth.php';
+
+    if (isset($chk_id) && !empty($chk_id) && $chk_id != 0) {
+        $sql = "SELECT 
+                user_id,
+                chantier_id,
+                e_mail,
+                updated,
+                `name`
+            FROM 
+                global_reference AS g
+                JOIN
+                chantiers AS c ON g.chantier_id = c.id
+            WHERE
+                updated BETWEEN '" . $date . "' AND '" . $between . "'
+                AND 
+                user_id = '" . $chk_id . "'
+            GROUP BY
+                user_id, chantier_id, name, updated, e_mail";
+    } else {
+        $sql = "SELECT 
+                user_id,
+                chantier_id,
+                e_mail,
+                updated,
+                `name`
+            FROM 
+                global_reference AS g
+                JOIN
+                chantiers AS c ON g.chantier_id = c.id
+            WHERE
+                updated BETWEEN '" . $date . "' AND '" . $between . "'
+            GROUP BY
+                user_id, chantier_id, name, updated, e_mail";
+    }
+    
+    if (isset($sql) && !empty($sql)) {
+        return $sql;
+    } else {
+        return false;
+    }
+}
+
+function select_inter($date, $between, $chk_id) {
+
+    include_once 'auth.php';
+    
+    if ($date != 0 && (empty($between) || $between == 0)) {
+        $sql = res_date($date, $chk_id);
+    } else if ($date != 0 && $between != 0) {
+        $sql = between($date, $between, $chk_id);
+    } else if ($chk_id != 0) {
+        $sql = res_us($chk_id);
+    } else {
+        return false;
+    }
+    
+    if (isset($sql) && !empty($sql)) {
+        return $sql;
+    } else {
+        return false;
+    }
+}
+
+
+function list_inter($date, $between, $chk_id) {
 
     include 'auth.php';
     include_once 'user_view.php';
     include_once 'admin_view.php';
 
-    $list = select_inter($date);
-
+    if (($between != 0 && explode('/', $between) > explode('/', $date) && $date != 0) || ($between == 0 && $date != 0)) {
+        if (!isset($chk_id) || empty($chk_id) || $chk_id == 0) {
+            $list = select_inter($date, $between, 0);
+        } else {
+            $list = select_inter($date, $between, $chk_id);
+        }
+    } elseif (isset($chk_id) && !empty($chk_id)) {
+        $list = select_inter(0, 0, $chk_id);
+    } 
+    else {
+        echo '<script>alert("Une erreur est présente dans la demande de date(s). Veuillez vérifier le bon ordre des informations demandées.")</script>';
+        return false;
+    }
+    
     if ($result = mysqli_query($db, $list)) {
 
         if ($db === false) {
@@ -95,33 +219,29 @@ function list_inter($date) {
                                     $temp_id = $row['user_id'];
 
                                     if (isset($username_u) && !empty($username_u) && $username_a == 0) {
-                                        echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 85px;">' . $username_u . '</td>';
+                                        echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 85px;"><a href="modif_profil.php?id=' . $temp_id . '">' . $username_u . '</a></td>';
                                     } elseif (isset($username_a) && !empty($username_a)){
-                                        echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 85px;">' . $username_a . '</td>';
+                                        echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 85px;"><a href="modif_profil.php?id=' . $temp_id . '">' . $username_a . '</a></td>';
                                     }
                                     
                                     echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 85px;">' . $row['name'] . '</td>';
                                     echo '<td class="p-0 align-middle w-25" style="word-wrap: break-word; max-width: 85px;">' . $row['e_mail'] . '</td>';
                                     echo '<td class="p-0 align-middle w-25" style="word-wrap: break-word; max-width: 85px;">';
-                                    ?>
-                                        <form action="api/user/delete_troubles.php" method="GET" class="m-0 p-0">
-                                            <div class="float-left pl-0" id="<?php echo $row['chantier_id']; ?>" name="<?php echo $row['chantier_id']; ?>" onClick="reply_click_troubles(this.id)"><i class="fas fa-trash-alt"></i></div>
+                                    echo '<form action="api/user/delete_troubles.php" method="GET" class="m-0 p-0">
+                                            <div class="float-left pl-0" id="' . $row['chantier_id'] . '" name="' . $row['chantier_id'] . '" onClick="reply_click_troubles(this.id)"><i class="fas fa-trash-alt"></i></div>
                                         </form>
-                                        <div class="w-100 text-center"><a href="troubleshooting_details.php?id=<?php echo $row['chantier_id']; ?>"><i class="fas fa-tools mr-2"></i></a></div>
-                                    <?php
-                                    echo '</td>';
+                                        <div class="w-100 text-center"><a href="troubleshooting_details.php?id=' . $row['chantier_id'] . '"><i class="fas fa-tools mr-2"></i></a></div>
+                                    </td>';
                                 } elseif ($temp_id == $row['user_id']) {
                                     echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 85px;"></td>';
                                     echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 85px;">' . $row['name'] . '</td>';
                                     echo '<td class="p-0 align-middle w-25" style="word-wrap: break-word; max-width: 85px;">' . $row['e_mail'] . '</td>';
                                     echo '<td class="p-0 align-middle w-25" style="word-wrap: break-word; max-width: 85px;">';
-                                    ?>
-                                        <form action="api/user/delete_troubles.php" method="GET" class="m-0 p-0">
-                                            <div class="float-left pl-0" id="<?php echo $row['chantier_id']; ?>" name="<?php echo $row['chantier_id']; ?>" onClick="reply_click_troubles(this.id)"><i class="fas fa-trash-alt"></i></div>
+                                    echo '<form action="api/user/delete_troubles.php" method="GET" class="m-0 p-0">
+                                            <div class="float-left pl-0" id="' . $row['chantier_id'] . '" name="' . $row['chantier_id'] . '" onClick="reply_click_troubles(this.id)"><i class="fas fa-trash-alt"></i></div>
                                         </form>
-                                        <div class="w-100 text-center"><a href="troubleshooting_details.php?id=<?php echo $row['chantier_id']; ?>"><i class="fas fa-tools mr-2"></i></a></div>
-                                    <?php
-                                    echo '</td>';
+                                        <div class="w-100 text-center"><a href="troubleshooting_details.php?id=' . $row['chantier_id'] . '"><i class="fas fa-tools mr-2"></i></a></div>
+                                    </td>';
                                 }
                             }
                             echo '</tr>';
@@ -136,7 +256,7 @@ function list_inter($date) {
                 <input type="return" value="Soumettre" class="btn send border-0 bg-white z-depth-1a mt-4 mb-0 align-middle text-dark" />
             </div>';
         } else {
-            echo "<div class='w-100 text-center'>Aucun résultat ne correspond à votre requête.</div>";
+            echo "<div class='w-100 pb-5 mb-5 text-center'>Aucun résultat ne correspond à votre requête.</div>";
         }
     }
 }

@@ -370,7 +370,7 @@ $('#ab_day').change(function () {
 
 
 
-//function PREVIEW_FORM_INDEX
+//function PREVIEW_FORM_INDEX AND SEARCH_FORM
 
 function preview1() {
     var calen = '?store='+document.forms['inter'].elements['up_inter'].value;
@@ -395,8 +395,16 @@ function preview_bet() {
     var store = curr_page.substr(curr_page.indexOf('?') - curr_page.indexOf('&'));
 
     if (store == curr_page) {
-        alert("Vous n'avez pas renseigné le champ 'Par date'. Veuillez le renseigner AVANT de vouloir effectuer une recherche 'Par période.'");
+        alert("Vous n'avez pas renseigné le champ 'Par date'. Veuillez le renseigner AVANT de vouloir effectuer une recherche 'Par période'.");
         document.location.href = curr_page;
+        return false;
+    } else if (document.forms['inter'].elements['bet_inter'].value < document.forms['inter'].elements['up_inter'].value) {
+        alert("Votre demande ne peut aboutir : veuillez renseigner dans le champ 'Par période' une date supérieure à celle du champ 'Par date'.");
+        if (curr_page.indexOf('&') != -1) {
+            document.location.href = curr_page.replace(bet, '');
+        } else {
+            document.location.href = curr_page;
+        }
         return false;
     }
 
@@ -413,6 +421,7 @@ function preview_bet() {
 
 function preview_user() {
     var user = 'user='+document.forms['inter'].elements['user'].value;
+    console.log(user);
     var curr_page = window.location.href;
     var tot_get = curr_page.substr(curr_page.indexOf('?'));
 

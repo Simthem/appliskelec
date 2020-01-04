@@ -50,20 +50,48 @@
                                 <h5 class="w-100 m-auto text-center mb-5 pt-2 pb-3">Par salarié :</h5>
                             </div>
                             <div class="text-center border rounded mt-4 ml-auto mb-5 mr-auto w-50">';
+
+                                include './api/view/user_view.php';
+                                include './api/view/admin_view.php';
+                                //echo 'tg';
                                 if (isset($_GET['user']) && !empty($_GET['user'])) {
-                                    echo '<select id="user" class="w-100 border bg-white" size="1" style="max-width: -webkit-fill-available;" value="' . $_GET['user'] . '" onChange="preview_user(this.form)" selected="selected">
-                                        <option value="' . $_GET['user'] . '" selected="selected">' . $_GET['user'] . '</option>';
+                                    $chk_id = select_u($_GET['user']);
+                                    //echo 'pouet1';
+                                    if (!isset($chk_id) || empty($chk_id) || $chk_id == 0) {
+                                        $chk_id_a = select_a($_GET['user']);
+                                        //echo 'pouet<br />' . $chk_id_a;
+                                        if ($reponse = mysqli_query($db, $chk_id_a)) {
+                                            if (mysqli_num_rows($reponse) > 0) {
+                                                while ($admin = $reponse->fetch_array()) {
+                                                    echo '<select id="user" class="w-100 border bg-white" size="1" style="max-width: -webkit-fill-available;" value="' . $admin['id'] . '" onChange="preview_user(this.form)" selected="selected">
+                                                    <option value="' . $admin['id'] . '" selected="selected">' . $admin['admin_name'] . '</option>';
+                                                    $chk_id = $admin['id'];
+                                                    //echo 'pouet<br />' . $chk_id;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if ($reponse = mysqli_query($db, $chk_id)) {
+                                        if (mysqli_num_rows($reponse) > 0) {
+                                            while ($user = $reponse->fetch_array()) {
+                                                echo '<select id="user" class="w-100 border bg-white" size="1" style="max-width: -webkit-fill-available;" value="' . $user['id'] . '" onChange="preview_user(this.form)" selected="selected">
+                                                <option value="' . $user['id'] . '" selected="selected">' . $user['username'] . '</option>';
+                                                $chk_id = $user['id'];
+                                                //echo 'pouet<br />' . $chk_id;
+                                            }
+                                        }
+                                    }
+                                    //print_r($user);
+                                    /*echo '<select id="user" class="w-100 border bg-white" size="1" style="max-width: -webkit-fill-available;" value="' . $chk_id . '" onChange="preview_user(this.form)" selected="selected">
+                                        <option value="' . $_GET['user'] . '" selected="selected">' . $chk_id . '</option>';*/
                                 } else {
                                     echo '<select id="user" class="w-100 border bg-white" size="1" style="max-width: -webkit-fill-available;" onChange="preview_user(this.form)">';
                                 }
 
-                                            include './api/view/user_view.php';
-                                            include './api/view/admin_view.php';
+                                        echo '<option></option>';
 
-                                            echo '<option></option>';
-
-                                            $sql_a = admin_list(0);
-                                            $sql = user_list(0);
+                                        $sql_a = admin_list(0);
+                                        $sql = user_list(0);
                                             
                                     echo '</select>
                             </div>';
@@ -85,18 +113,37 @@
                             echo '</select>
                             </div>';
 
+                            //echo 'tagada ' . $_GET['user'] . '<br />';
+
                             echo '</div>
                             <div class="w-75 mt-2 mr-auto mb-3 ml-auto pb-3">
-                                <a data-toggle="collapse" href="#preview" role="button" aria-expanded="false" aria-controls="preview" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark" onClick="preview2()">Prévisualiser</a>
+                                <a data-toggle="collapse" href="#preview" role="button" aria-expanded="false" aria-controls="preview" class="btn send border-0 bg-white z-depth-1a mt-3 mb-4 text-dark">Prévisualiser</a>
                             </div>';
 
                             echo '<div class="w-100 ml-auto mr-auto collapse" id="preview">';
 
+                                include './api/view/intervention_view.php';
+                                $flag = 0;
                                 if (isset($_GET['store']) && !empty($_GET['store'])) {
+                                    if (isset($_GET['bet']) && !empty($_GET['bet'])) {
+                                        if (isset($_GET['user']) && !empty($_GET['user'])) {
+                                            $list_inter = list_inter($_GET['store'], $_GET['bet'], $_GET['user']);
+                                            $flag = 1;
+                                        } else {
+                                            $list_inter = list_inter($_GET['store'], $_GET['bet'], 0);
+                                            $flag = 1;
+                                        }
+                                    } elseif (isset($_GET['user']) && !empty($_GET['user'])) {
+                                        $list_inter = list_inter($_GET['store'], 0, $_GET['user']);
+                                        $flag = 1;
+                                    } else {
+                                        $list_inter = list_inter($_GET['store'], 0, 0);
+                                        $flag = 1;
+                                    }
+                                }
 
-                                    include './api/view/intervention_view.php';
-
-                                    $list_inter = list_inter($_GET['store']);
+                                if (isset($_GET['user']) && !empty($_GET['user']) && $flag == 0) {
+                                    $list_inter = list_inter(0, 0, $_GET['user']);
                                 }
 
                             echo '</div>';

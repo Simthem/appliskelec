@@ -348,7 +348,7 @@ li a
     .container-list
     {
         max-width: 100%;
-        height: 330px;
+        max-height: 330px;
         overflow-y: auto;
     }
     
