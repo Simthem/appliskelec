@@ -35,7 +35,7 @@ function res_us($chk_id) {
         WHERE
             user_id = '" . $chk_id . "'
         GROUP BY
-            user_id, chantier_id, name, updated, e_mail";
+            updated DESC, user_id, chantier_id, `name`";
 
     if (isset($sql) && !empty($sql)) {
         return $sql;
@@ -64,7 +64,7 @@ function res_date($date, $chk_id) {
                 AND
                 user_id = '" . $chk_id . "'
             GROUP BY
-                user_id, chantier_id, name, updated, e_mail";
+                updated DESC, user_id, chantier_id, `name`";
     } else {
         $sql = "SELECT 
                 user_id,
@@ -79,7 +79,7 @@ function res_date($date, $chk_id) {
             WHERE
                 updated = '" . $date . "'
             GROUP BY
-                user_id, chantier_id, name, updated, e_mail";
+                updated DESC, user_id, chantier_id, `name`";
     }
 
     if (isset($sql) && !empty($sql)) {
@@ -110,7 +110,7 @@ function between($date, $between, $chk_id) {
                 AND 
                 user_id = '" . $chk_id . "'
             GROUP BY
-                user_id, chantier_id, name, updated, e_mail";
+                updated DESC, user_id, chantier_id, `name`";
     } else {
         $sql = "SELECT 
                 user_id,
@@ -125,7 +125,7 @@ function between($date, $between, $chk_id) {
             WHERE
                 updated BETWEEN '" . $date . "' AND '" . $between . "'
             GROUP BY
-                user_id, chantier_id, name, updated, e_mail";
+                updated DESC, user_id, chantier_id, `name`";
     }
     
     if (isset($sql) && !empty($sql)) {
@@ -163,6 +163,10 @@ function list_inter($date, $between, $chk_id) {
     include_once 'user_view.php';
     include_once 'admin_view.php';
 
+
+    //  SEE CONDITION WITH 'WINDOW.LOCATION.PATHNAME' FOR EXTRACT REQUEST
+
+
     if (($between != 0 && explode('/', $between) > explode('/', $date) && $date != 0) || ($between == 0 && $date != 0)) {
         if (!isset($chk_id) || empty($chk_id) || $chk_id == 0) {
             $list = select_inter($date, $between, 0);
@@ -189,7 +193,7 @@ function list_inter($date, $between, $chk_id) {
                     echo '<tr>';
                         echo '<th scope="col" class="text-center align-middle p-2 w-25" id="username">Nom</th>';
                         echo '<th scope="col" class="text-center align-middle p-2 w-25" id="name">Libellés</th>';
-                        echo '<th scope="col" class="text-center align-middle p-2 w-25" id="e_mail">E-mail</th>';
+                        echo '<th scope="col" class="text-center align-middle p-2 w-25" id="date">Date</th>';
                         echo '<th scope="col" class="text-center align-middle p-0 w-25" id="">Détails</th>';
                     echo '</tr>';
                 echo '</thead>';
@@ -219,28 +223,22 @@ function list_inter($date, $between, $chk_id) {
                                     $temp_id = $row['user_id'];
 
                                     if (isset($username_u) && !empty($username_u) && $username_a == 0) {
-                                        echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 85px;"><a href="modif_profil.php?id=' . $temp_id . '">' . $username_u . '</a></td>';
+                                        echo '<td class="align-middle w-25" style="word-wrap: break-word; max-width: 85px;"><a href="modif_profil.php?id=' . $temp_id . '">' . $username_u . '</a></td>';
                                     } elseif (isset($username_a) && !empty($username_a)){
-                                        echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 85px;"><a href="modif_profil.php?id=' . $temp_id . '">' . $username_a . '</a></td>';
+                                        echo '<td class="align-middle w-25" style="word-wrap: break-word; max-width: 85px;"><a href="modif_profil.php?id=' . $temp_id . '">' . $username_a . '</a></td>';
                                     }
                                     
-                                    echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 85px;">' . $row['name'] . '</td>';
-                                    echo '<td class="p-0 align-middle w-25" style="word-wrap: break-word; max-width: 85px;">' . $row['e_mail'] . '</td>';
-                                    echo '<td class="p-0 align-middle w-25" style="word-wrap: break-word; max-width: 85px;">';
-                                    echo '<form action="api/user/delete_troubles.php" method="GET" class="m-0 p-0">
-                                            <div class="float-left pl-0" id="' . $row['chantier_id'] . '" name="' . $row['chantier_id'] . '" onClick="reply_click_troubles(this.id)"><i class="fas fa-trash-alt"></i></div>
-                                        </form>
-                                        <div class="w-100 text-center"><a href="troubleshooting_details.php?id=' . $row['chantier_id'] . '"><i class="fas fa-tools mr-2"></i></a></div>
+                                    echo '<td class="align-middle w-25" style="word-wrap: break-word; max-width: 85px; padding: 0 !important;">' . $row['name'] . '</td>';
+                                    echo '<td class="align-middle w-25" style="word-wrap: break-word; max-width: 85px;">' . $row['updated'] . '</td>';
+                                    echo '<td class="align-middle w-25" style="word-wrap: break-word; max-width: 85px;">';
+                                    echo '<div class="w-100 text-center"><a href="troubleshooting_details.php?id=' . $row['chantier_id'] . '"><i class="fas fa-tools mr-2"></i></a></div>
                                     </td>';
                                 } elseif ($temp_id == $row['user_id']) {
-                                    echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 85px;"></td>';
-                                    echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 85px;">' . $row['name'] . '</td>';
-                                    echo '<td class="p-0 align-middle w-25" style="word-wrap: break-word; max-width: 85px;">' . $row['e_mail'] . '</td>';
-                                    echo '<td class="p-0 align-middle w-25" style="word-wrap: break-word; max-width: 85px;">';
-                                    echo '<form action="api/user/delete_troubles.php" method="GET" class="m-0 p-0">
-                                            <div class="float-left pl-0" id="' . $row['chantier_id'] . '" name="' . $row['chantier_id'] . '" onClick="reply_click_troubles(this.id)"><i class="fas fa-trash-alt"></i></div>
-                                        </form>
-                                        <div class="w-100 text-center"><a href="troubleshooting_details.php?id=' . $row['chantier_id'] . '"><i class="fas fa-tools mr-2"></i></a></div>
+                                    echo '<td class="align-middle w-25" style="word-wrap: break-word; max-width: 85px;"></td>';
+                                    echo '<td class="align-middle w-25" style="word-wrap: break-word; max-width: 85px; padding: 0 !important;">' . $row['name'] . '</td>';
+                                    echo '<td class="align-middle w-25" style="word-wrap: break-word; max-width: 85px;">' . $row['updated'] . '</td>';
+                                    echo '<td class="align-middle w-25" style="word-wrap: break-word; max-width: 85px;">';
+                                    echo '<div class="w-100 text-center"><a href="troubleshooting_details.php?id=' . $row['chantier_id'] . '"><i class="fas fa-tools mr-2"></i></a></div>
                                     </td>';
                                 }
                             }
@@ -252,9 +250,8 @@ function list_inter($date, $between, $chk_id) {
             </div>';
             mysqli_free_result($result);
 
-            echo '<div class="w-75 mt-3 ml-auto mb-3 mr-auto pb-5">
-                <input type="return" value="Soumettre" class="btn send border-0 bg-white z-depth-1a mt-4 mb-0 align-middle text-dark" />
-            </div>';
+            echo '<div class="w-75 mt-3 ml-auto mb-3 mr-auto pb-5"></div>';
+            //<input type="return" value="Soumettre" class="btn send border-0 bg-white z-depth-1a mt-4 mb-0 align-middle text-dark" />
         } else {
             echo "<div class='w-100 pb-5 mb-5 text-center'>Aucun résultat ne correspond à votre requête.</div>";
         }

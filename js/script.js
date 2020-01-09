@@ -376,11 +376,16 @@ function preview1() {
     var calen = '?store='+document.forms['inter'].elements['up_inter'].value;
     var curr_page = window.location.href;
     var store = curr_page.substr(curr_page.indexOf('?'));
+    var get = curr_page.indexOf('&');
 
     if (curr_page.indexOf('?') == -1 && calen != '?store=') {
         document.location.href = curr_page + calen;
     } else if (store && store != calen && calen != '?store=') {
-        curr_page = window.location.href.replace(store, calen);
+        if (get != -1) {
+            curr_page = window.location.href.replace(store, calen) + curr_page.substr(get);
+        } else {
+            curr_page = window.location.href.replace(store, calen);
+        }
         document.location.href = curr_page;
     } else {
         curr_page = window.location.href.replace(store, '');
@@ -393,12 +398,14 @@ function preview_bet() {
     var curr_page = window.location.href;
     var bet = curr_page.substr(curr_page.indexOf('&'));
     var store = curr_page.substr(curr_page.indexOf('?') - curr_page.indexOf('&'));
+    var get = curr_page.indexOf('&user=');
 
-    if (store == curr_page) {
+    if (store == curr_page && curr_page.indexOf('?') == -1) {
+        console.log(curr_page.indexOf('?'));
         alert("Vous n'avez pas renseigné le champ 'Par date'. Veuillez le renseigner AVANT de vouloir effectuer une recherche 'Par période'.");
         document.location.href = curr_page;
         return false;
-    } else if (document.forms['inter'].elements['bet_inter'].value < document.forms['inter'].elements['up_inter'].value) {
+    } else if (document.forms['inter'].elements['bet_inter'].value < document.forms['inter'].elements['up_inter'].value && curr_page.indexOf('?') == -1) {
         alert("Votre demande ne peut aboutir : veuillez renseigner dans le champ 'Par période' une date supérieure à celle du champ 'Par date'.");
         if (curr_page.indexOf('&') != -1) {
             document.location.href = curr_page.replace(bet, '');
@@ -410,8 +417,12 @@ function preview_bet() {
 
     if (curr_page.indexOf('&') == -1 && calen != '&bet=') {
         document.location.href = curr_page + calen;
-    } else if (bet && bet != calen && calen != '&bet=') {
-        curr_page = window.location.href.replace(bet, calen);
+    } else if (bet && bet != calen) {
+        if (get != -1 && calen != '&bet=') {
+            curr_page = window.location.href.replace(bet, calen) + curr_page.substr(get);
+        } else if (get != -1 && calen == '&bet=') {
+            curr_page = window.location.href.replace(bet, '') + curr_page.substr(get);
+        }
         document.location.href = curr_page;
     } else {
         curr_page = window.location.href.replace(bet, '');
@@ -421,7 +432,7 @@ function preview_bet() {
 
 function preview_user() {
     var user = 'user='+document.forms['inter'].elements['user'].value;
-    console.log(user);
+    //console.log(user);
     var curr_page = window.location.href;
     var tot_get = curr_page.substr(curr_page.indexOf('?'));
 
