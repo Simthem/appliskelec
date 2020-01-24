@@ -376,36 +376,57 @@ function preview1() {
     var calen = '?store='+document.forms['inter'].elements['up_inter'].value;
     var curr_page = window.location.href;
     var store = curr_page.substr(curr_page.indexOf('?'));
+    var get_pre;
+    if (curr_page.indexOf('?user') != -1) {
+        get_pre = curr_page.indexOf('?user');
+    } else if (curr_page.indexOf('?chantier') != -1) {
+        get_pre = curr_page.indexOf('?chantier');
+    } else {
+        get_pre = -1;
+    }
     var get = curr_page.indexOf('&');
+    var tot_get = curr_page.substr(curr_page.indexOf('&'));
 
     if (curr_page.indexOf('?') == -1 && calen != '?store=') {
         document.location.href = curr_page + calen;
     } else if (store && store != calen && calen != '?store=') {
         if (get != -1) {
             curr_page = window.location.href.replace(store, calen) + curr_page.substr(get);
+        } else if (get_pre != -1) {
+            var temp = store;
+            curr_page = window.location.href.replace(store, calen) + temp.replace('?', '&');
         } else {
             curr_page = window.location.href.replace(store, calen);
         }
         document.location.href = curr_page;
     } else {
         curr_page = window.location.href.replace(store, '');
-        document.location.href = curr_page;
+        if (get != -1 && get_pre != -1) {
+            temp = tot_get.replace('&', '?');
+            document.location.href = curr_page + temp;
+        } else {
+            document.location.href = curr_page;
+        }
     }
 }
 
 function preview_bet() {
     var calen = '&bet='+document.forms['inter'].elements['bet_inter'].value;
     var curr_page = window.location.href;
-    var bet = curr_page.substr(curr_page.indexOf('&'));
-    var store = curr_page.substr(curr_page.indexOf('?') - curr_page.indexOf('&'));
-    var get = curr_page.indexOf('&user=');
+    if (curr_page.indexOf('&bet=') != -1) {
+        var bet = curr_page.substr(curr_page.indexOf('&bet='));
+    } else {
+        var bet;
+    }
+    var store = curr_page.substr(curr_page.indexOf('?')).replace(curr_page.substr(curr_page.indexOf('&')), '');
+    var get_u = curr_page.indexOf('&user=');
+    var get_ch = curr_page.indexOf('&chantier');
 
-    if (store == curr_page && curr_page.indexOf('?') == -1) {
-        console.log(curr_page.indexOf('?'));
+    if (store == '' && calen != '&bet=') {
         alert("Vous n'avez pas renseigné le champ 'Par date'. Veuillez le renseigner AVANT de vouloir effectuer une recherche 'Par période'.");
         document.location.href = curr_page;
         return false;
-    } else if (document.forms['inter'].elements['bet_inter'].value < document.forms['inter'].elements['up_inter'].value && curr_page.indexOf('?') == -1) {
+    } else if (document.forms['inter'].elements['bet_inter'].value < document.forms['inter'].elements['up_inter'].value && document.forms['inter'].elements['bet_inter'].value != ''/* && curr_page.indexOf('?') == -1*/) {
         alert("Votre demande ne peut aboutir : veuillez renseigner dans le champ 'Par période' une date supérieure à celle du champ 'Par date'.");
         if (curr_page.indexOf('&') != -1) {
             document.location.href = curr_page.replace(bet, '');
@@ -413,15 +434,31 @@ function preview_bet() {
             document.location.href = curr_page;
         }
         return false;
+    } else if (curr_page.indexOf('?') != -1 && curr_page.indexOf('&bet') != -1 && calen == '&bet=') {
+        document.location.href = curr_page.replace(bet, '');
+        return false;
     }
 
-    if (curr_page.indexOf('&') == -1 && calen != '&bet=') {
-        document.location.href = curr_page + calen;
+    if (curr_page.indexOf('&bet=') == -1) {
+
+        if (get_u != -1 || get_ch != -1) {
+            temp = curr_page.substr(curr_page.indexOf('&'));
+            curr_page = window.location.href.replace(store, store+calen);
+            document.location.href = curr_page;
+        } else {
+            document.location.href = curr_page + calen;
+        }
     } else if (bet && bet != calen) {
-        if (get != -1 && calen != '&bet=') {
-            curr_page = window.location.href.replace(bet, calen) + curr_page.substr(get);
-        } else if (get != -1 && calen == '&bet=') {
-            curr_page = window.location.href.replace(bet, '') + curr_page.substr(get);
+        if (get_u != -1 && get_ch != -1 && calen != '&bet=') {
+            curr_page = window.location.href.replace(bet, calen) + curr_page.substr(get_u);
+        } else if (get_u != -1 && calen != '&bet=') {
+            curr_page = window.location.href.replace(bet, calen) + curr_page.substr(get_u);
+        } else if (get_ch != -1 && calen != '&bet=') {
+            curr_page = window.location.href.replace(bet, calen) + curr_page.substr(get_ch);
+        } else if (get_u != -1 && calen == '&bet=') {
+            curr_page = window.location.href.replace(bet, '') + curr_page.substr(get_u);
+        } else if (get_ch != -1 && calen == '&bet=') {
+            curr_page = window.location.href.replace(bet, '') + curr_page.substr(get_u);
         }
         document.location.href = curr_page;
     } else {
@@ -432,7 +469,6 @@ function preview_bet() {
 
 function preview_user() {
     var user = 'user='+document.forms['inter'].elements['user'].value;
-    //console.log(user);
     var curr_page = window.location.href;
     var tot_get = curr_page.substr(curr_page.indexOf('?'));
 
@@ -458,8 +494,12 @@ function preview_user() {
         var bef_us = tot_get.replace(temp, '');
     } else if (store_get) {
         var bef_us = tot_get.replace(store_get, '');
-    } else if (tot_get.indexOf('?') != -1) {
-        var bef_us = tot_get;
+    } else if (tot_get.indexOf('?user') != -1) {
+        if (tot_get.indexOf('&chantier') != -1) {
+            var bef_us = curr_page.substr(curr_page.indexOf('?')).replace(curr_page.substr(curr_page.indexOf('&')), '');
+        } else {
+            var bef_us = tot_get;
+        }
     } else {
         var bef_us;
     }
@@ -492,14 +532,41 @@ function preview_user() {
         if (bef_us && user != 'user=' && bef_us != '?'+user) {
             curr_page = window.location.href.replace(bef_us, '?'+ user);
             document.location.href = curr_page;
+        } else if (user != 'user=' && bef_us == '?'+user ) {
+            document.location.href = curr_page;
         } else if (user != 'user=') {
             curr_page = window.location.href +'?'+ user;
             document.location.href = curr_page;
-        } else {
+        } 
+        else {
             curr_page = window.location.href.replace(bef_us, '');
             document.location.href = curr_page;
         }
     }
+}
+
+function preview_troubles() {
+    var chantier = 'chantier_name='+document.forms['inter'].elements['chantier_name'].value;
+    var curr_page = window.location.href;
+    var first_chant = curr_page.substr(curr_page.indexOf('?chantier_name'));
+    var second_chant = curr_page.substr(curr_page.indexOf('&chantier_name'));
+    
+    if ((curr_page.indexOf('?store') == -1 && curr_page.indexOf('?user') == -1) && curr_page.indexOf('?chantier') == -1 && chantier != 'chantier_name=') {
+        curr_page = window.location.href +'?'+ chantier;
+    } else if ((curr_page.indexOf('?store') != -1 || curr_page.indexOf('?user') != -1) && curr_page.indexOf('&chantier') == -1 && chantier != 'chantier_name=') {
+        curr_page = window.location.href +'&'+ chantier;
+    } else if ((curr_page.indexOf('?store') != -1 || curr_page.indexOf('?user') != -1) && curr_page.indexOf('&chantier') != -1 && chantier != 'chantier_name=') {
+        curr_page = window.location.href.replace(second_chant, '&'+chantier);
+    } else if ((curr_page.indexOf('?store') != -1 || curr_page.indexOf('?user') != -1) && curr_page.indexOf('&chantier') != -1 && chantier == 'chantier_name=') {
+        curr_page = window.location.href.replace(second_chant, '');
+    } else if (curr_page.indexOf('?store') == -1 && curr_page.indexOf('?user') != -1 && curr_page.indexOf('?chantier') != -1 && chantier == 'chantier_name=') {
+        curr_page = window.location.href.replace(first_chant, '');
+    } else {
+        curr_page = window.location.href.replace(first_chant, '?'+chantier);
+    }
+    
+    document.location.href = curr_page;
+    //encodeURIComponent()
 }
 
 

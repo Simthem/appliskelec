@@ -101,16 +101,22 @@
                                 <h5 class="w-100 m-auto text-center mb-5 pt-2 pb-3">Par chantier :</h5>
                             </div>';
 
-                            echo '<div class="text-center border rounded mt-4 ml-auto mb-5 mr-auto w-50">
-                                <select id="chantier_name" name="chantier_name" class="w-100 border bg-white" size="1" style="max-width: -webkit-fill-available;">';
+                            echo '<div class="text-center border rounded mt-4 ml-auto mb-5 mr-auto w-50">';
+
+                                if (isset($_GET['chantier_name']) && !empty($_GET['chantier_name'])) {
+                                    echo '<select id="chantier_name" name="chantier_name" class="w-100 border bg-white" size="1" style="max-width: -webkit-fill-available;" value="' . $_GET['chantier_name'] . '" onChange="preview_troubles(this.form)" selected="selected">
+                                        <option value="' . $_GET['chantier_name'] . '">' . $_GET['chantier_name'] . '</option>';
+                                } else {
+                                    echo '<select id="chantier_name" name="chantier_name" class="w-100 border bg-white" size="1" style="max-width: -webkit-fill-available;" onChange="preview_troubles(this.form)">';
+                                }
+                                        include './api/view/troubleshooting_view.php';
+
+                                        echo '<option></option>';
+
+                                        $troubles = trouble_list(0);
+
+                                    echo '</select>
                                     
-                                    include './api/view/troubleshooting_view.php';
-
-                                    echo '<option></option>';
-
-                                    $troubles = trouble_list(0);
-
-                            echo '</select>
                             </div>';
 
                             //echo 'tagada ' . $_GET['user'] . '<br />';
@@ -124,26 +130,50 @@
 
                                 include './api/view/intervention_view.php';
                                 $flag = 0;
+                                echo $_GET['user'];
+                                echo $_GET['chantier_name'];
                                 if (isset($_GET['store']) && !empty($_GET['store'])) {
+                                    echo '<br />ta mere';
                                     if (isset($_GET['bet']) && !empty($_GET['bet'])) {
+                                        echo '<br />en';
                                         if (isset($_GET['user']) && !empty($_GET['user'])) {
-                                            $list_inter = list_inter($_GET['store'], $_GET['bet'], $_GET['user']);
+                                            echo '<br />slip';
+                                            if (isset($_GET['chantier_name']) && !empty($_GET['chantier_name'])) {
+                                                $list_inter = list_inter($_GET['store'], $_GET['bet'], $_GET['user'], $_GET['chantier_name']);
+                                            } else {
+                                                $list_inter = list_inter($_GET['store'], $_GET['bet'], $_GET['user'], 0);
+                                            }
                                             $flag = 1;
+                                        } elseif (isset($_GET['chantier_name']) && !empty($_GET['chantier_name'])) {
+                                            $list_inter = list_inter($_GET['store'], $_GET['bet'], 0, $_GET['chantier_name']);
                                         } else {
-                                            $list_inter = list_inter($_GET['store'], $_GET['bet'], 0);
+                                            $list_inter = list_inter($_GET['store'], $_GET['bet'], 0, 0);
                                             $flag = 1;
                                         }
+                                    } elseif (isset($_GET['user']) && !empty($_GET['user']) && isset($_GET['chantier_name']) && !empty($_GET['chantier_name'])) {
+                                        $list_inter = list_inter($_GET['store'], 0, $_GET['user'], $_GET['chantier_name']);
+                                        $flag = 1;
+                                    } elseif (isset($_GET['chantier_name']) && !empty($_GET['chantier_name'])) {
+                                        echo '<br />pouet<br />';
+                                        $list_inter = list_inter($_GET['store'], 0, 0, $_GET['chantier_name']);
+                                        $flag = 1;
                                     } elseif (isset($_GET['user']) && !empty($_GET['user'])) {
-                                        $list_inter = list_inter($_GET['store'], 0, $_GET['user']);
+                                        $list_inter = list_inter($_GET['store'], 0, $_GET['user'], 0);
                                         $flag = 1;
                                     } else {
-                                        $list_inter = list_inter($_GET['store'], 0, 0);
+                                        $list_inter = list_inter($_GET['store'], 0, 0, 0);
                                         $flag = 1;
                                     }
-                                }
-
-                                if (isset($_GET['user']) && !empty($_GET['user']) && $flag == 0) {
-                                    $list_inter = list_inter(0, 0, $_GET['user']);
+                                } elseif (isset($_GET['user']) && !empty($_GET['user']) && $flag == 0) {
+                                    echo 'ta face 1';
+                                    if (isset($_GET['chantier_name']) && !empty($_GET['chantier_name'])) {
+                                        $list_inter = list_inter(0, 0, $_GET['user'], $_GET['chantier_name']);
+                                    } else {
+                                        $list_inter = list_inter(0, 0, $_GET['user'],0);
+                                    }
+                                } else {/*if (isset($_GET['chantier_name']) && !empty($_GET['chantier_name']) && $flag == 0) {*/
+                                    //echo 'c\'est ok';
+                                    $list_inter = list_inter(0, 0, 0, $_GET['chantier_name']);
                                 }
 
                             echo '</div>';
