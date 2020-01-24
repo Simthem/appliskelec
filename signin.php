@@ -1,14 +1,10 @@
 <?php
 include './api/config/database.php';
 
-/*if($_POST['username'] and $_POST['password']) {
-  $_SESSION['username'] = $_POST['username'];
-}*/
-
 if (isset($_COOKIE['id'])) {
-  setcookie('id', '', time()-7000000, '/');
+  header('Location: index.php');
 } elseif (isset($_COOKIE['auth'])) {
-  setcookie('auth', '', time()-7000000, '/');
+  header('Location: index.php');
 }
 ?>
 

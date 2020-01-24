@@ -73,6 +73,7 @@ $('#verif').on('click', function() {
 
     for (i = 0; i < nb; i += 1) {
         total_h += parseFloat(totaux_h[i].value);
+        console.log(totaux_h[i].value);
         if (totaux_h[i].value == null || totaux_h[i].value == 0) {
             up_ab = i;
         }
@@ -182,21 +183,46 @@ $('#verif').on('click', function() {
         }
     }
 
+
     if (up_ab != null) {
         total_h_ab = Number(total_h_ab);
-        total_m_ab = Number(total_m_ab / 60);
+        console.log('first h_ab = '+total_h_ab);
+        if (total_m_ab < 0 && total_h_ab != 0) {
+            console.log(total_m_ab);
+            total_m_ab *= -1;
+            console.log(total_m_ab);
+            total_m_ab = Number(total_m_ab / 60);
+            console.log(total_m_ab);
+        } else {
+            console.log('tg');
+            total_m_ab = Number(total_m_ab / 60);
+        }
         total_h = Number(total_h).toFixed(0);
         total_m /= 60;
         total_m = Number(total_m);
+        while (total_m >= 1) {
+            total_h = Number(total_h) + 1;
+            total_m = Number(total_m) - 1;
+        }
+        console.log(total_m);
     } else {
         total_h = Number(total_h).toFixed(0);
         total_m = Number(total_m);
     }
 
-    tot_ab_glo = Number(total_h_ab) +'.'+ Number(total_m_ab * 10);
-    tot_glo = Number(total_h) +'.'+ Number(total_m * 10);
 
-    global = Number(tot_glo) + Number(tot_ab_glo);
+    if (total_m_ab >= 0) {
+        tot_ab_glo = Number(total_h_ab) +'.'+ Number(total_m_ab * 10);
+    } else {
+        total_m_ab *= -1;
+        tot_ab_glo = (Number(total_h_ab) +'.'+ Number(total_m_ab * 10)) * -1;
+    }
+    tot_glo = Number(total_h) +'.'+ Number(total_m * 10);
+    global = Number(tot_glo) - Number(tot_ab_glo);
+
+    console.log(tot_ab_glo);
+    console.log(tot_glo);
+    console.log(global);
 
     var hours = 0;
     var minutes = 0;
@@ -283,6 +309,8 @@ $('#chantier').change(function () {
         $("input[name='ab_day']").prop("checked", false);
         document.getElementById('ab_day').value = null;
         $("div[name='flag_chant']").addClass('d-block');
+        $("div[name='flag_desc']").removeClass('d-block');
+        $("div[name='flag_desc']").addClass('d-none');
         if ($("div[id='preview']").hasClass('in')) {
             $("div[id='preview']").removeClass('in');
         }
@@ -298,6 +326,11 @@ $('#chantier').change(function () {
         document.getElementById('chantier').value = null;
         //console.log('chantier = '+document.getElementById('chantier').value);
     }
+
+    if (!($("input[name='ab_day']").is(":checked")) && !($("input[name='chantier']").is(":checked"))) {
+        $("div[name='flag_desc']").removeClass('d-none');
+        $("div[name='flag_desc']").addClass('d-block');
+    }
 });
 
 $('#ab_day').change(function () {
@@ -311,6 +344,8 @@ $('#ab_day').change(function () {
         $("input[name='chantier']").prop("checked", false);
         document.getElementById('chantier').value = null;
         $("div[name='flag_day']").addClass('d-block');
+        $("div[name='flag_desc']").removeClass('d-block');
+        $("div[name='flag_desc']").addClass('d-none');
         if ($("div[id='preview']").hasClass('in')) {
             $("div[id='preview']").removeClass('in');
         }
@@ -326,68 +361,271 @@ $('#ab_day').change(function () {
         document.getElementById('ab_day').value = null;
         //console.log('ab_day = '+document.getElementById('ab_day').value);
     }
+
+    if (!($("input[name='ab_day']").is(":checked")) && !($("input[name='chantier']").is(":checked"))) {
+        $("div[name='flag_desc']").removeClass('d-none');
+        $("div[name='flag_desc']").addClass('d-block');
+    }
 });
 
 
 
-//function PREVIEW_FORM_INDEX
+//function PREVIEW_FORM_INDEX AND SEARCH_FORM
 
 function preview1() {
-    var calen = document.forms['inter'].elements['up_inter'].value;
-    document.location.href = 'index.php?store='+calen;
+    var calen = '?store='+document.forms['inter'].elements['up_inter'].value;
+    var curr_page = window.location.href;
+    var store = curr_page.substr(curr_page.indexOf('?'));
+    var get_pre;
+    if (curr_page.indexOf('?user') != -1) {
+        get_pre = curr_page.indexOf('?user');
+    } else if (curr_page.indexOf('?chantier') != -1) {
+        get_pre = curr_page.indexOf('?chantier');
+    } else {
+        get_pre = -1;
+    }
+    var get = curr_page.indexOf('&');
+    var tot_get = curr_page.substr(curr_page.indexOf('&'));
+
+    if (curr_page.indexOf('?') == -1 && calen != '?store=') {
+        document.location.href = curr_page + calen;
+    } else if (store && store != calen && calen != '?store=') {
+        if (get != -1) {
+            curr_page = window.location.href.replace(store, calen) + curr_page.substr(get);
+        } else if (get_pre != -1) {
+            var temp = store;
+            curr_page = window.location.href.replace(store, calen) + temp.replace('?', '&');
+        } else {
+            curr_page = window.location.href.replace(store, calen);
+        }
+        document.location.href = curr_page;
+    } else {
+        curr_page = window.location.href.replace(store, '');
+        if (get != -1 && get_pre != -1) {
+            temp = tot_get.replace('&', '?');
+            document.location.href = curr_page + temp;
+        } else {
+            document.location.href = curr_page;
+        }
+    }
+}
+
+function preview_bet() {
+    var calen = '&bet='+document.forms['inter'].elements['bet_inter'].value;
+    var curr_page = window.location.href;
+    if (curr_page.indexOf('&bet=') != -1) {
+        var bet = curr_page.substr(curr_page.indexOf('&bet='));
+    } else {
+        var bet;
+    }
+    var store = curr_page.substr(curr_page.indexOf('?')).replace(curr_page.substr(curr_page.indexOf('&')), '');
+    var get_u = curr_page.indexOf('&user=');
+    var get_ch = curr_page.indexOf('&chantier');
+
+    if (store == '' && calen != '&bet=') {
+        alert("Vous n'avez pas renseigné le champ 'Par date'. Veuillez le renseigner AVANT de vouloir effectuer une recherche 'Par période'.");
+        document.location.href = curr_page;
+        return false;
+    } else if (document.forms['inter'].elements['bet_inter'].value < document.forms['inter'].elements['up_inter'].value && document.forms['inter'].elements['bet_inter'].value != ''/* && curr_page.indexOf('?') == -1*/) {
+        alert("Votre demande ne peut aboutir : veuillez renseigner dans le champ 'Par période' une date supérieure à celle du champ 'Par date'.");
+        if (curr_page.indexOf('&') != -1) {
+            document.location.href = curr_page.replace(bet, '');
+        } else {
+            document.location.href = curr_page;
+        }
+        return false;
+    } else if (curr_page.indexOf('?') != -1 && curr_page.indexOf('&bet') != -1 && calen == '&bet=') {
+        document.location.href = curr_page.replace(bet, '');
+        return false;
+    }
+
+    if (curr_page.indexOf('&bet=') == -1) {
+
+        if (get_u != -1 || get_ch != -1) {
+            temp = curr_page.substr(curr_page.indexOf('&'));
+            curr_page = window.location.href.replace(store, store+calen);
+            document.location.href = curr_page;
+        } else {
+            document.location.href = curr_page + calen;
+        }
+    } else if (bet && bet != calen) {
+        if (get_u != -1 && get_ch != -1 && calen != '&bet=') {
+            curr_page = window.location.href.replace(bet, calen) + curr_page.substr(get_u);
+        } else if (get_u != -1 && calen != '&bet=') {
+            curr_page = window.location.href.replace(bet, calen) + curr_page.substr(get_u);
+        } else if (get_ch != -1 && calen != '&bet=') {
+            curr_page = window.location.href.replace(bet, calen) + curr_page.substr(get_ch);
+        } else if (get_u != -1 && calen == '&bet=') {
+            curr_page = window.location.href.replace(bet, '') + curr_page.substr(get_u);
+        } else if (get_ch != -1 && calen == '&bet=') {
+            curr_page = window.location.href.replace(bet, '') + curr_page.substr(get_u);
+        }
+        document.location.href = curr_page;
+    } else {
+        curr_page = window.location.href.replace(bet, '');
+        document.location.href = curr_page;
+    }
+}
+
+function preview_user() {
+    var user = 'user='+document.forms['inter'].elements['user'].value;
+    var curr_page = window.location.href;
+    var tot_get = curr_page.substr(curr_page.indexOf('?'));
+
+    if (tot_get.indexOf('&user') == -1 && tot_get.indexOf('&bet') != -1) {
+        var bet_get = tot_get.substr(tot_get.indexOf('&'));
+        var store_get = tot_get.replace(bet_get, '');
+    } else if (tot_get.indexOf('?store') != -1 && tot_get.indexOf('&user') == -1 && tot_get.indexOf('&bet') == -1 && user != 'user=') {
+        var store_get = tot_get;
+    } else if (tot_get.indexOf('&user') != -1) {
+        if (tot_get.indexOf('&bet') == -1) {
+            var store_get = tot_get.replace(tot_get.substr(tot_get.indexOf('&user')), '');
+        } else {
+            var bet_get = (tot_get.substr(tot_get.indexOf('&bet'))).replace(tot_get.substr(tot_get.indexOf('&user')), '');
+            var store_get = tot_get.replace(bet_get + tot_get.substr(tot_get.indexOf('&user')), '');
+        }
+    } else {
+        var store_get;
+    }
+
+    if (store_get && bet_get) {
+        var temp = store_get;
+        temp += bet_get;
+        var bef_us = tot_get.replace(temp, '');
+    } else if (store_get) {
+        var bef_us = tot_get.replace(store_get, '');
+    } else if (tot_get.indexOf('?user') != -1) {
+        if (tot_get.indexOf('&chantier') != -1) {
+            var bef_us = curr_page.substr(curr_page.indexOf('?')).replace(curr_page.substr(curr_page.indexOf('&')), '');
+        } else {
+            var bef_us = tot_get;
+        }
+    } else {
+        var bef_us;
+    }
+
+    if (bet_get && store_get) {
+        if (store_get && bet_get && bef_us == '') {
+            curr_page = window.location.href +'&'+ user;
+            document.location.href = curr_page;
+        } else if (store_get && bet_get && bef_us != '&'+user && bef_us != '') {
+            if (user != 'user=') {
+                curr_page = window.location.href.replace(bef_us, '&'+user);
+                document.location.href = curr_page;
+            } else {
+                curr_page = window.location.href.replace(bef_us, '');
+                document.location.href = curr_page;
+            }
+        }
+    } else if (store_get) {
+        if (store_get && bef_us == '') {
+            curr_page = window.location.href +'&'+ user;
+            document.location.href = curr_page;
+        } else if (store_get && bef_us != '&'+user && user != 'user=') {
+            curr_page = window.location.href.replace(bef_us, '&'+ user);
+            document.location.href = curr_page;
+        } else if (bef_us && user == 'user=') {
+            curr_page = window.location.href.replace(bef_us, '');
+            document.location.href = curr_page;
+        }
+    } else {
+        if (bef_us && user != 'user=' && bef_us != '?'+user) {
+            curr_page = window.location.href.replace(bef_us, '?'+ user);
+            document.location.href = curr_page;
+        } else if (user != 'user=' && bef_us == '?'+user ) {
+            document.location.href = curr_page;
+        } else if (user != 'user=') {
+            curr_page = window.location.href +'?'+ user;
+            document.location.href = curr_page;
+        } 
+        else {
+            curr_page = window.location.href.replace(bef_us, '');
+            document.location.href = curr_page;
+        }
+    }
+}
+
+function preview_troubles() {
+    var chantier = 'chantier_name='+document.forms['inter'].elements['chantier_name'].value;
+    var curr_page = window.location.href;
+    var first_chant = curr_page.substr(curr_page.indexOf('?chantier_name'));
+    var second_chant = curr_page.substr(curr_page.indexOf('&chantier_name'));
+    
+    if ((curr_page.indexOf('?store') == -1 && curr_page.indexOf('?user') == -1) && curr_page.indexOf('?chantier') == -1 && chantier != 'chantier_name=') {
+        curr_page = window.location.href +'?'+ chantier;
+    } else if ((curr_page.indexOf('?store') != -1 || curr_page.indexOf('?user') != -1) && curr_page.indexOf('&chantier') == -1 && chantier != 'chantier_name=') {
+        curr_page = window.location.href +'&'+ chantier;
+    } else if ((curr_page.indexOf('?store') != -1 || curr_page.indexOf('?user') != -1) && curr_page.indexOf('&chantier') != -1 && chantier != 'chantier_name=') {
+        curr_page = window.location.href.replace(second_chant, '&'+chantier);
+    } else if ((curr_page.indexOf('?store') != -1 || curr_page.indexOf('?user') != -1) && curr_page.indexOf('&chantier') != -1 && chantier == 'chantier_name=') {
+        curr_page = window.location.href.replace(second_chant, '');
+    } else if (curr_page.indexOf('?store') == -1 && curr_page.indexOf('?user') != -1 && curr_page.indexOf('?chantier') != -1 && chantier == 'chantier_name=') {
+        curr_page = window.location.href.replace(first_chant, '');
+    } else {
+        curr_page = window.location.href.replace(first_chant, '?'+chantier);
+    }
+    
+    document.location.href = curr_page;
+    //encodeURIComponent()
 }
 
 
-function preview2() {
+function preview2(day) {
 
-    //NORM_HOUR_RECAP _  AND _ PREPARE_SEND_FORM
-    var h_index = document.getElementById('h_index').value;
-    var total = 0;
-    total = h_index;
+    if (!day) {
+        //NORM_HOUR_RECAP _  AND _ PREPARE_SEND_FORM
+        var h_index = document.getElementById('h_index').value;
+        var total = 0;
+        total = h_index;
 
-    document.getElementById("intervention_hours").value = total;
+        document.getElementById("intervention_hours").value = total;
 
-    var m_index = document.getElementById('m_index').value;
-    var total = 0;
-    
-    m_index /= 60;
-    total = h_index +'.'+ m_index * 100;
-    document.getElementById("intervention_hours").value = total;
-    document.getElementById("intervention_hours").textContent = total;
-    //console.log(document.getElementById("intervention_hours").value);
-    console.log(m_index);
-    console.log(h_index);
-    console.log(total);
+        var m_index = document.getElementById('m_index').value;
+        var total = 0;
+        
+        m_index /= 60;
+        total = h_index +'.'+ m_index * 100;
+        document.getElementById("intervention_hours").value = total;
+        document.getElementById("intervention_hours").textContent = total;
 
-    var inter_h = document.getElementById("inter_h");
-    var temp = document.getElementById("intervention_hours").value;
-    var temp_h = parseInt(temp, 10);
-    if (temp_h < 0) {
-        var temp_m = (temp * -100 - temp_h * -100) / 100 * 60;
+        var inter_h = document.getElementById("inter_h");
+        var temp = document.getElementById("intervention_hours").value;
+        var temp_h = parseInt(temp, 10);
+        if (temp_h < 0) {
+            var temp_m = (temp * -100 - temp_h * -100) / 100 * 60;
+        } else {
+            var temp_m = (temp * 100 - temp_h * 100) / 100 * 60;
+        }
+
+        if (temp_m < 10) {
+            temp_m = '0' + temp_m;
+        }
+        inter_h.value = temp_h +' h '+ temp_m;
+
+        var chant_name = document.getElementById("chant_name");
+        chant_name.value = document.getElementById("chantier_name").value;
+
+        var com = document.getElementById("com");
+        com.value = document.getElementById("commit").value;
+
     } else {
-        var temp_m = (temp * 100 - temp_h * 100) / 100 * 60;
+        document.getElementById("intervention_hours").value = 7;
+        document.getElementById("intervention_hours").textContent = 7.0;
+
+        var inter_h = document.getElementById("inter_h");
+        inter_h.value = "7 h 00";
+
+        var chant_name = document.getElementById("chant_name");
+        document.getElementById("chantier_name").value = document.getElementById("day").value;
+        chant_name.value = document.getElementById("day").value;
+
+        var com = document.getElementById("com");
+        com.value = document.getElementById("com_day").value;
     }
-    console.log(temp);
-    console.log(temp_h);
-    console.log(temp_m);
 
-    if (temp_m < 10) {
-        temp_m = '0' + temp_m;
-    }
-    inter_h.value = temp_h +' h '+ temp_m;
-
-
-    var chant_name = document.getElementById("chant_name");
-    chant_name.value = document.getElementById("chantier_name").value;
-    //var pan_rep = document.getElementById("pan_rep");
-    //pan_rep.value = document.getElementById("panier_repas").value;
-
-    var com = document.getElementById("com");
-    com.value = document.getElementById("commit").value;
 
     if ($("input[name='panier_repas']").val()) {
 
-        //NIGHT_HOUR_RECAP _  AND _ PREPARE_SEND_FORM
         var ni_h_index = document.getElementById('ni_h_index').value;
         var ni_total = 0;
 
@@ -408,9 +646,6 @@ function preview2() {
             var temp_ni = document.getElementById("night_hours").value;
             var temp_h_ni = parseInt(temp_ni, 10);
             var temp_m_ni = (temp_ni * 100 - temp_h_ni * 100) / 100 * 60;
-            //console.log(temp_ni);
-            //console.log(temp_h_ni);
-            //console.log(temp_m_ni);
             if (temp_m_ni < 10) {
                 temp_m_ni = '0' + temp_m_ni;
             }
@@ -426,6 +661,16 @@ function preview2() {
         }
     }
 }
+
+
+$("input[id='submit_int']").on('click', function () {
+    var temp = document.getElementById("intervention_hours").value;
+
+    if (!temp || temp == null || temp == 0) {
+        alert("Vous n'avez complété aucune heure dans le champ réservé, aucune intervention/absence n'aura donc été enregistrée.");
+        return false;
+    }
+});
 
 
 

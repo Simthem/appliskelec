@@ -1,69 +1,6 @@
 <?php
-session_start();
-//print_r(session_get_cookie_params());
 
-include 'api/config/db_connexion.php';
-
-if (isset($_COOKIE['id'])) {
-
-    $auth = explode('---', $_COOKIE['id']);
-
-    if (count($auth) === 2) {
-        $req = $bdd->prepare('SELECT id, username, `password` FROM users WHERE id = :id');
-        $req->execute([ ':id' => $auth[0] ]);
-        $user = $req->fetch(PDO::FETCH_ASSOC);
-         
-        if ($user && $auth[1] === hash('sha512', $user['username'].'---'.$user['password'])) {
-            $_SESSION['id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['admin_name'] = null;
-            $admin['id'] = null;
-        } else {
-            header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
-        }
-    }
-} elseif (isset($_COOKIE['auth'])) {
-
-    $auth = explode('---', $_COOKIE['auth']);
- 
-    if (count($auth) === 2) {
-        $req = $bdd->prepare('SELECT id, admin_name, admin_pass FROM `admin` WHERE id = :id');
-        $req->execute([ ':id' => $auth[0] ]);
-        $admin = $req->fetch(PDO::FETCH_ASSOC);
-         
-        if ($admin && $auth[1] === hash('sha512', $admin['admin_name'].'---'.$admin['admin_pass'])) {
-            $_SESSION['id'] = $admin['id'];
-            $_SESSION['username'] = "admin";
-            $_SESSION['admin_name'] = $admin['admin_name'];
-        } else {
-            header("Location: signin.php"); 
-        }
-    }
-}
-
-if(!($_SESSION['username'])){
-  
-    header("Location: signin.php");
-}
-
-$stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");
-$stmt->execute();
-$user = $stmt->fetch();
-
-if (isset($_SESSION['admin_name']) && !empty($_SESSION['admin_name'])) {
-
-    $stmt_admin = $bdd->prepare("SELECT id FROM `admin` WHERE admin_name = '". $_SESSION['admin_name'] ."'");
-    $stmt_admin->execute();
-    $admin = $stmt_admin->fetch();
-}
-
-if($user) {
-    $_SESSION['id'] = $user['id'];
-} elseif (isset($admin) && !empty($admin)) {
-    $_SESSION['id'] = $admin['id'];
-} else {
-    header("Location: signin.php");
-}
+include 'auth.php';
 
 $sql = $bdd->prepare("SELECT * FROM chantiers WHERE id =" . $_GET['id']);
 $sql->execute();
@@ -79,7 +16,7 @@ $cur_chant = $sql->fetch();
 
                 <div class="icons-navbar">
                     <div class="menu-btn-bars text-white"><button class="menu-btn fas fa-bars text-warning w-100 fa-3x p-0"></button></div>
-                    <a href="index.php" class="text-warning m-auto"><h2 class="m-0">S.K.elec</h2></a>
+                    <a href="index.php" class="text-warning d-inline-flex m-auto"><img class="mr-2 ml-2" src="img/ampoule_skelec.png" alt="logo S.K.elec" height="45" width="30"><h2 class="d-inline-flex mt-0 mr-2 mb-0 ml-0">S.K.elec</h2></a>
                     <a href="troubleshooting_list.php" class="text-white pl-3"><i class="menu-btn-plus fas fa-search text-warning fa-3x rounded-circle"></i></a>
                 </div>
             </div>
@@ -88,8 +25,10 @@ $cur_chant = $sql->fetch();
         <!-- Content -->
         <div id="container">
             <div class="content">
-                <h3 class="text-center mt-0 mb-3 pt-5">Édition d'un chantier</h3>
-                <form class="w-100 pt-3 pl-4 pb-0 pr-4" action="./api/troubleshooting/edit_site.php" method="POST">
+                <div class="pt-5 pb-2 mt-4 ml-auto mr-auto">
+                    <h3 class="text-center mb-3 pt-5">Édition d'un chantier</h3>
+                </div>
+                <form class="w-100 p-0" action="./api/troubleshooting/edit_site.php" method="POST">
                     <?php
                         if ($_SESSION['id'] == $admin['id']) {
                             if ($cur_chant['state']) {
@@ -153,6 +92,8 @@ $cur_chant = $sql->fetch();
                             echo "<div class='md-form mt-1'>
                                 <div class='md-form mt-2'>
                                     <label for='num_chantier'>ID de chantier</label>
+                                    <input type='number' value='" . $cur_chant['state'] . "' id='state' name='state' style='display: none;'>
+                                    <input type='number' value='" . $cur_chant['id'] . "' id='id' name='id' style='display: none;'>
                                     <input type='number' id='num_chantier' name='num_chantier' class='form-control' value='" . $cur_chant['num_chantier'] . "' disabled>
                                 </div>
                                 <div class='md-form mt-4'>

@@ -1,70 +1,4 @@
-<?php
-session_start();
-//print_r(session_get_cookie_params());
-
-include 'api/config/db_connexion.php';
-
-if (isset($_COOKIE['id'])) {
-
-    $auth = explode('---', $_COOKIE['id']);
-
-    if (count($auth) === 2) {
-        $req = $bdd->prepare('SELECT id, username, `password` FROM users WHERE id = :id');
-        $req->execute([ ':id' => $auth[0] ]);
-        $user = $req->fetch(PDO::FETCH_ASSOC);
-         
-        if ($user && $auth[1] === hash('sha512', $user['username'].'---'.$user['password'])) {
-            $_SESSION['id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['admin_name'] = null;
-            $admin['id'] = null;
-        } else {
-            header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
-        }
-    }
-} elseif (isset($_COOKIE['auth'])) {
-
-    $auth = explode('---', $_COOKIE['auth']);
- 
-    if (count($auth) === 2) {
-        $req = $bdd->prepare('SELECT id, admin_name, admin_pass FROM `admin` WHERE id = :id');
-        $req->execute([ ':id' => $auth[0] ]);
-        $admin = $req->fetch(PDO::FETCH_ASSOC);
-         
-        if ($admin && $auth[1] === hash('sha512', $admin['admin_name'].'---'.$admin['admin_pass'])) {
-            $_SESSION['id'] = $admin['id'];
-            $_SESSION['username'] = "admin";
-            $_SESSION['admin_name'] = $admin['admin_name'];
-        } else {
-            header("Location: signin.php"); 
-        }
-    }
-}
-
-if(!($_SESSION['username'])){
-  
-    header("Location: signin.php");
-}
-
-$stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");
-$stmt->execute();
-$user = $stmt->fetch();
-
-if (isset($_SESSION['admin_name']) && !empty($_SESSION['admin_name'])) {
-
-    $stmt_admin = $bdd->prepare("SELECT id FROM `admin` WHERE admin_name = '". $_SESSION['admin_name'] ."'");
-    $stmt_admin->execute();
-    $admin = $stmt_admin->fetch();
-}
-
-if($user) {
-    $_SESSION['id'] = $user['id'];
-} elseif (isset($admin) && !empty($admin)) {
-    $_SESSION['id'] = $admin['id'];
-} else {
-    header("Location: signin.php");
-}
-?>
+<?php include 'auth.php'; ?>
 
 <!DOCTYPE html>
 
@@ -72,7 +6,7 @@ if($user) {
     
     <?php include 'header.php'; ?>
 
-                <div class="icons-navbar">
+                <div class="icons-navbar" style="z-index: 1;">
                     <div class="menu-btn-bars text-white"><button class="menu-btn fas fa-bars text-warning w-100 fa-3x p-0"></button></div>
                     <a href="index.php" class="text-warning d-inline-flex m-auto"><img class="mr-2 ml-2" src="img/ampoule_skelec.png" alt="logo S.K.elec" height="45" width="30"><h2 class="d-inline-flex mt-0 mr-2 mb-0 ml-0">S.K.elec</h2></a>
                     <a href="add_troubleshooting.php" class="text-white pl-3"><i class="menu-btn-plus fas fa-plus-circle text-warning fa-3x rounded-circle"></i></a>
@@ -84,65 +18,46 @@ if($user) {
         <div id="container">
             <div class="content">
                 <form id="inter" action="./api/index_global/create_intervention.php" method="POST">
-                    <div class="m-auto p-3">
-                        <?php
-                            if (isset($_GET['store']) && !empty($_GET['store'])) {
-                                $date = date_create($_GET['store']);
-                                echo '<div class="text-center w-75 mr-auto ml-auto pb-4"><input class="bg-white col-7 text-center pl-4" type="date" id="up_inter" name="up_inter" value="' . $_GET['store'] . '" placeholder="' . date_format($date, "d-m-Y") . '" onChange="preview1(this.form)" onfocus="(this.type=\'date\')" onblur="if(this.value==\'\'){this.type=\'text\'}" style="height: 26px;" required="required"></div>';
-                            } else {
-                                echo '<div class="text-center w-75 mr-auto ml-auto pb-4"><input class="bg-white col-7 text-center pl-4" type="date" id="up_inter" name="up_inter"  placeholder="" onChange="preview1(this.form)" style="height: 26px;" required="required"></div>';
-                            }
-                        ?>
-                        <div class="text-center pt-2"><?php echo $_SESSION['username']; ?></div>
-                        <div class="text-center"><?php 
+                    <div class="pt-5 pb-4 mt-5 ml-auto mr-auto">
+                        <div class="w-75 m-auto text-center pt-2"><?php if (isset($_SESSION['username']) && !empty($_SESSION['username'])) {
+                                                                            echo $_SESSION['username'];
+                                                                        } 
+                                                                    ?>
+                        </div>
+                            <div class="text-center"><?php 
                                                     if ($_SESSION['username'] == "admin") { 
                                                         echo "Administrateur de S.K.elec_app ;)";
                                                     }
                                                 ?>
-                        </div>
-                    </div>
-                    <?php echo "<input type='number' id='user_id' name='user_id' value='" . $_SESSION['id'] . "' style='display: none;'>"; ?>
-                    <div class="text-center">
-                        <div class="bg-white border rounded m-auto" style="width: 60%">
+                            </div>
                             <?php
-                            echo '<select id="chantier_name" name="chantier_name" class="bg-white border-white" size="1" style="max-width: -webkit-fill-available;" required>';
-
-                                $sql = 
-                                "SELECT 
-                                    id, `name`, `state`, num_chantier
-                                FROM 
-                                    chantiers
-                                WHERE
-                                    `state`
-                                ORDER BY 
-                                    id DESC";
-
-                                if ($result = mysqli_query($db, $sql)) {
-                                    if (mysqli_num_rows($result) > 0) {
-                                        if ($db === false){
-                                            die("ERROR: Could not connect. " . mysqli_connect_error());
-                                        }
-                                        while ($row = $result->fetch_array()){
-                                            echo "<option value='" . $row['name'] . "'>" . $row['num_chantier'] . ' / '. $row['name'] .  "</option>";
-                                        }
-                                        mysqli_free_result($result);
-                                    } else {
-                                        echo "No records matching your query were found.";
-                                    }
-                                } else{
-                                    echo "ERROR: Could not able to execute $sql. " . mysqli_error($db);
+                                if (isset($_GET['store']) && !empty($_GET['store'])) {
+                                    $date = date_create($_GET['store']);
+                                    echo '<div class="text-center w-75 mt-4 mr-auto ml-auto pb-4"><input class="bg-white col-7 text-center pl-4" type="date" id="up_inter" name="up_inter" value="' . $_GET['store'] . '" placeholder="' . date_format($date, "d-m-Y") . '" onChange="preview1(this.form)" onfocus="(this.type=\'date\')" onblur="if(this.value==\'\'){this.type=\'text\'}" style="height: 26px;" required="required"></div>';
+                                } else {
+                                    echo '<div class="text-center w-75 mt-4 mr-auto ml-auto pb-4"><input class="bg-white col-7 text-center pl-4" type="date" id="up_inter" name="up_inter"  placeholder="" onChange="preview1(this.form)" style="height: 26px;" required="required"></div>';
                                 }
-
-                            echo '</select>';
                             ?>
                         </div>
+                    <?php echo "<input type='number' id='user_id' name='user_id' value='" . $_SESSION['id'] . "' style='display: none;'>"; ?>
+                    <div class="text-center">
+                        <?php
+                            echo '<div class="text-center border rounded mt-4 ml-auto mb-5 mr-auto w-50">
+                                <select id="chantier_name" name="chantier_name" class="w-100 border bg-white" size="1" style="max-width: -webkit-fill-available;" required>';
+                                    include 'api/view/troubleshooting_view.php';
+
+                                    trouble_list(1);
+                                    
+                                echo '</select>
+                            </div>';
+                        ?>
                     </div>
-                    <div class="pt-5 w-75 m-auto text-center">
+                    <div class="pt-3 w-75 m-auto text-center">
                         <label for="input_time m-auto">Heures réalisées</label>
                         <div class="w-100 m-auto pb-4">
-                            <div class="border-0 p-0 mt-2 ml-auto mr-auto mb-2 col-7">
+                            <div class="d-inline-flex justify-content-center border-0 p-0 mt-2 ml-auto mr-auto mb-2 col-7">
                                 <input id="intervention_hours" name="intervention_hours" value="" style="display: none;" />
-                                <select type="number" id="h_index" class="col-3 p-0 border-0 rounded bg-secondary text-white text-center" style="height: 19px;">
+                                <select type="number" id="h_index" class="col-3 p-0 border-0 rounded bg-secondary text-white text-center" style="height: 19px; max-width: 90px; min-width: 20px;">
                                     <option value="0">0</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
@@ -160,7 +75,7 @@ if($user) {
                                     <option value="14">14</option>
                                 </select><!--
                                 --><strong>&nbsp;h&nbsp;</strong><!--
-                                --><select type="number" id="m_index" class="col-3 p-0 border-0 rounded bg-secondary text-white text-center" style="height: 19px;">
+                                --><select type="number" id="m_index" class="col-3 p-0 border-0 rounded bg-secondary text-white text-center" style="height: 19px; max-width: 90px;">
                                     <option value="00">00</option>
                                     <option value="30">30</option>
                                 </select>
@@ -183,8 +98,8 @@ if($user) {
                                 </div>
                                 <div class="col-7 d-inline-flex m-auto text-center pr-0 pl-0 mt-auto mb-auto">
                                     <input id="night_hours" name="night_hours" value="" style="display: none;"/>
-                                    <div class="d-inline col-7 p-0 mt-auto mb-auto">
-                                        <select type="number" id="ni_h_index" class="col-4 p-0 border-0 rounded bg-secondary text-white mt-auto mb-auto text-center" style="height: 19px;">
+                                    <div class="d-inline-flex  justify-content-center col-7 p-0 mt-auto mb-auto">
+                                        <select type="number" id="ni_h_index" class="col-4 p-0 border-0 rounded bg-secondary text-white mt-auto mb-auto text-center" style="height: 19px; max-width: 90px;">
                                             <option value="0">0</option>
                                             <option value="1">1</option>
                                             <option value="2">2</option>
@@ -200,7 +115,7 @@ if($user) {
                                             <option value="12">12</option>
                                         </select><!--
                                         --><strong class="">&nbsp;h&nbsp;</strong><!--
-                                        --><select type="number" id="ni_m_index" class="col-4 p-0 border-0 rounded bg-secondary text-white mt-auto mb-auto text-center" style="height: 19px;">
+                                        --><select type="number" id="ni_m_index" class="col-4 p-0 border-0 rounded bg-secondary text-white mt-auto mb-auto text-center" style="height: 19px; max-width: 90px;">
                                             <option value="00">00</option>
                                             <option value="30">30</option>
                                         </select>
@@ -222,7 +137,7 @@ if($user) {
                         
                         echo '<div class="collapse" id="preview">
                             <h4 class="w-75 mt-3 ml-auto mb-3 mr-auto pt-3 border-top text-center">Récapitulatif</h4>
-                            <fieldset class="pl-3 text-dark bg-white border rounded w-75 m-auto" disabled>
+                            <fieldset class="pl-3 pr-3 text-dark bg-white border rounded w-75 m-auto" disabled>
                                 <br />
                                 <div class="d-inline-flex w-100">
                                     <div class="col-5 pl-0 pr-0 h6 mt-auto mb-auto">Date du jour </div>:
@@ -277,7 +192,7 @@ if($user) {
                                             //print_r($recap);
                                             //echo '<br />';
                                         }
-                                    } else if($admin) {
+                                    } else if ($admin) {
                                         if (isset($date_sql) && !empty($date_sql)) {
                                             
                                             $recap="SELECT 
@@ -338,7 +253,7 @@ if($user) {
                                                         }
 
                                                         echo '<div class="d-inline-flex w-100 m-0">
-                                                            <div class="col-5 pl-0 pr-0 h6 mt-auto mb-auto h-50">' . $row['name_chantier'] . '</div><div class="mt-auto ml-0 mb-auto mr-0 p-0">:</div>
+                                                            <div class="col-5 pl-0 pr-0 h6 mt-auto mb-auto h-50 overflow-hidden">' . $row['name_chantier'] . '</div><div class="mt-auto ml-0 mb-auto mr-0 p-0">:</div>
                                                             <input class="bg-white border-0 pt-0 pl-2 pb-0 pr-0 mt-auto ml-auto mr-auto mb-auto w-50" value="' . $hours . 'h' . $minutes . ' [' . $night_h . 'h' . $night_m . ' h/nuit]" />
                                                         </div>
                                                         <br />';
@@ -346,12 +261,16 @@ if($user) {
                                                         $h_ab = (int)$absence;
                                                         $m_ab = ($absence - $h_ab) * 60;
 
+                                                        if ($h_ab == 0 && $m_ab < 0) {
+                                                            $h_ab = "-0";
+                                                            $m_ab *= -1;
+                                                        }
                                                         if ($m_ab == 0) {
                                                             $m_ab = "00";
                                                         }
 
                                                         echo '<div class="d-inline-flex w-100 m-0">
-                                                            <div class="col-5 pl-0 pr-0 h6 mt-auto mb-auto h-50">' . $row['name_chantier'] . '</div><div class="mt-auto ml-0 mb-auto mr-0 p-0">:</div>
+                                                            <div class="col-5 pl-0 pr-0 h6 mt-auto mb-auto h-50 overflow-hidden">' . $row['name_chantier'] . '</div><div class="mt-auto ml-0 mb-auto mr-0 p-0">:</div>
                                                             <input class="bg-white border-0 p-0 mt-auto ml-auto mr-auto mb-auto w-50" value="' . $h_ab . 'h' . $m_ab . ' [heure(s) d\'absence]" />
                                                         </div>
                                                         <br />';
@@ -367,7 +286,7 @@ if($user) {
                                 }
                             echo '</fieldset>';
                         echo '<div class="w-75 mt-3 ml-auto mr-auto">
-                            <input id="submit" type="submit" value="Soumettre" class="btn send border-0 bg-white z-depth-1a mt-4 mb-0 align-middle text-dark" />
+                            <input id="submit_int" type="submit" value="Soumettre" class="btn send border-0 bg-white z-depth-1a mt-4 mb-0 align-middle text-dark" />
                         </div>';
                         ?>
                     </div>

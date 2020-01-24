@@ -1,104 +1,21 @@
 <?php
-session_start();
-//print_r(session_get_cookie_params());
 
-include 'api/config/db_connexion.php';
-
-if (isset($_COOKIE['id'])) {
-
-    $auth = explode('---', $_COOKIE['id']);
-
-    if (count($auth) === 2) {
-        $req = $bdd->prepare('SELECT id, username, `password` FROM users WHERE id = :id');
-        $req->execute([ ':id' => $auth[0] ]);
-        $user = $req->fetch(PDO::FETCH_ASSOC);
-         
-        if ($user && $auth[1] === hash('sha512', $user['username'].'---'.$user['password'])) {
-            $_SESSION['id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['admin_name'] = null;
-            $admin['id'] = null;
-        } else {
-            header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
-        }
-    }
-} elseif (isset($_COOKIE['auth'])) {
-
-    $auth = explode('---', $_COOKIE['auth']);
- 
-    if (count($auth) === 2) {
-        $req = $bdd->prepare('SELECT id, admin_name, admin_pass FROM `admin` WHERE id = :id');
-        $req->execute([ ':id' => $auth[0] ]);
-        $admin = $req->fetch(PDO::FETCH_ASSOC);
-         
-        if ($admin && $auth[1] === hash('sha512', $admin['admin_name'].'---'.$admin['admin_pass'])) {
-            $_SESSION['id'] = $admin['id'];
-            $_SESSION['username'] = "admin";
-            $_SESSION['admin_name'] = $admin['admin_name'];
-        } else {
-            header("Location: signin.php"); 
-        }
-    }
-}
-
-if(!($_SESSION['username'])){
-  
-    header("Location: signin.php");
-}
-
-$stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");
-$stmt->execute();
-$user = $stmt->fetch();
-
-if (isset($_SESSION['admin_name']) && !empty($_SESSION['admin_name'])) {
-
-    $stmt_admin = $bdd->prepare("SELECT id FROM `admin` WHERE admin_name = '". $_SESSION['admin_name'] ."'");
-    $stmt_admin->execute();
-    $admin = $stmt_admin->fetch();
-}
-
-if($user) {
-    $_SESSION['id'] = $user['id'];
-} elseif (isset($admin) && !empty($admin)) {
-    $_SESSION['id'] = $admin['id'];
-} else {
-    header("Location: signin.php");
-}
+include 'auth.php';
 
 $sql = 
 "SELECT 
     id,
     `name`,
     e_mail,
-    #contact_address,
     num_chantier,
     `state`
 FROM
     appli_skelec.chantiers
-WHERE
-    num_chantier is not NULL 
-    AND
-    num_chantier != 0
 GROUP BY
     id, num_chantier, `name`, contact_address, `state`
 ORDER BY
-    num_chantier DESC";
+    num_chantier DESC, id DESC";
 
-$stmt =
-"SELECT 
-    id,
-    #created,
-    `name`,
-    e_mail,
-    #contact_address,
-    num_chantier,
-    `state`
-FROM
-    appli_skelec.chantiers
-WHERE
-    num_chantier is NULL
-ORDER BY
-    id DESC";
 ?>
 
 <!DOCTYPE html>
@@ -119,11 +36,13 @@ ORDER BY
         <!-- Content -->
         <div id="container">
             <div class="content pt-0 overflow-hidden">
-                <h3 class="text-center mt-0 pt-5 pb-3">Liste des chantiers</h3>
-                <ul class="nav nav-pills float-left pb-2">
-                    <li class="active h-50"><a href="#tab1" data-toggle="pill" data-id="tab1" class="h-75 tab-1">Chantiers</a></li>
-                    <li class="h-50"><a href="#tab2" data-toggle="pill" data-id="tab2" class="h-75 tab-2">Dépannages</a></li>
-                </ul>
+                <div class="pt-5 pb-3 mt-4 ml-auto mr-auto">
+                    <h3 class="text-center mb-5 pt-5">Liste des chantiers</h3>
+                    <ul class="nav nav-pills float-left pb-2">
+                        <li class="active h-50"><a href="#tab1" data-toggle="pill" data-id="tab1" class="h-75 tab-1">Chantiers</a></li>
+                        <li class="h-50"><a href="#tab2" data-toggle="pill" data-id="tab2" class="h-75 tab-2">Dépannages</a></li>
+                    </ul>
+                </div>
                 <table class="table table-striped mt-0 ml-0 mb-0 text-center" style="height: 50px;">
                     <?php
                         if($result_chant = mysqli_query($db, $sql)){
@@ -147,9 +66,9 @@ ORDER BY
                                     die("ERROR: Could not connect. " . mysqli_connect_error());
                                 }
                                 echo '<tbody>';
-                                    while($row = $result_chant->fetch_array()){
+                                    while ($row = $result_chant->fetch_array()) {
                                         echo '<tr>';
-                                            if ($row['num_chantier'] != 0 or !empty($row['num_chantier'])) {
+                                            if ($row['num_chantier'] != 0 and $row['num_chantier']!= -1 and !empty($row['num_chantier'])) {
                                                 if ($row['state']) {
                                                     echo '<td class="align-middle p-4 w-25">' . $row['num_chantier'] . '</td>';
                                                     echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 85px;">' . $row['name'] . '</td>';
@@ -161,7 +80,7 @@ ORDER BY
                                                     //echo '<td class="align-middle p-4 w-25 border-top border-bottom border-danger" style="word-wrap: break-word; max-width: 85px;">' . $row['contact_address'] . '</td>';
                                                     echo '<td class="align-middle p-4 w-25 border-top border-bottom border-danger overflow-hidden" style="max-width: 85px;">' . $row['e_mail'] . '</td>';
                                                 }
-                                                if ($_SESSION['id'] == $admin['id']) {
+                                                if (isset($_SESSION['id']) and !empty($_SESSION['id']) and isset($admin['id']) and !empty($admin['id']) and $_SESSION['id'] == $admin['id']) {
                                                     if ($row['state']) {
                                                         echo '<td class="p-0 align-middle w-25">';
                                                         ?>
@@ -207,14 +126,15 @@ ORDER BY
                     <div id="tab2" class="container-list m-auto tab-pane">
                         <table class="table table-striped pr-4 pl-4 mt-3 ml-auto mr-auto text-center" action="" method="POST">
                     <?php
-                        if($result = mysqli_query($db, $stmt)){
+                        if($result = mysqli_query($db, $sql)){
                             if(mysqli_num_rows($result) > 0){
-
+                                
                                 if($db === false){
                                     die("ERROR: Could not connect. " . mysqli_connect_error());
                                 }
                                 echo '<tbody>';
                                     while($row = $result->fetch_array()){
+                                        
                                         echo '<tr>';
                                             if($row['num_chantier'] == 0 or empty($row['num_chantier'])) {
                                                 if ($row['state']) {
@@ -267,7 +187,7 @@ ORDER BY
                                 echo "No records matching your query were found.";
                             }
                         } else {
-                            echo "ERROR: Could not able to execute $stmt. " . mysqli_error($db);
+                            echo "ERROR: Could not able to execute $sql. " . mysqli_error($db);
                         }
                         mysqli_close($db);
                     ?>

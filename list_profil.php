@@ -1,70 +1,4 @@
-<?php
-session_start();
-//print_r(session_get_cookie_params());
-
-include 'api/config/db_connexion.php';
-
-if (isset($_COOKIE['id'])) {
-
-    $auth = explode('---', $_COOKIE['id']);
-
-    if (count($auth) === 2) {
-        $req = $bdd->prepare('SELECT id, username, `password` FROM users WHERE id = :id');
-        $req->execute([ ':id' => $auth[0] ]);
-        $user = $req->fetch(PDO::FETCH_ASSOC);
-         
-        if ($user && $auth[1] === hash('sha512', $user['username'].'---'.$user['password'])) {
-            $_SESSION['id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['admin_name'] = null;
-            $admin['id'] = null;
-        } else {
-            header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
-        }
-    }
-} elseif (isset($_COOKIE['auth'])) {
-
-    $auth = explode('---', $_COOKIE['auth']);
- 
-    if (count($auth) === 2) {
-        $req = $bdd->prepare('SELECT id, admin_name, admin_pass FROM `admin` WHERE id = :id');
-        $req->execute([ ':id' => $auth[0] ]);
-        $admin = $req->fetch(PDO::FETCH_ASSOC);
-         
-        if ($admin && $auth[1] === hash('sha512', $admin['admin_name'].'---'.$admin['admin_pass'])) {
-            $_SESSION['id'] = $admin['id'];
-            $_SESSION['username'] = "admin";
-            $_SESSION['admin_name'] = $admin['admin_name'];
-        } else {
-            header("Location: signin.php"); 
-        }
-    }
-}
-
-if(!($_SESSION['username'])){
-  
-    header("Location: signin.php");
-}
-
-$stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");
-$stmt->execute();
-$user = $stmt->fetch();
-
-if (isset($_SESSION['admin_name']) && !empty($_SESSION['admin_name'])) {
-
-    $stmt_admin = $bdd->prepare("SELECT id FROM `admin` WHERE admin_name = '". $_SESSION['admin_name'] ."'");
-    $stmt_admin->execute();
-    $admin = $stmt_admin->fetch();
-}
-
-if($user) {
-    $_SESSION['id'] = $user['id'];
-} elseif (isset($admin) && !empty($admin)) {
-    $_SESSION['id'] = $admin['id'];
-} else {
-    header("Location: signin.php");
-}
-?>
+<?php include 'auth.php'; ?>
 
 <!DOCTYPE html>
 
@@ -74,8 +8,8 @@ if($user) {
     
                 <div class="icons-navbar">
                     <div class="menu-btn-bars text-white"><button class="menu-btn fas fa-bars text-warning w-100 fa-3x p-0"></button></div>
-                    <a href="index.php" class="text-warning m-auto"><h2 class="m-0">S.K.elec</h2></a>
-                    <div action='api/user/edit_profil.php' method='GET'>
+                    <a href="index.php" class="text-warning d-inline-flex m-auto"><img class="mr-2 ml-2" src="img/ampoule_skelec.png" alt="logo S.K.elec" height="45" width="30"><h2 class="d-inline-flex mt-0 mr-2 mb-0 ml-0">S.K.elec</h2></a>
+                    <div class="menu-btn-bars" action="api/user/edit_profil.php" method="GET">
                         <?php
                             if ($_SESSION['id'] == $admin['id']) {
 
@@ -115,7 +49,7 @@ if($user) {
                                         echo "No records matching your query were found.";
                                     }
                                 } else {
-                                    echo "ERROR: Could not able to execute $admin_sql. " . mysqli_error($db);
+                                    echo "ERROR: Could not able to execute $user_result. " . mysqli_error($db);
                                 }
                             }
                         ?>
@@ -127,8 +61,9 @@ if($user) {
         <!-- Content -->
         <div id="container">
             <div class="content pt-0 overflow-hidden">
-                <h3 class="text-center mt-2 pb-4 pt-5">Liste des salariés</h3>
-                <table class="table table-striped mt-0 ml-0 mb-0 text-center" style="height: 50px;">
+                <div class="pt-5 pb-3 mt-4 ml-auto mr-auto">
+                    <h3 class="text-center mb-5 pt-5">Liste des salariés</h3>
+                    <table class="table table-striped mt-0 ml-0 mb-0 text-center" style="height: 50px;">
                     <?php
 
                     $sql = 
@@ -154,7 +89,7 @@ if($user) {
                                 echo '</tr>';
                             echo '</thead>';
                     ?>
-                </table>
+                    </table>
                 <div class="container-list m-auto">
                     <table class="table table-striped pr-4 pl-4 mt-3 ml-auto mr-auto text-center" action="api/user/edit_profil.php" method="GET">
                         <?php
@@ -170,60 +105,11 @@ if($user) {
                                             echo '<tr>';
                                                 echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . $row_a['admin_name'] . '</td>';
                                                 echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . $row_a['phone'] . '</td>';
+                                                $id_user_row = $row_a['id'];
+                                                
 
-                                                $sql_admin_h = 
-                                                "SELECT
-                                                    a.id AS admin_id,
-                                                    admin_name,
-                                                    c.id AS chantier_id,
-                                                    updated,
-                                                    SUM(intervention_hours) AS totalheure
-                                                FROM
-                                                    chantiers AS c
-                                                    JOIN
-                                                    global_reference AS g ON c.id = chantier_id
-                                                    JOIN
-                                                    `admin` AS a ON g.user_id = a.id 
-                                                WHERE
-                                                    concat(month(g.updated)) = (
-                                                                            SELECT 
-                                                                                MAX(concat(month(updated)))
-                                                                            FROM
-                                                                                global_reference
-                                                                            )
-                                                    AND
-                                                    a.id = 1
-                                                GROUP BY admin_name , updated , c.id , a.id WITH ROLLUP";
-
-                                                if ($reponse_hours = mysqli_query($db, $sql_admin_h)){
-                                                    if (mysqli_num_rows($reponse_hours) > 0){
-
-                                                        while ($row_h_a = $reponse_hours->fetch_array()) {
-
-                                                            if (!empty($row_h_a['admin_name']) and !empty($row_h_a['updated'] and empty($row_h_a['chantier_id']))) {
-                                                                $total = $row_h_a['totalheure'];
-                                                                $hours = (int)$total;
-                                                                $minutes = ($total - $hours) * 60;
-                                                                if ($minutes > 59) {
-                                                                    $hours += 1;
-                                                                    $minutes -= 60;
-                                                                }
-                                                                if ($minutes > 10) {
-                                                                    $minutes = $minutes;
-                                                                } elseif ($minutes < 10 and $minutes > 0) {
-                                                                    $minutes = "0" . $minutes;
-                                                                } else {
-                                                                    $minutes = "00";
-                                                                }
-                                                                echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . $hours . ':' . $minutes . '</td>';
-                                                            }
-                                                        }
-                                                    } else {
-                                                        echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">00:00</td>';
-                                                    }
-                                                } else {
-                                                    echo "ERROR: Could not able to execute $reponse_hours. " . mysqli_error($db);
-                                                }
+                                                include_once './api/view/admin_view.php';
+                                                month_a($row_a['id']);
 
                                                 if ($_SESSION['id'] == $admin['id']) {
                                                     echo '<td class="p-0 align-middle w-25>';
@@ -250,61 +136,9 @@ if($user) {
                                         echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . $row['username'] . '</td>';
                                         echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . $row['phone'] . '</td>';
                                         $id_user_row = $row['id'];
-                                        
-                                        $sql_hours = 
-                                        "SELECT 
-                                            username,
-                                            c.id AS chantier_id,
-                                            u.id AS `user_id`,
-                                            SUM(intervention_hours) AS totalheure
-                                        FROM
-                                            chantiers AS c
-                                            JOIN
-                                            global_reference AS g ON c.id = chantier_id
-                                            JOIN
-                                            users AS u ON g.user_id = u.id
-                                        WHERE
-                                            concat(month(g.updated)) = (
-																	SELECT 
-																		MAX(concat(month(updated)))
-																	FROM
-																		global_reference
-																	)
-											AND
-                                            u.id = $id_user_row
-                                        GROUP BY username , c.id , u.id WITH ROLLUP";
-                                        
-                                        if ($result_hours = mysqli_query($db, $sql_hours)){
-                                            if (mysqli_num_rows($result_hours) > 0){
 
-                                                while ($row_hours = $result_hours->fetch_array()) {
-
-                                                    if (!empty($row_hours['username']) and empty($row_hours['chantier_id'])) {
-                                                        $total = $row_hours['totalheure'];
-                                                        $hours = (int)$total;
-                                                        $minutes = ($total - $hours) * 60;
-                                                        if ($minutes > 59) {
-                                                            $hours += 1;
-                                                            $minutes -= 60;
-                                                        }
-                                                        if ($minutes > 10) {
-                                                            $minutes = $minutes;
-                                                        } elseif ($minutes < 10 and $minutes > 0) {
-                                                            $minutes = "0" . $minutes;
-                                                        } else {
-                                                            $minutes = "00";
-                                                        }
-                                                        echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">' . $hours . ':' . $minutes . '</td>';
-                                                    }
-                                                }
-                                            } else {
-                                                echo '<td class="align-middle p-4 w-25" style="word-wrap: break-word; max-width: 90px;">00:00</td>';
-                                            }
-                                        } else {
-                                            echo "ERROR: Could not able to execute $result_hours. " . mysqli_error($db);
-                                        }
-
-
+                                        include_once './api/view/user_view.php';
+                                        month($row['id']);
 
                                         if ($_SESSION['id'] == $admin['id']) {
                                             echo '<td class="p-0 align-middle w-25>';
@@ -321,7 +155,6 @@ if($user) {
                                         }
                                     echo '</tr>';
                                 }
-                            mysqli_free_result($result_hours);
                             mysqli_free_result($result);
                             echo '</tbody>';
                         } else {

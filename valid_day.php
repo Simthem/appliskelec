@@ -1,70 +1,4 @@
-<?php
-session_start();
-//print_r(session_get_cookie_params());
-
-include 'api/config/db_connexion.php';
-
-if (isset($_COOKIE['id'])) {
-
-    $auth = explode('---', $_COOKIE['id']);
-
-    if (count($auth) === 2) {
-        $req = $bdd->prepare('SELECT id, username, `password` FROM users WHERE id = :id');
-        $req->execute([ ':id' => $auth[0] ]);
-        $user = $req->fetch(PDO::FETCH_ASSOC);
-         
-        if ($user && $auth[1] === hash('sha512', $user['username'].'---'.$user['password'])) {
-            $_SESSION['id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['admin_name'] = null;
-            $admin['id'] = null;
-        } else {
-            header("Location: signin.php");//redirect to login page to secure the welcome page without login access.  
-        }
-    }
-} elseif (isset($_COOKIE['auth'])) {
-
-    $auth = explode('---', $_COOKIE['auth']);
- 
-    if (count($auth) === 2) {
-        $req = $bdd->prepare('SELECT id, admin_name, admin_pass FROM `admin` WHERE id = :id');
-        $req->execute([ ':id' => $auth[0] ]);
-        $admin = $req->fetch(PDO::FETCH_ASSOC);
-         
-        if ($admin && $auth[1] === hash('sha512', $admin['admin_name'].'---'.$admin['admin_pass'])) {
-            $_SESSION['id'] = $admin['id'];
-            $_SESSION['username'] = "admin";
-            $_SESSION['admin_name'] = $admin['admin_name'];
-        } else {
-            header("Location: signin.php"); 
-        }
-    }
-}
-
-if(!($_SESSION['username'])){
-  
-    header("Location: signin.php");
-}
-
-$stmt = $bdd->prepare("SELECT id FROM users WHERE username = '". $_SESSION['username'] ."'");
-$stmt->execute();
-$user = $stmt->fetch();
-
-if (isset($_SESSION['admin_name']) && !empty($_SESSION['admin_name'])) {
-
-    $stmt_admin = $bdd->prepare("SELECT id FROM `admin` WHERE admin_name = '". $_SESSION['admin_name'] ."'");
-    $stmt_admin->execute();
-    $admin = $stmt_admin->fetch();
-}
-
-if($user) {
-    $_SESSION['id'] = $user['id'];
-} elseif (isset($admin) && !empty($admin)) {
-    $_SESSION['id'] = $admin['id'];
-} else {
-    header("Location: signin.php");
-}
-?>
+<?php include 'auth.php'; ?>
 
 <!DOCTYPE html>
 
@@ -107,15 +41,46 @@ if($user) {
                             u.id = '" . $_SESSION['id'] . "'
                             AND
                             updated = '" . $_GET['up_int'] . "'
-                        GROUP BY g.id, g.updated, u.id, c.name, c.id, absence, panier_repas, g.state";
+                        GROUP BY 
+                            g.id, g.updated, u.id, c.name, c.id, absence, panier_repas, g.state";
+
+
+                        $recap_2= "SELECT
+                            g.id AS gid,
+                            g.updated as inter_chantier,
+                            a.id,
+                            c.name AS name_chantier,
+                            c.id AS chantier_id,
+                            absence,
+                            SUM(night_hours) AS h_night_tot,
+                            SUM(intervention_hours - night_hours) AS tothsnight,
+                            SUM(intervention_hours) AS tot_glob,
+                            panier_repas,
+                            g.state AS `state`
+                        FROM
+                            chantiers AS c
+                            JOIN
+                            global_reference AS g ON c.id = chantier_id
+                            JOIN
+                            `admin` AS a ON g.user_id = a.id
+                        WHERE
+                            a.id = '" . $_SESSION['id'] . "'
+                            AND
+                            updated = '" . $_GET['up_int'] . "'
+                        GROUP BY 
+                            g.id, g.updated, a.id, c.name, c.id, absence, panier_repas, g.state";
+
+
 
                         $date = date_create($_GET['up_int']);
                         echo '<input id="up_inter" name="up_inter" value="' . date_format($date, 'Y-m-d') . '" style="display: none" />';
 
-                        echo "<h3 class='mt-0 mb-3 pt-5 text-center'>Récapitulatif de la journée du<br />'" . date_format($date, 'd-m-Y') . "'</h3>";
+                        echo "<div class='mt-5 ml-auto mr-auto'>
+                            <h3 class='text-center mb-5 pt-5'>Récapitulatif de la journée du<br />'" . date_format($date, 'd-m-Y') . "'</h3>
+                        </div>";
                         #<div class='w-75 text-center ml-auto mb-5 mr-auto h4'><u>Récapitulatif de la journée du<br />'" . date_format($date, 'd-m-Y') . "'</u></div>";
 
-                        if ($result = mysqli_query($db, $recap)) {
+                        if ($result = mysqli_query($db, $recap_2)) {
 
                             if (mysqli_num_rows($result) > 0) {
 
@@ -146,7 +111,7 @@ if($user) {
                                                 $pan = 1;
                                             }
 
-                                            if (isset($row['absence']) && !empty($row['absence'])) {
+                                            /*if (isset($row['absence']) && !empty($row['absence'])) {
 
                                                 $h_glo_ab += $row['absence'];
                                                 $h_ab = (int)($h_glo_ab);
@@ -162,6 +127,25 @@ if($user) {
                                                     $m_ab = "0" . $minutes;
                                                 }
                                                 if ($m_ab < 0) {
+                                                    $m_ab *= -1;
+                                                }
+                                            }*/
+
+                                            if (isset($row['absence']) && !empty($row['absence'])) {
+
+                                                $h_glo_ab += $row['absence'];
+                                                $h_ab = (int)($h_glo_ab);
+                                                $m_ab = ($h_glo_ab - $h_ab) * 60;
+
+                                                while ($m_ab > 59) {
+                                                    $h_ab += 1;
+                                                    $m_ab -= 60;
+                                                }
+                                                if ($m_ab < 10 and $m_ab > 0) {
+                                                    $m_ab = "0" . $minutes;
+                                                } elseif ($m_ab == 0 || empty($m_ab)) {
+                                                    $m_ab = "00";
+                                                } elseif ($h_ab == 0) {
                                                     $m_ab *= -1;
                                                 }
                                             }
@@ -189,7 +173,7 @@ if($user) {
                                                 }
                                                 
                                                 //echo '<br />' . $h_glo_ab . '<br />' . $h_global . '<br />';
-                                                $h_global += $h_glo_ab;
+                                                $h_global -= $h_glo_ab;
                                                 $h_glo_ab = NULL;
                                                 //echo $h_glo_ab . '<br />' . $h_global . '<br />';
 
@@ -255,7 +239,7 @@ if($user) {
                                                     <div class="w-75 p-0 text-center d-inline-flex">
                                                         <div class="p-0 mt-2 mb-2 float-left">&nbsp;:&nbsp;</div>';
 
-                                                            if (!isset($row['absence']) || empty($row['absence'])) {
+                                                            if (!isset($row['absence']) && empty($row['absence'])) {
                                                             echo '<div class="border-0 p-0 mt-2 ml-0 mr-0 mb-2 col-12 float-right d-inline-flex">
                                                                 <div class="col-5 p-0">
                                                                     <select id="hours" class="hours border-0 rounded bg-secondary text-white text-center" style="width: 40px;">
@@ -323,15 +307,20 @@ if($user) {
                                                                     <select class="h_ab border-0 rounded bg-secondary text-white text-center" style="width: 40px;">
                                                                         <option value="' . $h_ab . '" selected disabled>' . $h_ab . '</option>';
                                                                         $i = 0;
-                                                                        while ($i <= 0 and $i >= -14) {
+                                                                        while ($i >= 0 and $i <= 14) {
                                                                             echo '<option value=' . $i . '>' . $i . '</option>';
-                                                                            $i--;
+                                                                            $i++;
                                                                         }
                                                                     echo '</select>
-                                                                    <strong>h</strong>
-                                                                    <select class="m_ab border-0 rounded bg-secondary text-white text-center" style="width: 40px;">
-                                                                        <option value="' . $m_ab . '" selected disabled>' . $m_ab . '</option>
-                                                                        <option value="00">00</option>
+                                                                    <strong> h </strong>';
+                                                                    echo '<select class="m_ab border-0 rounded bg-secondary text-white text-center" style="width: 40px;">';
+
+                                                                        if ($m_ab < 0) {
+                                                                            echo '<option value="' . $m_ab . '" selected disabled>' . $m_ab * -1 . '</option>';
+                                                                        } else {
+                                                                            echo '<option value="' . $m_ab . '" selected disabled>' . $m_ab . '</option>';
+                                                                        }
+                                                                        echo '<option value="00">00</option>
                                                                         <option value="30">30</option>
                                                                     </select>
                                                                 </div>
@@ -366,6 +355,25 @@ if($user) {
                                                     $h_ab += 1;
                                                     $m_ab -= 60;
                                                 }
+                                                if ($m_ab < 10 and $m_ab > 0) {
+                                                    $m_ab = "0" . $minutes;
+                                                } elseif ($m_ab == 0 || empty($m_ab)) {
+                                                    $m_ab = "00";
+                                                } elseif ($h_ab == 0) {
+                                                    $m_ab *= -1;
+                                                }
+                                            }
+                                            /*
+                                            if (isset($row['absence']) && !empty($row['absence'])) {
+
+                                                $h_glo_ab += $row['absence'];
+                                                $h_ab = (int)($h_glo_ab);
+                                                $m_ab = ($h_glo_ab - $h_ab) * 60;
+
+                                                while ($m_ab > 59) {
+                                                    $h_ab += 1;
+                                                    $m_ab -= 60;
+                                                }
                                                 if ($m_ab > 10) {
                                                     $m_ab = $m_ab;
                                                 } elseif ($m_ab < 10 and $m_ab > 0) {
@@ -373,7 +381,7 @@ if($user) {
                                                 } else {
                                                     $m_ab = "00";
                                                 }
-                                            }
+                                            }*/
 
                                             if ($row['name_chantier']) {
 
@@ -463,7 +471,7 @@ if($user) {
                                                             echo '<div class="border-0 p-0 mt-2 ml-0 mr-0 mb-2 col-12 float-right d-inline-flex">
                                                                 <div class="col-5 p-0">
                                                                     <select class="hours border-0 rounded bg-secondary text-white text-center">
-                                                                        <option value="' . $hours . '" selected disabled>' . $hours . '</option>
+                                                                        <option value="' . $hours . '" selected>' . $hours . '</option>
                                                                         <option value="0">0</option>
                                                                         <option value="1">1</option>
                                                                         <option value="2">2</option>
@@ -482,7 +490,7 @@ if($user) {
                                                                     </select>
                                                                     <strong>h</strong>
                                                                     <select class="minutes border-0 rounded bg-secondary text-white text-center">
-                                                                        <option value="' . $minutes . '" selected disabled>' . $minutes . '</option>
+                                                                        <option value="' . $minutes . '" selected>' . $minutes . '</option>
                                                                         <option value="00">00</option>
                                                                         <option value="30">30</option>
                                                                     </select>
@@ -490,7 +498,7 @@ if($user) {
                                                                 <div class="col-7 p-0">
                                                                     <strong>[</strong>
                                                                     <select class="night_h border-0 rounded bg-secondary text-white text-center">
-                                                                        <option value="' . $night_h . '" selected disabled>' . $night_h . '</option>
+                                                                        <option value="' . $night_h . '" selected>' . $night_h . '</option>
                                                                         <option value="0">0</option>
                                                                         <option value="1">1</option>
                                                                         <option value="2">2</option>
@@ -509,7 +517,7 @@ if($user) {
                                                                     </select>
                                                                     <strong>h </strong>';
                                                                     echo '<select class="night_m border-0 rounded bg-secondary text-white text-center" />
-                                                                        <option value="' . $night_m . '" selected disabled>' . $night_m . '</option>
+                                                                        <option value="' . $night_m . '" selected>' . $night_m . '</option>
                                                                         <option value="00">00</option>
                                                                         <option value="30">30</option>
                                                                     </select>
@@ -519,17 +527,22 @@ if($user) {
                                                             echo '<div class="border-0 p-0 mt-2 ml-0 mr-0 mb-2 col-12 float-left d-inline-flex">
                                                                 <div class="float-left col-5 p-0">
                                                                     <select class="h_ab border-0 rounded bg-secondary text-white text-center">
-                                                                        <option value="' . $h_ab . '" selected disabled>' . $h_ab . '</option>';
+                                                                        <option value="' . $h_ab . '" selected>' . $h_ab . '</option>';
                                                                         $i = 0;
-                                                                        while ($i <= 0 and $i >= -14) {
+                                                                        while ($i >= 0 and $i <= 14) {
                                                                             echo '<option value=' . $i . '>' . $i . '</option>';
-                                                                            $i--;
+                                                                            $i++;
                                                                         }
                                                                     echo '</select>
-                                                                    <strong>h</strong>
-                                                                    <select class="m_ab border-0 rounded bg-secondary text-white text-center">
-                                                                        <option value="' . $m_ab . '" selected disabled>' . $m_ab . '</option>
-                                                                        <option value="00">00</option>
+                                                                    <strong>h</strong>';
+                                                                    echo '<select class="m_ab border-0 rounded bg-secondary text-white text-center" style="width: 40px;">';
+
+                                                                        if ($m_ab < 0) {
+                                                                            echo '<option value="' . $m_ab . '" selected>' . $m_ab * -1 . '</option>';
+                                                                        } else {
+                                                                            echo '<option value="' . $m_ab . '" selected>' . $m_ab . '</option>';
+                                                                        }
+                                                                        echo '<option value="00">00</option>
                                                                         <option value="30">30</option>
                                                                     </select>
                                                                 </div>
@@ -553,7 +566,7 @@ if($user) {
                                         echo '<input id="tot_h' . $temp . '" name="tot_h' . $temp . '" style="display: none;" />';
                                         echo '<input id="tot_h_night' . $temp . '" name="tot_h_night' . $temp . '" style="display: none;" />';
                                         echo '<input id="chantier_id' . $temp . '" name="chantier_id' . $temp . '" style="display: none;" />';
-                                        echo '<input id="tot_h_ab' . $temp . '" name="tot_h_ab' . $temp . '"/>';
+                                        echo '<input id="tot_h_ab' . $temp . '" name="tot_h_ab' . $temp . '" style="display: none;" />';
                                         //echo $flag;
                                         $temp += 1;
                                     }
@@ -653,7 +666,7 @@ if($user) {
                                     mysqli_free_result($result);
                                 echo '</fieldset>';
                             } else {
-                                echo "No records matching your query were found.";
+                                echo "No records matching your query were found.1";
                             }
                         } else{
                             echo "ERROR: Could not able to execute $recap. " . mysqli_error($db);
